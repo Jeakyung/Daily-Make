@@ -63,7 +63,8 @@ void AAlienSwarmCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	//Add Input Mapping Context
-	if (PlayerController = Cast<APlayerController>(Controller))
+	PlayerController = Cast<APlayerController>(Controller);
+	if (PlayerController)
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
