@@ -54,9 +54,7 @@ AAlienSwarmCharacter::AAlienSwarmCharacter()
 	FollowCamera->SetRelativeLocation(FVector(-42,0,890));
 	FollowCamera->SetRelativeRotation(FRotator(-60,0,0));
 
-
-	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
-	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	
 }
 
 void AAlienSwarmCharacter::BeginPlay()
@@ -65,7 +63,7 @@ void AAlienSwarmCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
@@ -122,6 +120,9 @@ void AAlienSwarmCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
+	FVector WorldLocation;
+	FVector WorldDirection;
+	PlayerController->DeprojectMousePositionToWorld(WorldLocation,WorldDirection);
 
 	if (Controller != nullptr)
 	{
