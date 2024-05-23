@@ -13,7 +13,7 @@ class ALIENSWARM_API UPlayerAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
-	public:
+public:
 
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;

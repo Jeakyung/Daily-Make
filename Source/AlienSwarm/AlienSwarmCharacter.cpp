@@ -18,6 +18,8 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AAlienSwarmCharacter::AAlienSwarmCharacter()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 		
@@ -71,6 +73,15 @@ void AAlienSwarmCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	
+}
+
+void AAlienSwarmCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+	
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -119,16 +130,21 @@ void AAlienSwarmCharacter::Move(const FInputActionValue& Value)
 
 void AAlienSwarmCharacter::Look(const FInputActionValue& Value)
 {
-	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-	FVector WorldLocation;
-	FVector WorldDirection;
-	PlayerController->DeprojectMousePositionToWorld(WorldLocation,WorldDirection);
-
-	if (Controller != nullptr)
+	if (nullptr != Controller)
 	{
-		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
+		
+		FVector mouseLocation, mouseDirection;
+		mouseDirection.Normalize();
+		PlayerController = GetWorld()->GetFirstPlayerController();
+		PlayerController->DeprojectMousePositionToWorld(mouseLocation, mouseDirection);
+		
+		
+		FRotator targetRotation = mouseDirection.Rotation();
+		
+		FRotator newRotation = FRotator(0,targetRotation.Yaw,0);
+		this->SetActorRotation(newRotation);
+
 	}
+
+
 }

@@ -44,6 +44,7 @@ class AAlienSwarmCharacter : public ACharacter
 public:
 	AAlienSwarmCharacter();
 	
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 
@@ -69,5 +70,7 @@ public:
 
 	
 	class APlayerController* PlayerController;
+
+	
 };
 
