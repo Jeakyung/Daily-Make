@@ -62,10 +62,10 @@ protected:
 	
 
 protected:
-	// APawn interface
+
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-	// To add mapping context
+
 	virtual void BeginPlay();
 
 public:
@@ -77,9 +77,16 @@ public:
 	
 	class APlayerController* PlayerController;
 
+	// 플레이어가 마우스의 위치를 바라보게하는 함수
 	void TurnPlayer();
 
 	// 마우스의 위치
 	FVector mousePos;
+
+	void CameraMove();
+
+	// 카메라 최초위치
+	FVector cameraLoc;
+
 };
 

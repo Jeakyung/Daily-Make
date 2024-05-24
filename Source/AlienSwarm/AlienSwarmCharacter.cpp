@@ -74,7 +74,8 @@ void AAlienSwarmCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
+	// 카메라 최초 위치
+	cameraLoc = FollowCamera->GetRelativeLocation();
 	
 }
 
@@ -84,6 +85,7 @@ void AAlienSwarmCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	TurnPlayer();
+	CameraMove();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -185,4 +187,26 @@ void AAlienSwarmCharacter::TurnPlayer()
 		this->SetActorRotation(trun);
 
 	}
+}
+
+void AAlienSwarmCharacter::CameraMove()
+{
+	double distance = FVector::Distance(GetActorLocation(),mousePos); 
+
+	
+
+	FVector mouseLoc = mousePos - GetActorLocation()+cameraLoc;
+	mouseLoc.Z = FollowCamera->GetRelativeLocation().Z;
+	//mouseLoc.X -= 300.0f;
+
+	FVector newPos = FMath::Lerp(cameraLoc, mouseLoc, 0.2);
+	newPos.X -= 300; 
+
+	
+	FollowCamera->SetRelativeLocation(newPos);
+
+
+	UE_LOG(LogTemp, Warning, TEXT("%f, %f , %f"), newPos.X,newPos.Y, newPos.X+newPos.Y + 300);
+
+
 }
