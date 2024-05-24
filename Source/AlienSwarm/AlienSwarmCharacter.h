@@ -71,6 +71,9 @@ public:
 	
 	class APlayerController* PlayerController;
 
-	
+	void TurnPlayer();
+
+	// 마우스의 위치
+	FVector mousePos;
 };
 

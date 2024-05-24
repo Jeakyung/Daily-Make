@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include <../../../../../../../Source/Runtime/Engine/Public/CollisionQueryParams.h>
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -77,11 +78,12 @@ void AAlienSwarmCharacter::BeginPlay()
 	
 }
 
+
 void AAlienSwarmCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	
+	TurnPlayer();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -130,21 +132,47 @@ void AAlienSwarmCharacter::Move(const FInputActionValue& Value)
 
 void AAlienSwarmCharacter::Look(const FInputActionValue& Value)
 {
+	
+
+}
+
+void AAlienSwarmCharacter::TurnPlayer()
+{
 	if (nullptr != Controller)
 	{
 		
+
 		FVector mouseLocation, mouseDirection;
 		mouseDirection.Normalize();
 		PlayerController = GetWorld()->GetFirstPlayerController();
+		// 플레이어의 마우스 위치와 방향 값을 각각 mouseLocation과 mouseDirection에 넣어준다.
 		PlayerController->DeprojectMousePositionToWorld(mouseLocation, mouseDirection);
+	
+		// 라인 그리기
+		// start : 카메라 위치
+		FVector start = FollowCamera->GetComponentLocation();
+		// end = 화면상에 마우스가 가르키는 위치 
+		FVector end = start + mouseDirection * 100000;
+		// 플레이어와의 충돌 무시
+		FCollisionQueryParams params;
+		FHitResult hitResult;
+		params.AddIgnoredActor(this);
+
+		// 부딪힌 것이 있는지 판별하는 변수 (일단 만들어놓음)
+		bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Visibility, params);
 		
+		// 방향 = 마우스 위치에 쏘여진 라인트레이스와 충돌한 위치 - 플레이어 위치
+		mousePos = hitResult.ImpactPoint;
+		FVector direction = mousePos - GetActorLocation();
+		FRotator turnDir = direction.Rotation();
+ 		FRotator trun = FRotator(0, turnDir.Yaw, 0);
 		
-		FRotator targetRotation = mouseDirection.Rotation();
-		
-		FRotator newRotation = FRotator(0,targetRotation.Yaw,0);
-		this->SetActorRotation(newRotation);
+		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0, 0, 1);
+
+		UE_LOG(LogTemp,Warning,TEXT("%f"),mousePos.Z);
+
+		// 플레이어를 trun 방향으로 회전 시킨다. 
+		this->SetActorRotation(trun);
 
 	}
-
-
 }
