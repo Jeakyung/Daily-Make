@@ -100,6 +100,11 @@ void AAlienSwarmCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAlienSwarmCharacter::Look);
+		
+		// Fire
+		EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Started, this, &AAlienSwarmCharacter::OnIAFire);
+
+
 	}
 	else
 	{
@@ -136,6 +141,11 @@ void AAlienSwarmCharacter::Look(const FInputActionValue& Value)
 
 }
 
+void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp,Warning,TEXT("Shooting!!"));
+}
+
 void AAlienSwarmCharacter::TurnPlayer()
 {
 	if (nullptr != Controller)
@@ -167,9 +177,9 @@ void AAlienSwarmCharacter::TurnPlayer()
 		FRotator turnDir = direction.Rotation();
  		FRotator trun = FRotator(0, turnDir.Yaw, 0);
 		
-		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0, 0, 1);
+		DrawDebugSphere(GetWorld(), mousePos,50.0f,3,FColor::Red,false,0,0,1);
 
-		UE_LOG(LogTemp,Warning,TEXT("%f"),mousePos.Z);
+		
 
 		// 플레이어를 trun 방향으로 회전 시킨다. 
 		this->SetActorRotation(trun);

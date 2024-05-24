@@ -41,6 +41,9 @@ class AAlienSwarmCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* IA_Fire;
+
 public:
 	AAlienSwarmCharacter();
 	
@@ -53,7 +56,10 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
+
+	// 발사하는 기능
+	void OnIAFire(const FInputActionValue& Value);
+	
 
 protected:
 	// APawn interface
