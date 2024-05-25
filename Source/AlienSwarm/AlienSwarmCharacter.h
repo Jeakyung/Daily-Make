@@ -66,7 +66,7 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -87,6 +87,14 @@ public:
 
 	// 카메라 최초위치
 	FVector cameraLoc;
+
+
+	class AWeaponBase* Weapon;
+	
+	UPROPERTY(EditAnywhere, Category = TPS)
+	TSubclassOf<AWeaponBase> WeaponClass;
+
+	
 
 };
 

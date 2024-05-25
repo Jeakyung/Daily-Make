@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include <../../../../../../../Source/Runtime/Engine/Public/CollisionQueryParams.h>
+#include "WeaponBase.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -57,7 +58,7 @@ AAlienSwarmCharacter::AAlienSwarmCharacter()
 	FollowCamera->SetRelativeLocation(FVector(-42,0,890));
 	FollowCamera->SetRelativeRotation(FRotator(-60,0,0));
 
-	
+
 }
 
 void AAlienSwarmCharacter::BeginPlay()
@@ -69,6 +70,7 @@ void AAlienSwarmCharacter::BeginPlay()
 	PlayerController = Cast<APlayerController>(Controller);
 	if (PlayerController)
 	{
+		
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
@@ -77,6 +79,26 @@ void AAlienSwarmCharacter::BeginPlay()
 	// 카메라 최초 위치
 	cameraLoc = FollowCamera->GetRelativeLocation();
 	
+			
+	// 총 액터 생성 후 플레이어에게 Attach
+	if (WeaponClass) 
+	{		
+		// 총 액터 생성하기
+		AWeaponBase* spawnWeapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
+		
+		// 만약 생성이 유효하다면
+		if (nullptr != spawnWeapon)
+		{
+			// 총을 플레이어의 손에 부착
+			spawnWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHandSocket"));
+			spawnWeapon->SetActorRelativeLocation(FVector(4.7f, -11, 1.8f));
+			spawnWeapon->SetActorRelativeRotation(FRotator(-11, 81, -81));
+			spawnWeapon->SetActorRelativeScale3D(FVector(1.25f));
+			UE_LOG(LogTemp, Warning, TEXT("spawnWeapon"));
+		}
+	}
+
+
 }
 
 
@@ -206,7 +228,6 @@ void AAlienSwarmCharacter::CameraMove()
 	FollowCamera->SetRelativeLocation(newPos);
 
 
-	UE_LOG(LogTemp, Warning, TEXT("%f, %f , %f"), newPos.X,newPos.Y, newPos.X+newPos.Y + 300);
 
 
 }
