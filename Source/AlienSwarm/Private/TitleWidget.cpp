@@ -15,7 +15,7 @@ void UTitleWidget::NativeConstruct()
 
 	Btn_Quit->OnClicked.AddDynamic(this, &UTitleWidget::QuitGame);
 
-	RoomList->Set
+
 }
 
 void UTitleWidget::CreateRoom()
