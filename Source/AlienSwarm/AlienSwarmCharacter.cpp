@@ -167,7 +167,12 @@ void AAlienSwarmCharacter::Look(const FInputActionValue& Value)
 
 void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp,Warning,TEXT("Shooting!!"));
+	UE_LOG(LogTemp, Warning, TEXT("Shooting!!"));
+}
+
+void AAlienSwarmCharacter::OnIAReload(const FInputActionValue& Value)
+{
+
 }
 
 void AAlienSwarmCharacter::TurnPlayer()

@@ -44,6 +44,9 @@ class AAlienSwarmCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* IA_Fire;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* IA_Reload;
+
 public:
 	AAlienSwarmCharacter();
 	
@@ -60,6 +63,8 @@ protected:
 	// 발사하는 기능
 	void OnIAFire(const FInputActionValue& Value);
 	
+	// 재장전하는 기능
+	void OnIAReload(const FInputActionValue& Value);
 
 protected:
 
@@ -83,6 +88,7 @@ public:
 	// 마우스의 위치
 	FVector mousePos;
 
+	// 마우스의 위치에 맞게 카메라를 이동시키는 함수
 	void CameraMove();
 
 	// 카메라 최초위치
