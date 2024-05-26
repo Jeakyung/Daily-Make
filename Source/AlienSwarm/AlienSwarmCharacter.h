@@ -97,10 +97,24 @@ public:
 
 	class AWeaponBase* Weapon;
 	
+	// AWeaponBase타입을 저장 
 	UPROPERTY(EditAnywhere, Category = TPS)
 	TSubclassOf<AWeaponBase> WeaponClass;
 
-	
+
+	// 총 발사 시 실행되는 애니메이션 몽타주
+	UPROPERTY(EditAnywhere, Category = TPS)
+	class UAnimMontage* FireMontage;
+
+	// 발사 모션 실행되는 기능
+	void PlayFireMontage();
+
+	// 재장전 애니메이션 몽타주
+	UPROPERTY(EditAnywhere, Category = TPS)
+	class UAnimMontage* ReloadMontage;
+
+	// 재장전 모션 실행되는 기능
+	void PlayReloadMontage();
 
 };
 

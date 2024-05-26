@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 #include <../../../../../../../Source/Runtime/Engine/Public/CollisionQueryParams.h>
 #include "WeaponBase.h"
+#include "PlayerAnimInstance.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -108,6 +109,7 @@ void AAlienSwarmCharacter::Tick(float DeltaTime)
 	
 	TurnPlayer();
 	CameraMove();
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -127,6 +129,9 @@ void AAlienSwarmCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		
 		// Fire
 		EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Started, this, &AAlienSwarmCharacter::OnIAFire);
+
+		// Reload
+		EnhancedInputComponent->BindAction(IA_Reload, ETriggerEvent::Started, this, &AAlienSwarmCharacter::OnIAReload);
 
 
 	}
@@ -161,18 +166,19 @@ void AAlienSwarmCharacter::Move(const FInputActionValue& Value)
 
 void AAlienSwarmCharacter::Look(const FInputActionValue& Value)
 {
-	
 
 }
 
 void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Shooting!!"));
+
+	PlayFireMontage();
 }
 
 void AAlienSwarmCharacter::OnIAReload(const FInputActionValue& Value)
 {
-
+	PlayReloadMontage();
 }
 
 void AAlienSwarmCharacter::TurnPlayer()
@@ -235,4 +241,24 @@ void AAlienSwarmCharacter::CameraMove()
 
 
 
+}
+
+void AAlienSwarmCharacter::PlayFireMontage()
+{
+	auto* anim = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+	if (anim)
+	{
+		anim->Montage_Play(FireMontage);
+		
+	}	
+}
+
+void AAlienSwarmCharacter::PlayReloadMontage()
+{
+	auto* anim = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+	if (anim)
+	{
+		anim->Montage_Play(ReloadMontage);
+
+	}
 }
