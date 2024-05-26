@@ -5,6 +5,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include <../../../../../../../Source/Runtime/Engine/Public/EngineUtils.h>
 #include <AlienAIController.h>
+#include "AlienSwarm/AlienSwarmCharacter.h"
 
 // Sets default values
 AAlienEnemy::AAlienEnemy()
@@ -25,6 +26,7 @@ void AAlienEnemy::BeginPlay()
 	Super::BeginPlay();
 	
 	AIEnemyController = Cast<AAlienAIController>(GetController());
+
 	if (AIEnemyController == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NULL"));
@@ -53,10 +55,11 @@ void AAlienEnemy::SearchForTarget()
 
 void AAlienEnemy::TargetCheck()
 {
-	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AActor::StaticClass(), TEXT("target"), targetList);
-	// for (TActorIterator<AActor> target(GetWorld()); target; ++target)
-	/*{
+	//UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AAlienSwarmCharacter::StaticClass(), TEXT("target"), targetList);
+	for (TActorIterator<AAlienSwarmCharacter> target(GetWorld()); target; ++target)
+	{
 		myTarget = *target;
+<<<<<<< Updated upstream
 	}*/
 	if (targetList.Num() > 0) {
 		myTarget = targetList[0];
@@ -64,9 +67,20 @@ void AAlienEnemy::TargetCheck()
 
 	}
 
+=======
+	}
+	// myTarget = targetList[0];
+	
+>>>>>>> Stashed changes
 	if (AIEnemyController != nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("asadfgg"));
 	}
 }
+
+void AAlienEnemy::HitTheDoor()
+{
+	AIEnemyController->Attack();
+}
+
 

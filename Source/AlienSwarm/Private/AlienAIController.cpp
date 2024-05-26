@@ -1,6 +1,7 @@
 #include "AlienAIController.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "AlienSwarm/AlienSwarmCharacter.h"
 #include "AlienEnemy.h"
 
 AAlienAIController::AAlienAIController()
@@ -18,9 +19,9 @@ AAlienAIController::AAlienAIController()
 void AAlienAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	enemy = Cast<AAlienEnemy>(AController::GetPawn());
-	
+
 }
 
 void AAlienAIController::Tick(float DeltaSeconds)
@@ -28,7 +29,7 @@ void AAlienAIController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 }
 
-void AAlienAIController::MoveToTarget(AActor* target)
+void AAlienAIController::MoveToTarget(AAlienSwarmCharacter* target)
 {
 	// 타겟이 존재한다면 타겟을 향해 이동한다
 	if (enemy)
@@ -43,15 +44,30 @@ void AAlienAIController::MoveToTarget(AActor* target)
 	// 방향설정
 	targetDirection = target->GetActorLocation() - enemy->GetActorLocation();
 	targetDirection.Z = 0;
+
 	// 타겟을 바라보도록 회전한다
 	enemy->SetActorRotation(targetDirection.ToOrientationRotator());
-	// 타겟을 향해 이동한다
-	enemy->AddMovementInput(targetDirection.GetSafeNormal());
-	
+
+	// 거리가 공격 가능 범위보다 작다면 공격한다
+	if (targetDirection.Size() < attakDistance)
+	{
+		Attack();
+	}
+	// 거리가 공격 가능 범위보다 크다면 타겟에게 다가간다
+	else
+	{
+		enemy->AddMovementInput(targetDirection.GetSafeNormal());
+	}
+
 }
 
 void AAlienAIController::Attack()
 {
+	// 공격할 대상이 문인지 플레이어인지 확인한다
+	// 문이라면
+
+	// 플레이어라면
+	// 
 }
 
 void AAlienAIController::OnDamaged()

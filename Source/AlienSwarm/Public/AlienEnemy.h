@@ -27,8 +27,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-
-	AActor* myTarget;
+	UPROPERTY()
+	AAlienSwarmCharacter* myTarget;
 
 
 	// 추적할 타겟 검색
@@ -50,7 +50,7 @@ public:
 	float traceSpeed = 720.f;
 
 	UPROPERTY()
-	TArray<AActor*> targetList;
+	TArray<AAlienSwarmCharacter*> targetList;
 
 	// 타겟과 에너미 사이에 문이 존재하는지 체크
 	UFUNCTION()
@@ -58,6 +58,10 @@ public:
 
 	bool bHasTarget = false;
 
+	UPROPERTY()
 	class AAlienAIController* AIEnemyController;
+
+	// 문에 부딪치다
+	void HitTheDoor();
 
 };

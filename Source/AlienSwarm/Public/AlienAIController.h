@@ -38,6 +38,7 @@ private:
 
 public:
 	// 타겟 방향
+	UPROPERTY(EditDefaultsOnly)
 	FVector targetDirection;	
 	// 공격 가능 거리	
 	UPROPERTY(EditAnywhere, Category = Enemy)
@@ -45,13 +46,15 @@ public:
 	// 추적 속력
 	//UPROPERTY(EditAnywhere, Category = Enemy)
 	//float attakDistance = ;
-
-	AActor* myTarget;
+	
+	UPROPERTY(EditDefaultsOnly)
+	class AAlienSwarmCharacter* myTarget;
+	UPROPERTY()
 	class AAlienEnemy* enemy;
 	
 	UFUNCTION()
 	// 타겟을 향해 이동
-	void MoveToTarget(AActor* target);
+	void MoveToTarget(AAlienSwarmCharacter* target);
 	
 	// 타겟 공격
 	// 타겟 대상에 따른 분기는 enemy.cpp에서 구현
