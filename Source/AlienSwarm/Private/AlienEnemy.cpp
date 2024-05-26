@@ -58,13 +58,15 @@ void AAlienEnemy::TargetCheck()
 	/*{
 		myTarget = *target;
 	}*/
-	myTarget = targetList[0];
-	
+	if (targetList.Num() > 0) {
+		myTarget = targetList[0];
+		AIEnemyController->MoveToTarget(myTarget);
+
+	}
+
 	if (AIEnemyController != nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("asadfgg"));
 	}
-
-	AIEnemyController->MoveToTarget(myTarget);
 }
 

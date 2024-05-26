@@ -21,8 +21,11 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	class UStaticMeshComponent* gunBody;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USceneComponent* firePoint;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UNiagaraComponent* aimmingLaser;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
@@ -66,6 +69,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector end;
+
 	UFUNCTION()
 	bool OnFire(FVector mousePos);
 
@@ -74,6 +80,9 @@ public:
 	
 	UFUNCTION()
 	bool TakeMagazine();
+
+	UFUNCTION()
+	void CalculateEndPoint(FVector mousePos);
 
 	UFUNCTION()
 	FORCEINLINE float GetCurrentReloadTime() {return currentReloadTime;}

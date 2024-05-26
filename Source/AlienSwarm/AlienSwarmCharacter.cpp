@@ -85,16 +85,16 @@ void AAlienSwarmCharacter::BeginPlay()
 	if (WeaponClass) 
 	{		
 		// 총 액터 생성하기
-		AWeaponBase* spawnWeapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
+		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
 		
 		// 만약 생성이 유효하다면
-		if (nullptr != spawnWeapon)
+		if (nullptr != Weapon)
 		{
 			// 총을 플레이어의 손에 부착
-			spawnWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHandSocket"));
-			spawnWeapon->SetActorRelativeLocation(FVector(4.7f, -11, 1.8f));
-			spawnWeapon->SetActorRelativeRotation(FRotator(-11, 81, -81));
-			spawnWeapon->SetActorRelativeScale3D(FVector(1.25f));
+			Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHandSocket"));
+			Weapon->SetActorRelativeLocation(FVector(4.7f, -11, 1.8f));
+			Weapon->SetActorRelativeRotation(FRotator(-11, 81, -81));
+			Weapon->SetActorRelativeScale3D(FVector(1.25f));
 			UE_LOG(LogTemp, Warning, TEXT("spawnWeapon"));
 		}
 	}
@@ -109,7 +109,10 @@ void AAlienSwarmCharacter::Tick(float DeltaTime)
 	
 	TurnPlayer();
 	CameraMove();
-
+	if (nullptr != Weapon)
+	{
+		Weapon->CalculateEndPoint(mousePos);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -128,12 +131,10 @@ void AAlienSwarmCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAlienSwarmCharacter::Look);
 		
 		// Fire
-		EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Started, this, &AAlienSwarmCharacter::OnIAFire);
+		EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &AAlienSwarmCharacter::OnIAFire);
 
 		// Reload
 		EnhancedInputComponent->BindAction(IA_Reload, ETriggerEvent::Started, this, &AAlienSwarmCharacter::OnIAReload);
-
-
 	}
 	else
 	{
@@ -166,14 +167,17 @@ void AAlienSwarmCharacter::Move(const FInputActionValue& Value)
 
 void AAlienSwarmCharacter::Look(const FInputActionValue& Value)
 {
+	
 
 }
 
 void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Shooting!!"));
-
-	PlayFireMontage();
+	if (nullptr != Weapon) {
+		Weapon->OnFire(mousePos);
+		PlayFireMontage();
+	}
 }
 
 void AAlienSwarmCharacter::OnIAReload(const FInputActionValue& Value)
@@ -249,8 +253,8 @@ void AAlienSwarmCharacter::PlayFireMontage()
 	if (anim)
 	{
 		anim->Montage_Play(FireMontage);
-		
-	}	
+
+	}
 }
 
 void AAlienSwarmCharacter::PlayReloadMontage()

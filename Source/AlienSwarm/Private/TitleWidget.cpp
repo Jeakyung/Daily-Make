@@ -3,7 +3,7 @@
 
 #include "TitleWidget.h"
 #include "Components/Button.h"
-#include "Components/VerticalBoxSlot.h"
+#include "Components/VerticalBox.h"
 
 void UTitleWidget::NativeConstruct()
 {

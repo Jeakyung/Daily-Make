@@ -4,7 +4,9 @@
 #include "WeaponBase.h"
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "NiagaraComponent.h"
 #include "HitInterface.h"
+#include "../AlienSwarmCharacter.h"
 
 
 // Sets default values
@@ -22,6 +24,12 @@ AWeaponBase::AWeaponBase()
 
 	firePoint = CreateDefaultSubobject<USceneComponent>(TEXT("FirePoint"));
 	firePoint->SetupAttachment(gunBody);
+	firePoint->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
+
+	aimmingLaser = CreateDefaultSubobject<UNiagaraComponent>(TEXT("AimmingLaser"));
+	aimmingLaser->SetupAttachment(firePoint);
+	
+
 }
 
 // Called when the game starts or when spawned
@@ -31,6 +39,7 @@ void AWeaponBase::BeginPlay()
 	
 	currentAmmo = ammo;
 	currentMagazine = magazine;
+
 }
 
 // Called every frame
@@ -63,12 +72,8 @@ bool AWeaponBase::OnFire(FVector mousePos)
 	}
 
 	if (currentAmmo > 0) {
+		bIsFire = true;
 		FVector start = firePoint->GetComponentLocation();
-		FVector end = mousePos;
-		end.Z = start.Z;
-		end = end - start;
-		end.Normalize();
-		end *= shootingRange;
 		FCollisionQueryParams params;
 		params.AddIgnoredActor(this);
 		params.AddIgnoredActor(GetOwner());
@@ -76,6 +81,7 @@ bool AWeaponBase::OnFire(FVector mousePos)
 			TArray<FHitResult> hitInfos;
 			//Ignore되는 채널을 찾음
 			bool bResult = GetWorld()->SweepMultiByChannel(hitInfos, start, end, FQuat::Identity, ECC_GameTraceChannel2, FCollisionShape::MakeSphere(attackArea), params);
+			DrawDebugCylinder(GetWorld(), start, end, attackArea, 32, FColor::Red, false, 5.0f);
 			if (bResult) {
 				for (FHitResult& hit : hitInfos){
 					IHitInterface* target = Cast<IHitInterface>(hit.GetActor());
@@ -89,6 +95,7 @@ bool AWeaponBase::OnFire(FVector mousePos)
 			FHitResult hitInfo;
 			//Block되는 채널을 찾음
 			bool bResult = GetWorld()->LineTraceSingleByChannel(hitInfo, start, end, ECC_GameTraceChannel1, params);
+			DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 5.0f);
 			if (bResult) {
 				IHitInterface* target = Cast<IHitInterface>(hitInfo.GetActor());
 				if (target) {
@@ -128,5 +135,16 @@ bool AWeaponBase::TakeMagazine()
 		currentMagazine++;
 		return true;
 	}
+}
+
+void AWeaponBase::CalculateEndPoint(FVector mousePos)
+{
+	FVector start = firePoint->GetComponentLocation();
+	end = mousePos;
+	end.Z += start.Z;
+	end = end - start;
+	end.Normalize();
+	end *= shootingRange;
+	end.Z += start.Z;
 }
 

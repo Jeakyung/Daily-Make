@@ -25,5 +25,15 @@ private:
 	UPROPERTY()
 	class UTitleWidget* titleWidget;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UShopWidget> shopWidget_bp;
 
+	UPROPERTY()
+	class UShopWidget* shopWidget;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UMainWidget> mainWidget_bp;
+
+	UPROPERTY()
+	class UMainWidget* mainWidget;
 };

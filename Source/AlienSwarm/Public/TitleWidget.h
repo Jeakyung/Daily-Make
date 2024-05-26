@@ -28,7 +28,7 @@ public:
 	class UButton* Btn_Quit;
 
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
-	class UVerticalBoxSlot* RoomList;
+	class UVerticalBox* RoomList;
 
 	UFUNCTION()
 	void CreateRoom();

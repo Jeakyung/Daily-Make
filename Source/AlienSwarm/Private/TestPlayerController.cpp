@@ -3,6 +3,8 @@
 
 #include "TestPlayerController.h"
 #include "TitleWidget.h"
+#include "ShopWidget.h"
+#include "MainWidget.h"
 
 void ATestPlayerController::BeginPlay()
 {
@@ -13,6 +15,24 @@ void ATestPlayerController::BeginPlay()
 			titleWidget = CreateWidget<UTitleWidget>(GetWorld(), titleWidget_bp);
 			if (titleWidget) {
 				titleWidget->AddToViewport();
+			}
+		}
+	}
+	else if (GetWorld()->GetMapName().Contains(TEXT("TestLevel"))) {
+		//샵 위젯을 열어주자.
+		if (shopWidget_bp) {
+			shopWidget = CreateWidget<UShopWidget>(GetWorld(), shopWidget_bp);
+			if (shopWidget) {
+				shopWidget->AddToViewport();
+			}
+		}
+	}
+	else {
+		//전투용 메인 위젯을 열어주자.
+		if (mainWidget_bp) {
+			mainWidget = CreateWidget<UMainWidget>(GetWorld(), mainWidget_bp);
+			if (mainWidget) {
+				mainWidget->AddToViewport();
 			}
 		}
 	}

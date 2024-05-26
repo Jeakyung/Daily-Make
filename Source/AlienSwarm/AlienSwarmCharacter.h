@@ -94,13 +94,12 @@ public:
 	// 카메라 최초위치
 	FVector cameraLoc;
 
-
+	UPROPERTY()
 	class AWeaponBase* Weapon;
-	
-	// AWeaponBase타입을 저장 
-	UPROPERTY(EditAnywhere, Category = TPS)
-	TSubclassOf<AWeaponBase> WeaponClass;
 
+	// AWeaponBase타입을 저장 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
+	TSubclassOf<AWeaponBase> WeaponClass;
 
 	// 총 발사 시 실행되는 애니메이션 몽타주
 	UPROPERTY(EditAnywhere, Category = TPS)
