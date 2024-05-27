@@ -27,7 +27,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UNiagaraComponent* aimmingLaser;
 
-private:
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	int32 damage;
 
@@ -51,9 +54,6 @@ private:
 	float shootingRange;
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
-	bool bIsAreaAttack;
-
-	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	float attackArea;
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
@@ -68,10 +68,6 @@ private:
 	UPROPERTY()
 	class ATestPlayerController* pc;
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -79,8 +75,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector end;
 
-	UFUNCTION()
-	bool OnFire(FVector mousePos);
+	virtual bool OnFire(FVector mousePos);
 
 	UFUNCTION()
 	bool OnReload();

@@ -42,15 +42,21 @@ void ATestPlayerController::BeginPlay()
 
 void ATestPlayerController::SetHP(float value)
 {
-	mainWidget->SetHPBar(value);
+	if (mainWidget) {
+		mainWidget->SetHPBar(value);
+	}
 }
 
 void ATestPlayerController::SetAmmo(int32 value)
 {
-	mainWidget->SetRemainAmmo(value);
+	if (mainWidget) {
+		mainWidget->SetRemainAmmo(value);
+	}
 }
 
 void ATestPlayerController::SetMeg(int32 value)
 {
-	mainWidget->SetRemainMeg(value);
+	if (mainWidget) {
+		mainWidget->SetRemainMeg(value);
+	}
 }

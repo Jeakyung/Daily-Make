@@ -25,7 +25,6 @@ AWeaponBase::AWeaponBase()
 
 	firePoint = CreateDefaultSubobject<USceneComponent>(TEXT("FirePoint"));
 	firePoint->SetupAttachment(gunBody);
-	firePoint->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
 
 	aimmingLaser = CreateDefaultSubobject<UNiagaraComponent>(TEXT("AimmingLaser"));
 	aimmingLaser->SetupAttachment(firePoint);
@@ -58,49 +57,7 @@ void AWeaponBase::Tick(float DeltaTime)
 
 bool AWeaponBase::OnFire(FVector mousePos)
 {
-	if (bIsFire) {
-		return false;
-	}
-
-	if (currentAmmo > 0) {
-		bIsFire = true;
-		FVector start = firePoint->GetComponentLocation();
-		FCollisionQueryParams params;
-		params.AddIgnoredActor(this);
-		params.AddIgnoredActor(GetOwner());
-		if (bIsAreaAttack) {
-			TArray<FHitResult> hitInfos;
-			//Ignore되는 채널을 찾음
-			bool bResult = GetWorld()->SweepMultiByChannel(hitInfos, start, end, FQuat::Identity, ECC_GameTraceChannel2, FCollisionShape::MakeSphere(attackArea), params);
-			DrawDebugCylinder(GetWorld(), start, end, attackArea, 32, FColor::Red, false, 5.0f);
-			if (bResult) {
-				for (FHitResult& hit : hitInfos){
-					IHitInterface* target = Cast<IHitInterface>(hit.GetActor());
-					if (target) {
-						target->TakeHit(damage);
-					}
-				}
-			}
-		}
-		else {
-			FHitResult hitInfo;
-			//Block되는 채널을 찾음
-			bool bResult = GetWorld()->LineTraceSingleByChannel(hitInfo, start, end, ECC_GameTraceChannel1, params);
-			DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 5.0f);
-			if (bResult) {
-				IHitInterface* target = Cast<IHitInterface>(hitInfo.GetActor());
-				if (target) {
-					target->TakeHit(damage);
-				}
-			}
-		}
-		currentAmmo--;
-		pc->SetAmmo(currentAmmo);
-		return true;
-	}
-	else{
-		return false;
-	}
+	return false;
 }
 
 bool AWeaponBase::OnReload()
