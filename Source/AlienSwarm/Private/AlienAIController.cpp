@@ -57,6 +57,7 @@ void AAlienAIController::MoveToTarget(AAlienSwarmCharacter* target)
 	else
 	{
 		enemy->AddMovementInput(targetDirection.GetSafeNormal());
+		
 	}
 
 }

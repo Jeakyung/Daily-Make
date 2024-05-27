@@ -38,8 +38,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	float reloadTime;
-	float currentReloadTime = 0.0f;
-	bool bIsReloading = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	int32 ammo;
@@ -60,6 +58,15 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	int32 cost;
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	class UTexture2D* thumbnailImg;
+
+	UPROPERTY()
+	class AAlienSwarmCharacter* playerREF;
+
+	UPROPERTY()
+	class ATestPlayerController* pc;
 
 protected:
 	// Called when the game starts or when spawned
@@ -85,9 +92,6 @@ public:
 	void CalculateEndPoint(FVector mousePos);
 
 	UFUNCTION()
-	FORCEINLINE float GetCurrentReloadTime() {return currentReloadTime;}
-
-	UFUNCTION()
 	FORCEINLINE int32 GetCurrentAmmo() {return currentAmmo;}
 
 	UFUNCTION()
@@ -95,4 +99,10 @@ public:
 
 	UFUNCTION()
 	FORCEINLINE int32 GetCost() {return cost;}
+
+	UFUNCTION()
+	void Equip(AActor* ownedActor);
+
+	UFUNCTION()
+	void UnEquip();
 };

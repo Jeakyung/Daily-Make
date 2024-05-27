@@ -49,7 +49,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	float traceSpeed = 720.f;
 
-	UPROPERTY()
 	TArray<AAlienSwarmCharacter*> targetList;
 
 	// 타겟과 에너미 사이에 문이 존재하는지 체크
