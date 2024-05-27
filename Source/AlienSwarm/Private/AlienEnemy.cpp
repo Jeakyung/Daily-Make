@@ -55,23 +55,16 @@ void AAlienEnemy::SearchForTarget()
 
 void AAlienEnemy::TargetCheck()
 {
-	//UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AAlienSwarmCharacter::StaticClass(), TEXT("target"), targetList);
 	for (TActorIterator<AAlienSwarmCharacter> target(GetWorld()); target; ++target)
 	{
 		myTarget = *target;
-<<<<<<< Updated upstream
-	}*/
+	}
 	if (targetList.Num() > 0) {
-		myTarget = targetList[0];
+		//myTarget = targetList[0];
 		AIEnemyController->MoveToTarget(myTarget);
 
 	}
-
-=======
-	}
-	// myTarget = targetList[0];
 	
->>>>>>> Stashed changes
 	if (AIEnemyController != nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("asadfgg"));
