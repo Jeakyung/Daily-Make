@@ -174,9 +174,12 @@ void AAlienSwarmCharacter::Look(const FInputActionValue& Value)
 void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Shooting!!"));
-	if (nullptr != Weapon) {
-		Weapon->OnFire(mousePos);
-		PlayFireMontage();
+	if (bReloading == false)
+	{
+		if (nullptr != Weapon) {
+			Weapon->OnFire(mousePos);
+			PlayFireMontage();
+		}
 	}
 }
 
@@ -250,11 +253,11 @@ void AAlienSwarmCharacter::CameraMove()
 
 void AAlienSwarmCharacter::PlayFireMontage()
 {
+
 	auto* anim = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 	if (anim)
 	{
-		anim->Montage_Play(FireMontage);
-
+			anim->Montage_Play(FireMontage);
 	}
 }
 
@@ -267,6 +270,7 @@ void AAlienSwarmCharacter::PlayReloadMontage()
 		{ 
 			anim->Montage_Play(ReloadMontage);
 			bReloading = true;
+			
 		}
 	}
 	

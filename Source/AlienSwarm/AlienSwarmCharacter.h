@@ -115,9 +115,14 @@ public:
 	// 재장전 모션 실행되는 기능
 	void PlayReloadMontage();
 
+	// 재장전이 끝났을 때
 	void OnMyReloadFinished();
 
+	// 재장전 중인지 판별하는 변수
 	bool bReloading;
+
+	// 사격 중인지 판별하는 변수
+	bool bFireing;
 
 };
 
