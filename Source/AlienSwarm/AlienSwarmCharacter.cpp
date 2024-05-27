@@ -183,6 +183,7 @@ void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 void AAlienSwarmCharacter::OnIAReload(const FInputActionValue& Value)
 {
 	PlayReloadMontage();
+	Weapon->OnReload();
 }
 
 void AAlienSwarmCharacter::TurnPlayer()
@@ -214,7 +215,7 @@ void AAlienSwarmCharacter::TurnPlayer()
 		mousePos = hitResult.ImpactPoint;
 		FVector direction = mousePos - GetActorLocation();
 		FRotator turnDir = direction.Rotation();
- 		FRotator trun = FRotator(0, turnDir.Yaw, 0);
+ 		FRotator trun = FRotator(0, turnDir.Yaw+10, 0);
 		
 		DrawDebugSphere(GetWorld(), mousePos,50.0f,3,FColor::Red,false,0,0,1);
 

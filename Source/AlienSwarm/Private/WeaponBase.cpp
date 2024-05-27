@@ -145,6 +145,7 @@ void AWeaponBase::CalculateEndPoint(FVector mousePos)
 	end = end - start;
 	end.Normalize();
 	end *= shootingRange;
-	end.Z += start.Z;
+	
+	end+=start;
 }
 
