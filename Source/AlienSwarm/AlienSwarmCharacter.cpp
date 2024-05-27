@@ -95,10 +95,10 @@ void AAlienSwarmCharacter::BeginPlay()
 			Weapon->SetActorRelativeLocation(FVector(4.7f, -11, 1.8f));
 			Weapon->SetActorRelativeRotation(FRotator(-11, 81, -81));
 			Weapon->SetActorRelativeScale3D(FVector(1.25f));
+			Weapon->Equip(this);
 			UE_LOG(LogTemp, Warning, TEXT("spawnWeapon"));
 		}
 	}
-
 
 }
 
@@ -173,7 +173,7 @@ void AAlienSwarmCharacter::Look(const FInputActionValue& Value)
 
 void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Shooting!!"));
+	//UE_LOG(LogTemp, Warning, TEXT("Shooting!!"));
 	if (nullptr != Weapon) {
 		Weapon->OnFire(mousePos);
 		PlayFireMontage();
@@ -183,7 +183,7 @@ void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 void AAlienSwarmCharacter::OnIAReload(const FInputActionValue& Value)
 {
 	PlayReloadMontage();
-	Weapon->OnReload();
+	
 }
 
 void AAlienSwarmCharacter::TurnPlayer()
@@ -263,7 +263,18 @@ void AAlienSwarmCharacter::PlayReloadMontage()
 	auto* anim = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 	if (anim)
 	{
-		anim->Montage_Play(ReloadMontage);
-
+		if (bReloading == false)
+		{ 
+			anim->Montage_Play(ReloadMontage);
+			bReloading = true;
+		}
 	}
+	
+}
+
+void AAlienSwarmCharacter::OnMyReloadFinished()
+{
+	Weapon->OnReload();
+	bReloading = false;
+	UE_LOG(LogTemp, Warning, TEXT("Reload"));
 }

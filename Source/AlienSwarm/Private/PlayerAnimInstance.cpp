@@ -42,5 +42,11 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 }
 
+void UPlayerAnimInstance::AnimNotify_ReloadFinished()
+{
+	player->OnMyReloadFinished();
+	
+}
+
 
 

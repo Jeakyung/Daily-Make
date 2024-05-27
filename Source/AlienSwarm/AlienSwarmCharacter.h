@@ -115,5 +115,9 @@ public:
 	// 재장전 모션 실행되는 기능
 	void PlayReloadMontage();
 
+	void OnMyReloadFinished();
+
+	bool bReloading;
+
 };
 

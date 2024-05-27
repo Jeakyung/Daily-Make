@@ -18,8 +18,11 @@ public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	
+
 	UPROPERTY()
 	class AAlienSwarmCharacter* player;
+
+	class AWeaponBase* Weapon;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float Horizontal;
@@ -27,6 +30,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float Vertical;
 
-	
+	UFUNCTION()
+	void AnimNotify_ReloadFinished();
+
 	
 };
