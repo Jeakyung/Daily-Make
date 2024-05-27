@@ -47,6 +47,15 @@ class AAlienSwarmCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* IA_Reload;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* IA_FirstWeapon;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* IA_SecondWeapon;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* IA_SubWeapon;
+
 public:
 	AAlienSwarmCharacter();
 	
@@ -65,6 +74,15 @@ protected:
 	
 	// 재장전하는 기능
 	void OnIAReload(const FInputActionValue& Value);
+
+	// 1번 무기로 변경하는 기능
+	void OnIAFirstWeapon(const FInputActionValue& Value);
+
+	// 2번 무기로 변경하는 기능
+	void OnIASecondWeapon(const FInputActionValue& Value);
+
+	// 보조 무기로 변경하는 기능
+	void OnIASubWeapon(const FInputActionValue& Value);
 
 protected:
 
@@ -97,9 +115,23 @@ public:
 	UPROPERTY()
 	class AWeaponBase* Weapon;
 
-	// AWeaponBase타입을 저장 
+	// AWeaponBase 타입을 저장 / 1번 무기
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
 	TSubclassOf<AWeaponBase> WeaponClass;
+
+	UPROPERTY()
+	class AWeaponBase* Weapon2;
+
+	// AWeaponBase 타입을 저장 / 2번 무기
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
+	TSubclassOf<AWeaponBase> WeaponClass2;
+
+	UPROPERTY()
+	class AWeaponBase* SubWeapon;
+
+	// AWeaponBase3타입을 저장 / 보조무기
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
+	TSubclassOf<AWeaponBase> SubWeaponClass;
 
 	// 총 발사 시 실행되는 애니메이션 몽타주
 	UPROPERTY(EditAnywhere, Category = TPS)
@@ -124,5 +156,7 @@ public:
 	// 사격 중인지 판별하는 변수
 	bool bFireing;
 
+	// 플레이어가 선택한 무기로 바꾸고싶다.
+	void ChangeWeapon();
 };
 

@@ -86,18 +86,7 @@ void AAlienSwarmCharacter::BeginPlay()
 	{		
 		// 총 액터 생성하기
 		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
-		
-		// 만약 생성이 유효하다면
-		if (nullptr != Weapon)
-		{
-			// 총을 플레이어의 손에 부착
-			Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHandSocket"));
-			Weapon->SetActorRelativeLocation(FVector(4.7f, -11, 1.8f));
-			Weapon->SetActorRelativeRotation(FRotator(-11, 81, -81));
-			Weapon->SetActorRelativeScale3D(FVector(1.25f));
-			Weapon->Equip(this);
-			UE_LOG(LogTemp, Warning, TEXT("spawnWeapon"));
-		}
+		ChangeWeapon();
 	}
 
 }
@@ -135,6 +124,16 @@ void AAlienSwarmCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 		// Reload
 		EnhancedInputComponent->BindAction(IA_Reload, ETriggerEvent::Started, this, &AAlienSwarmCharacter::OnIAReload);
+
+		// MainWeapon 1
+		EnhancedInputComponent->BindAction(IA_FirstWeapon, ETriggerEvent::Started, this, &AAlienSwarmCharacter::OnIAFirstWeapon);
+
+		// MainWeapon 2
+		EnhancedInputComponent->BindAction(IA_SecondWeapon, ETriggerEvent::Started, this, &AAlienSwarmCharacter::OnIASecondWeapon);
+
+		// SubWeapon
+		EnhancedInputComponent->BindAction(IA_SubWeapon, ETriggerEvent::Started, this, &AAlienSwarmCharacter::OnIASubWeapon);
+
 	}
 	else
 	{
@@ -187,6 +186,27 @@ void AAlienSwarmCharacter::OnIAReload(const FInputActionValue& Value)
 {
 	PlayReloadMontage();
 	
+}
+
+// 1번 무기로 변경하는 기능
+void AAlienSwarmCharacter::OnIAFirstWeapon(const FInputActionValue& Value)
+{
+	
+	UE_LOG(LogTemp, Warning, TEXT("FirstWeapon"));
+}
+
+// 2번 무기로 변경하는 기능
+void AAlienSwarmCharacter::OnIASecondWeapon(const FInputActionValue& Value)
+{
+	
+
+	UE_LOG(LogTemp, Warning, TEXT("SecoandWeapon"));
+}
+
+// 보조 무기로 변경하는 기능
+void AAlienSwarmCharacter::OnIASubWeapon(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("SubWeapon"));
 }
 
 void AAlienSwarmCharacter::TurnPlayer()
@@ -281,4 +301,20 @@ void AAlienSwarmCharacter::OnMyReloadFinished()
 	Weapon->OnReload();
 	bReloading = false;
 	UE_LOG(LogTemp, Warning, TEXT("Reload"));
+}
+
+void AAlienSwarmCharacter::ChangeWeapon(/*weaponBase를 인자값으로 가져온다.*/ )
+{
+	// 만약 생성이 유효하다면
+	if (nullptr != Weapon)
+	{
+		// 총을 플레이어의 손에 부착
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHandSocket"));
+		Weapon->SetActorRelativeLocation(FVector(4.7f, -11, 1.8f));
+		Weapon->SetActorRelativeRotation(FRotator(-11, 81, -81));
+		Weapon->SetActorRelativeScale3D(FVector(1.25f));
+		Weapon->Equip(this);
+		UE_LOG(LogTemp, Warning, TEXT("spawnWeapon"));
+	}
+
 }
