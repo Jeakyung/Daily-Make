@@ -10,7 +10,7 @@
 // Sets default values
 AAlienEnemy::AAlienEnemy()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
@@ -24,14 +24,14 @@ AAlienEnemy::AAlienEnemy()
 void AAlienEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	AIEnemyController = Cast<AAlienAIController>(GetController());
 
 	if (AIEnemyController == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NULL"));
 	}
-	
+
 	TargetCheck();
 }
 
@@ -57,17 +57,56 @@ void AAlienEnemy::TargetCheck()
 {
 	for (TActorIterator<AAlienSwarmCharacter> target(GetWorld()); target; ++target)
 	{
-		myTarget = *target;
+		// myTarget = *target;
+		targetList.Add(*target);
 	}
-	if (targetList.Num() > 0) {
-		//myTarget = targetList[0];
-		AIEnemyController->MoveToTarget(myTarget);
 
-	}
-	
-	if (AIEnemyController != nullptr)
+	FVector nearestDistance = targetList[0]->GetActorLocation() - GetActorLocation();
+	float nearestDistanceLength = nearestDistance.Size();
+
+	UE_LOG(LogTemp, Warning, TEXT("%f, %f, %f"), nearestDistance.X, nearestDistance.Y, nearestDistance.Z);
+	UE_LOG(LogTemp, Warning, TEXT("closestDistanceLength: %f"), nearestDistanceLength);
+
+
+	// 가장 가까이 있는 타겟 탐색
+	// for (AAlienSwarmCharacter* target : targetList)
+	// {
+	//		UE_LOG(LogTemp, Warning, TEXT("11111%s\n"), *target->GetName());
+	// }
+
+	int32 nearestTargetIndex = 0;
+
+	if (targetList.Num() > 1)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("asadfgg"));
+		FVector targetDistance;
+
+		for (int i = 1; i < targetList.Num(); i++)
+		{
+			targetDistance = targetList[i]->GetActorLocation() - GetActorLocation();
+			float targetDistanceLength = targetDistance.Size();
+			UE_LOG(LogTemp, Warning, TEXT("targetIndex: %d, targetDistanceLength: %f\n"), i, targetDistanceLength);
+
+			if (targetDistanceLength < nearestDistanceLength)
+			{
+				nearestDistanceLength = targetDistanceLength;
+				nearestTargetIndex = i;
+			}
+		}
+
+		UE_LOG(LogTemp, Warning, TEXT("Finally closestDistanceLength: %f"), nearestDistanceLength);
+		UE_LOG(LogTemp, Warning, TEXT("Finally closestTargetIndex: %d"), nearestTargetIndex);
+
+		// 가장 가까이에 있는 플레이어를 타겟으로 설정
+		myTarget = targetList[nearestTargetIndex];
+
+		// 타겟을 향해 이동
+		AIEnemyController->MoveToActor(myTarget);
+		
+
+		if (AIEnemyController != nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("asadfgg"));
+		}
 	}
 }
 
