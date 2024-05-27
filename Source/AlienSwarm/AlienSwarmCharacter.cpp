@@ -95,6 +95,7 @@ void AAlienSwarmCharacter::BeginPlay()
 			Weapon->SetActorRelativeLocation(FVector(4.7f, -11, 1.8f));
 			Weapon->SetActorRelativeRotation(FRotator(-11, 81, -81));
 			Weapon->SetActorRelativeScale3D(FVector(1.25f));
+			Weapon->Equip(this);
 			UE_LOG(LogTemp, Warning, TEXT("spawnWeapon"));
 		}
 	}

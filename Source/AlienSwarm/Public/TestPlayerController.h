@@ -36,4 +36,11 @@ private:
 
 	UPROPERTY()
 	class UMainWidget* mainWidget;
+
+public:
+	void SetHP(float value);
+
+	void SetAmmo(int32 value);
+
+	void SetMeg(int32 value);
 };

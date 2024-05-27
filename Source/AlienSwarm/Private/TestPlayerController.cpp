@@ -37,3 +37,20 @@ void ATestPlayerController::BeginPlay()
 		}
 	}
 }
+
+
+
+void ATestPlayerController::SetHP(float value)
+{
+	mainWidget->SetHPBar(value);
+}
+
+void ATestPlayerController::SetAmmo(int32 value)
+{
+	mainWidget->SetRemainAmmo(value);
+}
+
+void ATestPlayerController::SetMeg(int32 value)
+{
+	mainWidget->SetRemainMeg(value);
+}

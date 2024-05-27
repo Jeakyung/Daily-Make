@@ -7,6 +7,7 @@
 #include "NiagaraComponent.h"
 #include "HitInterface.h"
 #include "../AlienSwarmCharacter.h"
+#include "TestPlayerController.h"
 
 
 // Sets default values
@@ -39,7 +40,6 @@ void AWeaponBase::BeginPlay()
 	
 	currentAmmo = ammo;
 	currentMagazine = magazine;
-
 }
 
 // Called every frame
@@ -52,15 +52,6 @@ void AWeaponBase::Tick(float DeltaTime)
 		if (currentFireTime > fireRate) {
 			bIsFire = false;
 			currentFireTime = 0.0f;
-		}
-	}
-	if (bIsReloading) {
-		currentReloadTime += DeltaTime;
-		if (currentReloadTime > reloadTime) {
-			bIsReloading = false;
-			currentReloadTime = 0.0f;
-			currentAmmo = ammo;
-			currentMagazine--;
 		}
 	}
 }
@@ -104,6 +95,7 @@ bool AWeaponBase::OnFire(FVector mousePos)
 			}
 		}
 		currentAmmo--;
+		pc->SetAmmo(currentAmmo);
 		return true;
 	}
 	else{
@@ -113,12 +105,11 @@ bool AWeaponBase::OnFire(FVector mousePos)
 
 bool AWeaponBase::OnReload()
 {
-	if (bIsReloading) {
-		return false;
-	}
-
 	if (currentMagazine > 0) {
-		bIsReloading = true;
+		currentAmmo = ammo;
+		currentMagazine--;
+		pc->SetAmmo(currentAmmo);
+		pc->SetMeg(currentMagazine);
 		return true;
 	}
 	else {
@@ -133,6 +124,7 @@ bool AWeaponBase::TakeMagazine()
 	}
 	else {
 		currentMagazine++;
+		pc->SetMeg(currentMagazine);
 		return true;
 	}
 }
@@ -145,7 +137,28 @@ void AWeaponBase::CalculateEndPoint(FVector mousePos)
 	end = end - start;
 	end.Normalize();
 	end *= shootingRange;
-	
-	end+=start;
+	end += start;
+}
+
+void AWeaponBase::Equip(AActor* ownedActor)
+{
+	playerREF = Cast<AAlienSwarmCharacter>(ownedActor);
+	if (playerREF) {
+		SetOwner(playerREF);
+		pc = Cast<ATestPlayerController>(playerREF->GetOwner());
+	}
+
+	if (pc) {
+		pc->SetAmmo(currentAmmo);
+		pc->SetMeg(currentMagazine);
+	}
+}
+
+void AWeaponBase::UnEquip()
+{
+	//무기 교체시 사용될 예정? 맵 구석으로 이동시키고 안보임 처리하는게 좋은거 아닌지?
+	pc = nullptr;
+	playerREF = nullptr;
+	SetOwner(nullptr);
 }
 
