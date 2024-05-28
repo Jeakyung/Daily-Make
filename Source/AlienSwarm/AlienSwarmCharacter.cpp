@@ -339,6 +339,7 @@ void AAlienSwarmCharacter::PlayReloadMontage()
 	
 }
 
+// 재장전이 끝날떄
 void AAlienSwarmCharacter::OnMyReloadFinished()
 {
 	
@@ -361,9 +362,9 @@ void AAlienSwarmCharacter::OnMyReloadFinished()
 	UE_LOG(LogTemp, Warning, TEXT("Reload"));
 }
 
+// 무기 장착 시키기 (무기 교체 시 사용됨)
 void AAlienSwarmCharacter::ChangeWeapon(AWeaponBase* ChangeWeapons)
 {
-	// 총 액터 생성 후 플레이어에게 Attachs
 	
 		// 만약 생성이 유효하다면
 	if (nullptr != ChangeWeapons)
@@ -380,6 +381,7 @@ void AAlienSwarmCharacter::ChangeWeapon(AWeaponBase* ChangeWeapons)
 	
 }
 
+// 무기 장착 해제시키기
 void AAlienSwarmCharacter::DetachWeapon(AWeaponBase* Weapons)
 {
 	if (Weapons)
@@ -389,16 +391,20 @@ void AAlienSwarmCharacter::DetachWeapon(AWeaponBase* Weapons)
 	}
 }
 
+// 무기 스폰하기
 void AAlienSwarmCharacter::SpawnWeapon()
 {
-	 Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
-	 Weapon->SetActorLocation(FVector(0, 0, -30000));
+	// 1번 무기 생성
+	Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
+	Weapon->SetActorLocation(FVector(0, 0, -30000));
+	
+	// 2번 무기 생성
+	Weapon2 = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass2);
+	Weapon2->SetActorLocation(FVector(0, 0, -30000));
 
-	 Weapon2 = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass2);
-	 Weapon2->SetActorLocation(FVector(0, 0, -30000));
-
-	 SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
-	 SubWeapon->SetActorLocation(FVector(0, 0, -30000));
+	// 보조 무기 생성
+	SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
+	SubWeapon->SetActorLocation(FVector(0, 0, -30000));
 }
 
 
