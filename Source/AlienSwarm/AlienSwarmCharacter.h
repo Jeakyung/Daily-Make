@@ -116,22 +116,22 @@ public:
 	class AWeaponBase* Weapon;
 
 	// AWeaponBase 타입을 저장 / 1번 무기
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
-	TSubclassOf<AWeaponBase> WeaponClass;
+ 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
+ 	TSubclassOf<AWeaponBase> WeaponClass;
 
 	UPROPERTY()
 	class AWeaponBase* Weapon2;
 
 	// AWeaponBase 타입을 저장 / 2번 무기
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
-	TSubclassOf<AWeaponBase> WeaponClass2;
+ 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
+ 	TSubclassOf<AWeaponBase> WeaponClass2;
 
 	UPROPERTY()
 	class AWeaponBase* SubWeapon;
 
 	// AWeaponBase3타입을 저장 / 보조무기
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
-	TSubclassOf<AWeaponBase> SubWeaponClass;
+ 	TSubclassOf<AWeaponBase> SubWeaponClass;
 
 	// 총 발사 시 실행되는 애니메이션 몽타주
 	UPROPERTY(EditAnywhere, Category = TPS)
@@ -156,7 +156,14 @@ public:
 	// 사격 중인지 판별하는 변수
 	bool bFireing;
 
-	// 플레이어가 선택한 무기로 바꾸고싶다.
-	void ChangeWeapon();
+	// 무기를 바꾸고싶다.
+	void ChangeWeapon(AWeaponBase* ChangeWeapons);
+
+	// 현재 장착하고 있는 무기를 해제시키고 싶다.
+	void DetachWeapon(AWeaponBase* Weapons);
+
+	void SpawnWeapon();
+
+	int32 SelectedWeapon = 1;
 };
 

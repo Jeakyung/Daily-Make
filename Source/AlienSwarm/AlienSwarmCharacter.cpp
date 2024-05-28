@@ -80,14 +80,11 @@ void AAlienSwarmCharacter::BeginPlay()
 	// 카메라 최초 위치
 	cameraLoc = FollowCamera->GetRelativeLocation();
 	
-			
-	// 총 액터 생성 후 플레이어에게 Attach
-	if (WeaponClass) 
-	{		
-		// 총 액터 생성하기
-		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
-		ChangeWeapon();
-	}
+
+	SpawnWeapon();
+
+
+	ChangeWeapon(Weapon);
 
 }
 
@@ -101,6 +98,14 @@ void AAlienSwarmCharacter::Tick(float DeltaTime)
 	if (nullptr != Weapon)
 	{
 		Weapon->CalculateEndPoint(mousePos);
+	}
+	if (nullptr != Weapon2)
+	{
+		Weapon2->CalculateEndPoint(mousePos);
+	}
+	if (nullptr != SubWeapon)
+	{
+		SubWeapon->CalculateEndPoint(mousePos);
 	}
 }
 
@@ -175,10 +180,32 @@ void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 	//UE_LOG(LogTemp, Warning, TEXT("Shooting!!"));
 	if (bReloading == false)
 	{
-		if (nullptr != Weapon) {
-			Weapon->OnFire(mousePos);
-			PlayFireMontage();
+		switch (SelectedWeapon)
+		{
+		case 1:
+			if (nullptr != Weapon) 
+			{
+				Weapon->OnFire(mousePos);
+				PlayFireMontage();
+			}
+			break;
+		case 2:
+			if (nullptr != Weapon2)
+			{
+				Weapon2->OnFire(mousePos);
+				PlayFireMontage();
+			}
+			break;
+		case 3:
+			if (nullptr != SubWeapon)
+			{
+				SubWeapon->OnFire(mousePos);
+				PlayFireMontage();
+			}
+			break;
+		
 		}
+		
 	}
 }
 
@@ -191,21 +218,37 @@ void AAlienSwarmCharacter::OnIAReload(const FInputActionValue& Value)
 // 1번 무기로 변경하는 기능
 void AAlienSwarmCharacter::OnIAFirstWeapon(const FInputActionValue& Value)
 {
+	SelectedWeapon = 1;
+	DetachWeapon(SubWeapon);
+	DetachWeapon(Weapon2);
+
 	
+	ChangeWeapon(Weapon);
+
 	UE_LOG(LogTemp, Warning, TEXT("FirstWeapon"));
 }
 
 // 2번 무기로 변경하는 기능
 void AAlienSwarmCharacter::OnIASecondWeapon(const FInputActionValue& Value)
 {
-	
+	SelectedWeapon = 2;
+	DetachWeapon(SubWeapon);
+	DetachWeapon(Weapon);
 
+	
+	ChangeWeapon(Weapon2);
 	UE_LOG(LogTemp, Warning, TEXT("SecoandWeapon"));
 }
 
 // 보조 무기로 변경하는 기능
 void AAlienSwarmCharacter::OnIASubWeapon(const FInputActionValue& Value)
 {
+	SelectedWeapon = 3;
+	DetachWeapon(Weapon2);
+	DetachWeapon(Weapon);
+
+	
+	ChangeWeapon(SubWeapon);
 	UE_LOG(LogTemp, Warning, TEXT("SubWeapon"));
 }
 
@@ -298,23 +341,65 @@ void AAlienSwarmCharacter::PlayReloadMontage()
 
 void AAlienSwarmCharacter::OnMyReloadFinished()
 {
-	Weapon->OnReload();
+	
+	
+	switch (SelectedWeapon)
+	{
+	case 1:
+		Weapon->OnReload();
+		break;
+	case 2:
+		Weapon2->OnReload();
+		break;
+	case 3:
+		SubWeapon->OnReload();
+
+		break;
+
+	}
 	bReloading = false;
 	UE_LOG(LogTemp, Warning, TEXT("Reload"));
 }
 
-void AAlienSwarmCharacter::ChangeWeapon(/*weaponBase를 인자값으로 가져온다.*/ )
+void AAlienSwarmCharacter::ChangeWeapon(AWeaponBase* ChangeWeapons)
 {
-	// 만약 생성이 유효하다면
-	if (nullptr != Weapon)
+	// 총 액터 생성 후 플레이어에게 Attachs
+	
+		// 만약 생성이 유효하다면
+	if (nullptr != ChangeWeapons)
 	{
-		// 총을 플레이어의 손에 부착
-		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHandSocket"));
-		Weapon->SetActorRelativeLocation(FVector(4.7f, -11, 1.8f));
-		Weapon->SetActorRelativeRotation(FRotator(-11, 81, -81));
-		Weapon->SetActorRelativeScale3D(FVector(1.25f));
-		Weapon->Equip(this);
-		UE_LOG(LogTemp, Warning, TEXT("spawnWeapon"));
+			// 총을 플레이어의 손에 부착
+		ChangeWeapons->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHandSocket"));
+		ChangeWeapons->SetActorRelativeLocation(FVector(4.7f, -11, 1.8f));
+		ChangeWeapons->SetActorRelativeRotation(FRotator(-11, 81, -81));
+		ChangeWeapons->SetActorRelativeScale3D(FVector(1.25f));
+		ChangeWeapons->Equip(this);
+		UE_LOG(LogTemp, Warning, TEXT("spawnWeapon1"));
+			
 	}
-
+	
 }
+
+void AAlienSwarmCharacter::DetachWeapon(AWeaponBase* Weapons)
+{
+	if (Weapons)
+	{
+		Weapons->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		Weapons->SetActorLocation(FVector(0,0,-30000));
+	}
+}
+
+void AAlienSwarmCharacter::SpawnWeapon()
+{
+	 Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
+	 Weapon->SetActorLocation(FVector(0, 0, -30000));
+
+	 Weapon2 = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass2);
+	 Weapon2->SetActorLocation(FVector(0, 0, -30000));
+
+	 SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
+	 SubWeapon->SetActorLocation(FVector(0, 0, -30000));
+}
+
+
+
