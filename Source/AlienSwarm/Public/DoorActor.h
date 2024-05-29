@@ -37,4 +37,32 @@ public:
 
 	bool bIsLocked = false;
 
+	bool bIsOpened = false;
+
+	bool openstart = false;
+
+	bool closestart = false;
+
+	float doorTimer = 0.0f;
+
+	float doorOpenTime = 0.5f;
+
+	FVector doorClosePos;
+
+	FVector doorOpenPos;
+
+	UPROPERTY(Replicated)
+	FVector doorPos;
+
+	UFUNCTION()
+	void DoorOpen(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DoorOpen();
+
+	UFUNCTION()
+	void DoorClose(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DoorClose();
 };

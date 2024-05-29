@@ -95,6 +95,7 @@ void AWeaponBase::CalculateEndPoint(FVector mousePos)
 	end.Normalize();
 	end *= shootingRange;
 	end += start;
+	end.Z = start.Z;
 }
 
 void AWeaponBase::Equip(AActor* ownedActor)
