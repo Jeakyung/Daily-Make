@@ -67,8 +67,8 @@ void AAlienEnemy::TargetDistCheck(AAlienSwarmCharacter* target)
 	else
 	{
 		bAttackAnim = false;
-		// 타겟을 향해 이동
 		bMoveAnim = true;
+		// 타겟을 향해 이동
 		AIEnemyController->MoveToActor(target);
 
 		if (bHitTheDoor)

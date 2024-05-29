@@ -18,6 +18,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Enemy)
 	class AAlienEnemy* enemy;
 
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Enemy)
 	bool bMove = false;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Enemy)

@@ -64,10 +64,7 @@ void AAlienAIController::MoveToTarget(AAlienSwarmCharacter* target)
 
 void AAlienAIController::Attack()
 {
-	// 플레이어라면
-	bAttackPlayer = true;
-	bAttackPlayer = true;
-
+	 
 }
 
 void AAlienAIController::OnDamaged()
