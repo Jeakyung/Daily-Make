@@ -223,11 +223,7 @@ void AAlienSwarmCharacter::OnIAReload(const FInputActionValue& Value)
 void AAlienSwarmCharacter::OnIAFirstWeapon(const FInputActionValue& Value)
 {
 	SelectedWeapon = 1;
-	DetachWeapon(SubWeapon);
-	DetachWeapon(Weapon2);
-
-	
-	ChangeWeapon(Weapon);
+	ServerRPC_FirstWeapon();
 
 	UE_LOG(LogTemp, Warning, TEXT("FirstWeapon"));
 }
@@ -236,11 +232,7 @@ void AAlienSwarmCharacter::OnIAFirstWeapon(const FInputActionValue& Value)
 void AAlienSwarmCharacter::OnIASecondWeapon(const FInputActionValue& Value)
 {
 	SelectedWeapon = 2;
-	DetachWeapon(SubWeapon);
-	DetachWeapon(Weapon);
-
-	
-	ChangeWeapon(Weapon2);
+	ServerRPC_SecondWeapon();
 	UE_LOG(LogTemp, Warning, TEXT("SecoandWeapon"));
 }
 
@@ -248,11 +240,8 @@ void AAlienSwarmCharacter::OnIASecondWeapon(const FInputActionValue& Value)
 void AAlienSwarmCharacter::OnIASubWeapon(const FInputActionValue& Value)
 {
 	SelectedWeapon = 3;
-	DetachWeapon(Weapon2);
-	DetachWeapon(Weapon);
-
+	ServerRPC_SubWeapon();
 	
-	ChangeWeapon(SubWeapon);
 	UE_LOG(LogTemp, Warning, TEXT("SubWeapon"));
 }
 
@@ -425,6 +414,9 @@ void AAlienSwarmCharacter::TakeHit(int32 damage)
 }
 
 
+
+
+// damage
 void AAlienSwarmCharacter::ServerRPC_TakeDamage_Implementation(int32 damage)
 {
 	
@@ -446,3 +438,50 @@ void AAlienSwarmCharacter::MultiRPC_TakeDamage_Implementation(int32 damage)
 
 }
 
+// 2번 무기 교체 시 다른 클라우드에도 변경 값 적용
+void AAlienSwarmCharacter::ServerRPC_SecondWeapon_Implementation()
+{
+	MultiRPC_SecondWeapon();
+
+}
+void AAlienSwarmCharacter::MultiRPC_SecondWeapon_Implementation()
+{
+	DetachWeapon(SubWeapon);
+	DetachWeapon(Weapon);
+
+
+	ChangeWeapon(Weapon2);
+}
+//////////////////////////////////////////////
+
+
+// 1번 무기 교체 시 다른 클라우드에도 변경 값 적용
+void AAlienSwarmCharacter::ServerRPC_FirstWeapon_Implementation()
+{
+	MultiRPC_FirstWeapon();
+
+}
+
+void AAlienSwarmCharacter::MultiRPC_FirstWeapon_Implementation()
+{
+	DetachWeapon(SubWeapon);
+	DetachWeapon(Weapon2);
+
+
+	ChangeWeapon(Weapon);
+}
+//////////////////////////////////////////////
+
+void AAlienSwarmCharacter::ServerRPC_SubWeapon_Implementation()
+{
+	MultiRPC_SubWeapon();
+}
+
+void AAlienSwarmCharacter::MultiRPC_SubWeapon_Implementation()
+{
+	DetachWeapon(Weapon2);
+	DetachWeapon(Weapon);
+
+
+	ChangeWeapon(SubWeapon);
+}

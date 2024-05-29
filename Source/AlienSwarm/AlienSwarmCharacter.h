@@ -188,9 +188,27 @@ public:
 	void MultiRPC_TakeDamage(int32 damage);
 
 
+	// 1번 무기 교체 시 다른 클라우드에도 변경 값 적용
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_FirstWeapon();
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_FirstWeapon();
 	
 
+	// 2번 무기 교체 시 다른 클라우드에도 변경 값 적용
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SecondWeapon();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_SecondWeapon();
+
+	// 보조 무기 교체 시 다른 클라우드에도 변경 값 적용
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SubWeapon();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_SubWeapon();
 
 
 };
