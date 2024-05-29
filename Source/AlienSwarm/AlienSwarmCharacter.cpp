@@ -398,17 +398,23 @@ void AAlienSwarmCharacter::DetachWeapon(AWeaponBase* Weapons)
 // 무기 스폰하기
 void AAlienSwarmCharacter::SpawnWeapon()
 {
-	// 1번 무기 생성
-	Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
-	Weapon->SetActorLocation(FVector(0, 0, -30000));
-	
-	// 2번 무기 생성
-	Weapon2 = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass2);
-	Weapon2->SetActorLocation(FVector(0, 0, -30000));
+	if (WeaponClass) {
+		// 1번 무기 생성
+		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
+		Weapon->SetActorLocation(FVector(0, 0, -30000));
+	}
 
-	// 보조 무기 생성
-	SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
-	SubWeapon->SetActorLocation(FVector(0, 0, -30000));
+	if (WeaponClass2) {
+		// 2번 무기 생성
+		Weapon2 = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass2);
+		Weapon2->SetActorLocation(FVector(0, 0, -30000));
+	}
+
+	if (SubWeaponClass) {
+		// 보조 무기 생성
+		SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
+		SubWeapon->SetActorLocation(FVector(0, 0, -30000));
+	}
 }
 
 // 데미지를 받았을 때 실행되는 기능

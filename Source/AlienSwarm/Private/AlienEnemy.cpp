@@ -16,8 +16,6 @@ AAlienEnemy::AAlienEnemy()
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 
-	SearchForTarget();
-
 }
 
 // Called when the game starts or when spawned
@@ -40,6 +38,11 @@ void AAlienEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (myTarget != nullptr)
+	{
+		TargetDistCheck(myTarget);
+	}
+
 }
 
 // Called to bind functionality to input
@@ -49,8 +52,32 @@ void AAlienEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
-void AAlienEnemy::SearchForTarget()
+void AAlienEnemy::TargetDistCheck(AAlienSwarmCharacter* target)
 {
+	CurrentDistance = (target->GetActorLocation() - GetActorLocation()).Size();
+
+	// 거리가 공격 가능 범위보다 작다면 공격한다
+	if (CurrentDistance < attakDistance)
+	{
+		bMoveAnim = false;
+		bAttackAnim = true;
+		AIEnemyController->Attack();
+	}
+	// 거리가 공격 가능 범위보다 크다면 타겟에게 다가간다
+	else
+	{
+		bAttackAnim = false;
+		bMoveAnim = true;
+		// 타겟을 향해 이동
+		AIEnemyController->MoveToActor(target);
+
+		if (bHitTheDoor)
+		{
+			AIEnemyController->DoorCheck();
+		}
+
+	}
+
 }
 
 void AAlienEnemy::TargetCheck()
@@ -98,21 +125,11 @@ void AAlienEnemy::TargetCheck()
 
 		// 가장 가까이에 있는 플레이어를 타겟으로 설정
 		myTarget = targetList[nearestTargetIndex];
+		// CurrentDistance = (myTarget->GetActorLocation() - GetActorLocation()).Size();
 
-		// 타겟을 향해 이동
-		AIEnemyController->MoveToActor(myTarget);
-		
 
-		if (AIEnemyController != nullptr)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("asadfgg"));
-		}
 	}
 }
 
-void AAlienEnemy::HitTheDoor()
-{
-	AIEnemyController->Attack();
-}
 
 

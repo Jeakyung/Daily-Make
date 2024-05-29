@@ -31,8 +31,8 @@ public:
 	AAlienSwarmCharacter* myTarget;
 
 
-	// 추적할 타겟 검색
-	void SearchForTarget();
+	// 실시간 타겟과의 거리 비교
+	void TargetDistCheck(AAlienSwarmCharacter* target);
 
 	// 최대체력
 	UPROPERTY(EditAnywhere, Category = Enemy)
@@ -47,7 +47,7 @@ public:
 	
 	//이동 속도
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float traceSpeed = 720.f;
+	float traceSpeed = 700.f;
 
 	TArray<AAlienSwarmCharacter*> targetList;
 
@@ -59,8 +59,33 @@ public:
 
 	UPROPERTY()
 	class AAlienAIController* AIEnemyController;
+	
+	// 공격 가능 거리	
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	bool bHitTheDoor = false;
 
-	// 문에 부딪치다
-	void HitTheDoor();
+	// 공격 가능 거리	
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	float attakDistance = 220.f;
+	
+	// 현재 타켓과 에너미 사이의 거리
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	float CurrentDistance;
+
+
+public:
+	// 애니메이션
+	
+	// 이동 애니메이션
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	bool bMoveAnim = false;
+
+	// 공격 애니메이션	
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	bool bAttackAnim = false;
+
+	// 죽음 애니메이션	
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	bool bDieAnim = false;
 
 };

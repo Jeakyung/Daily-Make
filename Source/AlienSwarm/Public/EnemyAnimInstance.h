@@ -18,6 +18,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Enemy)
 	class AAlienEnemy* enemy;
 
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Enemy)
 	bool bMove = false;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Enemy)
@@ -27,7 +28,7 @@ public:
 	FVector currentVelocity;
 		
 	virtual void NativeInitializeAnimation() override;
-	// virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 
 

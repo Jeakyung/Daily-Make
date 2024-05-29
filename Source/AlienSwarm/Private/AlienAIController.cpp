@@ -57,18 +57,14 @@ void AAlienAIController::MoveToTarget(AAlienSwarmCharacter* target)
 	else
 	{
 		enemy->AddMovementInput(targetDirection.GetSafeNormal());
-		
+
 	}
 
 }
 
 void AAlienAIController::Attack()
 {
-	// 공격할 대상이 문인지 플레이어인지 확인한다
-	// 문이라면
-
-	// 플레이어라면
-	// 
+	 
 }
 
 void AAlienAIController::OnDamaged()
@@ -77,5 +73,18 @@ void AAlienAIController::OnDamaged()
 
 void AAlienAIController::Die()
 {
+}
+
+void AAlienAIController::DoorCheck()
+{
+	// 문 닫혀있는 상태
+		/*if (!bDoorOpen)
+		{
+			bAttackDoor = true;
+		}
+		else
+		{
+			bAttackDoor = false;
+		}*/
 }
 
