@@ -210,6 +210,13 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_SubWeapon();
 
+	// 클라우드 회전, 마우스 위치에 따른 조준 값 전달 (임시)
+	/*UFUNCTION(Server, Reliable)
+	void ServerRPC_TurnPlayer(FRotator trun);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_TurnPlayer(FRotator trun);*/
+
 
 };
 

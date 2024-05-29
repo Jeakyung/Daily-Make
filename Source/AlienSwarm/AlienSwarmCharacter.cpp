@@ -99,6 +99,7 @@ void AAlienSwarmCharacter::Tick(float DeltaTime)
 	
 	TurnPlayer();
 	CameraMove();
+
 	if (nullptr != Weapon)
 	{
 		Weapon->CalculateEndPoint(mousePos);
@@ -249,14 +250,12 @@ void AAlienSwarmCharacter::TurnPlayer()
 {
 	if (nullptr != Controller)
 	{
-		
-
 		FVector mouseLocation, mouseDirection;
 		mouseDirection.Normalize();
 		PlayerController = GetWorld()->GetFirstPlayerController();
 		// 플레이어의 마우스 위치와 방향 값을 각각 mouseLocation과 mouseDirection에 넣어준다.
 		PlayerController->DeprojectMousePositionToWorld(mouseLocation, mouseDirection);
-	
+
 		// 라인 그리기
 		// start : 카메라 위치
 		FVector start = FollowCamera->GetComponentLocation();
@@ -265,23 +264,24 @@ void AAlienSwarmCharacter::TurnPlayer()
 		// 플레이어와의 충돌 무시
 		FCollisionQueryParams params;
 		FHitResult hitResult;
+		mousePos = hitResult.ImpactPoint;
 		params.AddIgnoredActor(this);
 
 		// 부딪힌 것이 있는지 판별하는 변수 (일단 만들어놓음)
-		bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Visibility, params);
-		
+		//bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Visibility, params);
+
 		// 방향 = 마우스 위치에 쏘여진 라인트레이스와 충돌한 위치 - 플레이어 위치
-		mousePos = hitResult.ImpactPoint;
 		FVector direction = mousePos - GetActorLocation();
 		FRotator turnDir = direction.Rotation();
- 		FRotator trun = FRotator(0, turnDir.Yaw+10, 0);
-		
-		DrawDebugSphere(GetWorld(), mousePos,50.0f,3,FColor::Red,false,0,0,1);
+		FRotator trun = FRotator(0, turnDir.Yaw + 10, 0);
 
-		
+		DrawDebugSphere(GetWorld(), mousePos, 50.0f, 3, FColor::Red, false, 0, 0, 1);
 
 		// 플레이어를 trun 방향으로 회전 시킨다. 
 		this->SetActorRotation(trun);
+
+		
+
 
 	}
 }
@@ -419,8 +419,12 @@ void AAlienSwarmCharacter::TakeHit(int32 damage)
 // damage
 void AAlienSwarmCharacter::ServerRPC_TakeDamage_Implementation(int32 damage)
 {
-	
 	MultiRPC_TakeDamage(damage);
+	
+
+}
+void AAlienSwarmCharacter::MultiRPC_TakeDamage_Implementation(int32 damage)
+{
 
 	HP -= damage;
 
@@ -431,11 +435,6 @@ void AAlienSwarmCharacter::ServerRPC_TakeDamage_Implementation(int32 damage)
 
 
 	UE_LOG(LogTemp, Warning, TEXT("PlayerTakeDamage"));
-
-}
-void AAlienSwarmCharacter::MultiRPC_TakeDamage_Implementation(int32 damage)
-{
-
 }
 
 // 2번 무기 교체 시 다른 클라우드에도 변경 값 적용
@@ -461,7 +460,6 @@ void AAlienSwarmCharacter::ServerRPC_FirstWeapon_Implementation()
 	MultiRPC_FirstWeapon();
 
 }
-
 void AAlienSwarmCharacter::MultiRPC_FirstWeapon_Implementation()
 {
 	DetachWeapon(SubWeapon);
@@ -472,6 +470,8 @@ void AAlienSwarmCharacter::MultiRPC_FirstWeapon_Implementation()
 }
 //////////////////////////////////////////////
 
+
+// 보조 무기 교체 시 다른 클라우드에도 변경 값 적용
 void AAlienSwarmCharacter::ServerRPC_SubWeapon_Implementation()
 {
 	MultiRPC_SubWeapon();
@@ -485,3 +485,15 @@ void AAlienSwarmCharacter::MultiRPC_SubWeapon_Implementation()
 
 	ChangeWeapon(SubWeapon);
 }
+//////////////////////////////////////////////
+
+/*void AAlienSwarmCharacter::ServerRPC_TurnPlayer_Implementation(FRotator trun)
+{
+	MultiRPC_TurnPlayer(trun);
+}
+
+void AAlienSwarmCharacter::MultiRPC_TurnPlayer_Implementation(FRotator trun)
+{
+	
+	
+}*/
