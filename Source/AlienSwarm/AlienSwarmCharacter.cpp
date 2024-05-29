@@ -13,6 +13,10 @@
 #include <../../../../../../../Source/Runtime/Engine/Public/CollisionQueryParams.h>
 #include "WeaponBase.h"
 #include "PlayerAnimInstance.h"
+#include "HitInterface.h"
+#include "TestPlayerController.h"
+#include "MainWidget.h"
+#include "Net/UnrealNetwork.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -407,5 +411,32 @@ void AAlienSwarmCharacter::SpawnWeapon()
 	SubWeapon->SetActorLocation(FVector(0, 0, -30000));
 }
 
+// 데미지를 받았을 때 실행되는 기능
+void AAlienSwarmCharacter::TakeHit(int32 damage)
+{
+	ServerRPC_TakeDamage(damage);
 
+}
+
+
+void AAlienSwarmCharacter::ServerRPC_TakeDamage_Implementation(int32 damage)
+{
+	
+	MultiRPC_TakeDamage(damage);
+
+	HP -= damage;
+
+
+	float hpratio = (float)HP / (float)MaxHP;
+
+	testPC->SetHP(hpratio);
+
+
+	UE_LOG(LogTemp, Warning, TEXT("PlayerTakeDamage"));
+
+}
+void AAlienSwarmCharacter::MultiRPC_TakeDamage_Implementation(int32 damage)
+{
+
+}
 

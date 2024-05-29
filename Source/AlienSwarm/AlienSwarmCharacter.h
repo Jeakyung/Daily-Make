@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "HitInterface.h"
 #include "AlienSwarmCharacter.generated.h"
 
 class USpringArmComponent;
@@ -16,7 +17,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class AAlienSwarmCharacter : public ACharacter
+class AAlienSwarmCharacter : public ACharacter,public IHitInterface
 {
 	GENERATED_BODY()
 
@@ -162,8 +163,35 @@ public:
 	// 현재 장착하고 있는 무기를 해제시키고 싶다.
 	void DetachWeapon(AWeaponBase* Weapons);
 
+	// 무기를 스폰한다.
 	void SpawnWeapon();
 
+	// 몇번 무기인지 판별시키기 위해 만들어진 변수
 	int32 SelectedWeapon = 1;
+
+	// 데미지를 받았을 때 실행되는 기능
+	virtual void TakeHit(int32 damage) override;
+	
+	class UMainWidget* mainWidget;
+
+	class ATestPlayerController* testPC;
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 MaxHP = 1000;
+	int32 HP = MaxHP;
+
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_TakeDamage(int32 damage);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_TakeDamage(int32 damage);
+
+
+
+	
+
+
+
 };
 
