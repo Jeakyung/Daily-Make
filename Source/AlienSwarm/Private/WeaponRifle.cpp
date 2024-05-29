@@ -17,16 +17,14 @@ bool AWeaponRifle::OnFire(FVector mousePos)
 		FCollisionQueryParams params;
 		params.AddIgnoredActor(this);
 		params.AddIgnoredActor(GetOwner());
-		TArray<FHitResult> hitInfos;
-		//Ignore되는 채널을 찾음
-		bool bResult = GetWorld()->SweepMultiByChannel(hitInfos, start, end, FQuat::Identity, ECC_GameTraceChannel2, FCollisionShape::MakeSphere(attackArea), params);
-		DrawDebugCylinder(GetWorld(), start, end, attackArea, 32, FColor::Red, false, 5.0f);
+		FHitResult hitInfo;
+		//Block되는 채널을 찾음
+		bool bResult = GetWorld()->LineTraceSingleByChannel(hitInfo, start, end, ECC_GameTraceChannel1, params);
+		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 5.0f);
 		if (bResult) {
-			for (FHitResult& hit : hitInfos) {
-				IHitInterface* target = Cast<IHitInterface>(hit.GetActor());
-				if (target) {
-					target->TakeHit(damage);
-				}
+			IHitInterface* target = Cast<IHitInterface>(hitInfo.GetActor());
+			if (target) {
+				target->TakeHit(damage);
 			}
 		}
 		currentAmmo--;
