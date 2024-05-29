@@ -394,17 +394,23 @@ void AAlienSwarmCharacter::DetachWeapon(AWeaponBase* Weapons)
 // 公扁 胶迄窍扁
 void AAlienSwarmCharacter::SpawnWeapon()
 {
-	// 1锅 公扁 积己
-	Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
-	Weapon->SetActorLocation(FVector(0, 0, -30000));
-	
-	// 2锅 公扁 积己
-	Weapon2 = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass2);
-	Weapon2->SetActorLocation(FVector(0, 0, -30000));
+	if (WeaponClass) {
+		// 1锅 公扁 积己
+		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
+		Weapon->SetActorLocation(FVector(0, 0, -30000));
+	}
 
-	// 焊炼 公扁 积己
-	SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
-	SubWeapon->SetActorLocation(FVector(0, 0, -30000));
+	if (WeaponClass2) {
+		// 2锅 公扁 积己
+		Weapon2 = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass2);
+		Weapon2->SetActorLocation(FVector(0, 0, -30000));
+	}
+
+	if (SubWeaponClass) {
+		// 焊炼 公扁 积己
+		SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
+		SubWeapon->SetActorLocation(FVector(0, 0, -30000));
+	}
 }
 
 

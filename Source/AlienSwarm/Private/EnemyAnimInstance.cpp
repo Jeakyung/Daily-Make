@@ -11,8 +11,31 @@ void UEnemyAnimInstance::NativeInitializeAnimation()
 
 	enemy = Cast<AAlienEnemy>(GetOwningActor());
 
+}
+
+void UEnemyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
+{
+	Super::NativeUpdateAnimation(DeltaSeconds);
+
 	if (enemy != nullptr)
 	{
+		if (enemy->bMoveAnim)
+		{
+			bMove = true;
+		}
+		else
+		{
+			bMove = false;
+		}
 
+		if (enemy->bAttackAnim)
+		{
+			bAttack = true;
+		}
+		else
+		{
+			bAttack = false;
+		}
 	}
+
 }

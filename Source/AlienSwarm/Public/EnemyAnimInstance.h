@@ -27,7 +27,7 @@ public:
 	FVector currentVelocity;
 		
 	virtual void NativeInitializeAnimation() override;
-	// virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 
 

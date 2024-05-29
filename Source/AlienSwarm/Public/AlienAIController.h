@@ -67,4 +67,15 @@ public:
 	// 죽음
 	void Die();
 
+	// 문 열려있는지 체크
+	void DoorCheck();
+
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	bool bDoorOpen = false;
+	
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	bool bAttackDoor = false;
+
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	bool bAttackPlayer = false;
 };
