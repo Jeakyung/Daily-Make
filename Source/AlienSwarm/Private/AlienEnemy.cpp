@@ -6,6 +6,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Public/EngineUtils.h>
 #include <AlienAIController.h>
 #include "AlienSwarm/AlienSwarmCharacter.h"
+#include <EnemyAnimInstance.h>
 
 // Sets default values
 AAlienEnemy::AAlienEnemy()
@@ -15,7 +16,6 @@ AAlienEnemy::AAlienEnemy()
 
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
-
 }
 
 // Called when the game starts or when spawned
@@ -25,12 +25,16 @@ void AAlienEnemy::BeginPlay()
 
 	AIEnemyController = Cast<AAlienAIController>(GetController());
 
+	TargetCheck();
+
 	if (AIEnemyController == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NULL"));
 	}
 
-	TargetCheck();
+ 	enemyAnim = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+
+
 }
 
 // Called every frame
@@ -41,6 +45,18 @@ void AAlienEnemy::Tick(float DeltaTime)
 	if (myTarget != nullptr)
 	{
 		TargetDistCheck(myTarget);
+	}
+
+	if (enemyAnim != nullptr)
+	{
+		if (enemyAnim->bEnemyDisableMovement)
+		{
+			SetActorLocation(enemyAnim->currentEnemyLoc);
+		}
+		else
+		{
+			TargetDistCheck(myTarget);
+		}
 	}
 
 }
@@ -60,6 +76,7 @@ void AAlienEnemy::TargetDistCheck(AAlienSwarmCharacter* target)
 	if (CurrentDistance < attakDistance)
 	{
 		bMoveAnim = false;
+	
 		bAttackAnim = true;
 		AIEnemyController->Attack();
 	}

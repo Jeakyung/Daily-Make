@@ -31,6 +31,10 @@ public:
 	AAlienSwarmCharacter* myTarget;
 
 
+	UPROPERTY()
+	class UEnemyAnimInstance* enemyAnim;
+
+
 	// 실시간 타겟과의 거리 비교
 	void TargetDistCheck(AAlienSwarmCharacter* target);
 
@@ -47,7 +51,7 @@ public:
 	
 	//이동 속도
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float traceSpeed = 700.f;
+	float traceSpeed = 710.f;
 
 	TArray<AAlienSwarmCharacter*> targetList;
 
@@ -66,7 +70,7 @@ public:
 
 	// 공격 가능 거리	
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float attakDistance = 220.f;
+	float attakDistance = 170.f;
 	
 	// 현재 타켓과 에너미 사이의 거리
 	UPROPERTY(EditAnywhere, Category = Enemy)

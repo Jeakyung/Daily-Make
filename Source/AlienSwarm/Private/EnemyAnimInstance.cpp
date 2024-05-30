@@ -39,3 +39,26 @@ void UEnemyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 
 }
+
+void UEnemyAnimInstance::AnimNotify_PrepareAttack()
+{
+	bEnemyDisableMovement = true;
+	currentEnemyLoc = enemy->GetActorLocation();
+}
+
+void UEnemyAnimInstance::AnimNotify_AttackStart()
+{
+}
+
+void UEnemyAnimInstance::AnimNotify_AttackEnd()
+{	
+	bEnemyDisableMovement = false;
+	// enemy->TargetDistCheck(enemy->myTarget);
+}
+
+void UEnemyAnimInstance::AnimNotify_AttackPoint()
+{
+	// 플레이어 체력 손실
+
+}
+
