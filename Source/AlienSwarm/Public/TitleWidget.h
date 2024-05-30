@@ -30,11 +30,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UVerticalBox* RoomList;
 
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	class UButton* Btn_CloseRoomList;
+
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation* RoomListSpan;
+
 	UFUNCTION()
 	void CreateRoom();
 
 	UFUNCTION()
 	void ShowRoomList();
+
+	UFUNCTION()
+	void CloseRoomList();
 
 	UFUNCTION()
 	void QuitGame();
