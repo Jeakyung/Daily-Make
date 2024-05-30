@@ -29,7 +29,20 @@ public:
 		
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+	
+	UFUNCTION()
+	void AnimNotify_PrepareAttack();
+	UFUNCTION()
+	void AnimNotify_AttackStart();
+	UFUNCTION()
+	void AnimNotify_AttackEnd();
+	UFUNCTION()
+	void AnimNotify_AttackPoint();
+	
 
-
-
+	UPROPERTY(EditDefaultsOnly)
+	bool bEnemyDisableMovement = false;
+	
+	UPROPERTY(EditDefaultsOnly)
+	FVector currentEnemyLoc;
 };
