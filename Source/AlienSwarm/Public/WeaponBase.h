@@ -31,32 +31,35 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
+	FName rowName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
 	int32 damage;
 
-	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
 	float fireRate;
 	float currentFireTime = 0.0f;
 	bool bIsFire = false;
 
-	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
 	float reloadTime;
 
-	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
 	int32 ammo;
 	int32 currentAmmo;
 
-	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
 	int32 magazine;
 	int32 currentMagazine;
 
-	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
 	float shootingRange;
 
-	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
 	float attackArea;
 
-	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
 	int32 cost;
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
