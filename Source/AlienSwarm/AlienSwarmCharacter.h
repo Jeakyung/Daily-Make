@@ -105,6 +105,7 @@ public:
 	void TurnPlayer();
 
 	// 마우스의 위치
+	UPROPERTY(Replicated)
 	FVector mousePos;
 
 	// 마우스의 위치에 맞게 카메라를 이동시키는 함수
@@ -187,7 +188,7 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_TakeDamage(int32 damage);
 
-
+	
 	// 1번 무기 교체 시 다른 클라우드에도 변경 값 적용
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_FirstWeapon();
@@ -209,13 +210,14 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_SubWeapon();
+	
 
 	// 클라우드 회전, 마우스 위치에 따른 조준 값 전달 (임시)
-	/*UFUNCTION(Server, Reliable)
-	void ServerRPC_TurnPlayer(FRotator trun);
+ 	UFUNCTION(Server, Reliable)
+ 	void ServerRPC_TurnPlayer(FVector _mousePos, FRotator _turn);
 
-	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_TurnPlayer(FRotator trun);*/
+ 	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_TurnPlayer(FVector _mousePos, FRotator _turn);
 
 
 };

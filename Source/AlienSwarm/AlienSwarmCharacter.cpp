@@ -90,6 +90,7 @@ void AAlienSwarmCharacter::BeginPlay()
 
 	ChangeWeapon(Weapon);
 
+	//PlayerController->SetShowMouseCursor(true);
 }
 
 
@@ -250,12 +251,13 @@ void AAlienSwarmCharacter::TurnPlayer()
 {
 	if (nullptr != Controller)
 	{
+		
 		FVector mouseLocation, mouseDirection;
 		mouseDirection.Normalize();
-		PlayerController = GetWorld()->GetFirstPlayerController();
+		PlayerController = Cast<APlayerController>(GetOwner());
 		// 플레이어의 마우스 위치와 방향 값을 각각 mouseLocation과 mouseDirection에 넣어준다.
 		PlayerController->DeprojectMousePositionToWorld(mouseLocation, mouseDirection);
-
+		
 		// 라인 그리기
 		// start : 카메라 위치
 		FVector start = FollowCamera->GetComponentLocation();
@@ -263,24 +265,24 @@ void AAlienSwarmCharacter::TurnPlayer()
 		FVector end = start + mouseDirection * 100000;
 		// 플레이어와의 충돌 무시
 		FCollisionQueryParams params;
-		FHitResult hitResult;
-		mousePos = hitResult.ImpactPoint;
 		params.AddIgnoredActor(this);
+		UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"),mouseLocation.X, mouseLocation.Y, mouseLocation.Z);
+		FHitResult hitResult;
+		// 부딪힌 것이 있는지 판별하는 변수 
+		bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Visibility, params);
 
-		// 부딪힌 것이 있는지 판별하는 변수 (일단 만들어놓음)
-		//bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Visibility, params);
+		mousePos = hitResult.ImpactPoint;
+		
+
 
 		// 방향 = 마우스 위치에 쏘여진 라인트레이스와 충돌한 위치 - 플레이어 위치
 		FVector direction = mousePos - GetActorLocation();
 		FRotator turnDir = direction.Rotation();
-		FRotator trun = FRotator(0, turnDir.Yaw + 10, 0);
-
-		DrawDebugSphere(GetWorld(), mousePos, 50.0f, 3, FColor::Red, false, 0, 0, 1);
-
-		// 플레이어를 trun 방향으로 회전 시킨다. 
-		this->SetActorRotation(trun);
-
+		FRotator turn = FRotator(0, turnDir.Yaw + 10, 0);
 		
+		
+
+		ServerRPC_TurnPlayer(mousePos, turn);
 
 
 	}
@@ -487,13 +489,23 @@ void AAlienSwarmCharacter::MultiRPC_SubWeapon_Implementation()
 }
 //////////////////////////////////////////////
 
-/*void AAlienSwarmCharacter::ServerRPC_TurnPlayer_Implementation(FRotator trun)
+void AAlienSwarmCharacter::ServerRPC_TurnPlayer_Implementation(FVector _mousePos, FRotator _turn)
 {
-	MultiRPC_TurnPlayer(trun);
+	MultiRPC_TurnPlayer(_mousePos,_turn);
 }
 
-void AAlienSwarmCharacter::MultiRPC_TurnPlayer_Implementation(FRotator trun)
+void AAlienSwarmCharacter::MultiRPC_TurnPlayer_Implementation(FVector _mousePos, FRotator _turn)
 {
+	DrawDebugSphere(GetWorld(), _mousePos, 50.0f, 3, FColor::Red, false, 0, 0, 1);
+
+	// 플레이어를 trun 방향으로 회전 시킨다. 
+	this->SetActorRotation(_turn);
 	
-	
-}*/
+}
+void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	//rotYaw를 일정 주기마다 각 클라이언트에 뿌려서 클라이언트의 변수값을 고찬다,
+	DOREPLIFETIME(AAlienSwarmCharacter, mousePos);
+}
