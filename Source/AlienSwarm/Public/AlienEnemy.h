@@ -30,9 +30,15 @@ public:
 	UPROPERTY()
 	AAlienSwarmCharacter* myTarget;
 
-
 	UPROPERTY()
 	class UEnemyAnimInstance* enemyAnim;
+
+	UPROPERTY()
+	class ADoorActor* doorActor;
+	
+	UPROPERTY()
+	class USphereComponent* sphereCollision;
+
 
 
 	// 실시간 타겟과의 거리 비교
@@ -75,6 +81,14 @@ public:
 	// 현재 타켓과 에너미 사이의 거리
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	float CurrentDistance;
+
+	// 문이 열려 있는지 확인
+	UFUNCTION()
+	void DoorStateCheck();
+
+	// 문 공격
+	UFUNCTION()
+	void AttackDoor();
 
 
 public:

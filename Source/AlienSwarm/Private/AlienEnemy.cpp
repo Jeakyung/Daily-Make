@@ -7,6 +7,7 @@
 #include <AlienAIController.h>
 #include "AlienSwarm/AlienSwarmCharacter.h"
 #include <EnemyAnimInstance.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
 AAlienEnemy::AAlienEnemy()
@@ -16,6 +17,9 @@ AAlienEnemy::AAlienEnemy()
 
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
+
+	sphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("sphereCollision"));
+	sphereCollision->SetSphereRadius(80.f);
 }
 
 // Called when the game starts or when spawned
@@ -24,6 +28,7 @@ void AAlienEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	AIEnemyController = Cast<AAlienAIController>(GetController());
+	// doorActor = Cast<ADoorActor>();
 
 	TargetCheck();
 
@@ -52,6 +57,8 @@ void AAlienEnemy::Tick(float DeltaTime)
 		if (enemyAnim->bEnemyDisableMovement)
 		{
 			SetActorLocation(enemyAnim->currentEnemyLoc);
+			// AIEnemyController->StopMovement();
+			
 		}
 		else
 		{
@@ -139,13 +146,33 @@ void AAlienEnemy::TargetCheck()
 
 		UE_LOG(LogTemp, Warning, TEXT("Finally closestDistanceLength: %f"), nearestDistanceLength);
 		UE_LOG(LogTemp, Warning, TEXT("Finally closestTargetIndex: %d"), nearestTargetIndex);
+	}
+	// 가장 가까이에 있는 플레이어를 타겟으로 설정
+	myTarget = targetList[nearestTargetIndex];
+	// CurrentDistance = (myTarget->GetActorLocation() - GetActorLocation()).Size();
 
-		// 가장 가까이에 있는 플레이어를 타겟으로 설정
-		myTarget = targetList[nearestTargetIndex];
-		// CurrentDistance = (myTarget->GetActorLocation() - GetActorLocation()).Size();
 
+}
+
+void AAlienEnemy::DoorStateCheck()
+{
+	bool bDoorOpen = false;
+
+	// 문이 닫혀 있다면
+	if (!bDoorOpen)
+	{
+		// 문을 공격해서 열어라
+		AttackDoor();
+	}
+	else
+	{
 
 	}
+}
+
+void AAlienEnemy::AttackDoor()
+{	
+	// 문의 체력이 0이 될 때 까지 공격
 }
 
 
