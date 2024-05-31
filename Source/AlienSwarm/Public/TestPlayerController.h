@@ -38,6 +38,12 @@ private:
 	class UMainWidget* mainWidget;
 
 public:
+	void MakeTitleWidget();
+
+	void MakeShopWidget();
+
+	void MakeMainWidget();
+
 	void SetHP(float value);
 
 	void SetAmmo(int32 value);

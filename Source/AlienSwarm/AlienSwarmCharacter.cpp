@@ -26,7 +26,7 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 AAlienSwarmCharacter::AAlienSwarmCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 		
@@ -72,7 +72,7 @@ void AAlienSwarmCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	//Add Input Mapping Context
-	PlayerController = Cast<APlayerController>(Controller);
+	PlayerController = Cast<ATestPlayerController>(Controller);
 	if (PlayerController)
 	{
 		
@@ -84,6 +84,18 @@ void AAlienSwarmCharacter::BeginPlay()
 	// 카메라 최초 위치
 	cameraLoc = FollowCamera->GetRelativeLocation();
 	
+	//현재 열려있는 맵의 이름이 TitleLevel이면(실제 리턴되는 값은 UEDPIE_0_TitleLevel임)
+	if (IsLocallyControlled()) {
+		if (GetWorld()->GetMapName().Contains(TEXT("TitleLevel"))) {
+			PlayerController->MakeTitleWidget();
+		}
+		else if (GetWorld()->GetMapName().Contains(TEXT("TestLevel"))) {
+			PlayerController->MakeShopWidget();
+		}
+		else {
+			PlayerController->MakeMainWidget();
+		}
+	}
 
 	SpawnWeapon();
 
@@ -98,7 +110,7 @@ void AAlienSwarmCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	TurnPlayer();
+	//TurnPlayer();
 	CameraMove();
 
 	if (nullptr != Weapon)
@@ -254,7 +266,6 @@ void AAlienSwarmCharacter::TurnPlayer()
 		
 		FVector mouseLocation, mouseDirection;
 		mouseDirection.Normalize();
-		PlayerController = Cast<APlayerController>(GetOwner());
 		// 플레이어의 마우스 위치와 방향 값을 각각 mouseLocation과 mouseDirection에 넣어준다.
 		PlayerController->DeprojectMousePositionToWorld(mouseLocation, mouseDirection);
 		

@@ -39,5 +39,5 @@ void UTitleWidget::CloseRoomList()
 
 void UTitleWidget::QuitGame()
 {
-	UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
+	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, true);
 }

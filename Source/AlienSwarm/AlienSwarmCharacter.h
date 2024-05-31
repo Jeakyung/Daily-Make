@@ -99,7 +99,7 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	
-	class APlayerController* PlayerController;
+	class ATestPlayerController* PlayerController;
 
 	// 플레이어가 마우스의 위치를 바라보게하는 함수
 	void TurnPlayer();
