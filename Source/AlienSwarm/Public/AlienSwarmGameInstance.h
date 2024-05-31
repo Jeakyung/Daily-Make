@@ -15,6 +15,7 @@ class ALIENSWARM_API UAlienSwarmGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
-	int32 totalCurrency;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 totalCurrency = 20000;
 
 };

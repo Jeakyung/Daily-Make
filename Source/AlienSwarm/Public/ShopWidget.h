@@ -14,4 +14,12 @@ class ALIENSWARM_API UShopWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+public:
+	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
+	class UButton* Btn_Start;
+
+	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void StartGame();
 };

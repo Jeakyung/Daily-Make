@@ -42,4 +42,6 @@ public:
 	void SetRemainAmmo(int32 value);
 
 	void SetRemainMeg(int32 value);
+
+	void Setimages(UTexture2D* image1, UTexture2D* image2, UTexture2D* image3);
 };

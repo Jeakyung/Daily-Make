@@ -22,27 +22,44 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class UTitleWidget> titleWidget_bp;
 
-	UPROPERTY()
-	class UTitleWidget* titleWidget;
-
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class UShopWidget> shopWidget_bp;
-
-	UPROPERTY()
-	class UShopWidget* shopWidget;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class UMainWidget> mainWidget_bp;
 
+public:
+	UPROPERTY()
+	class UTitleWidget* titleWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UShopWidget* shopWidget;
+
 	UPROPERTY()
 	class UMainWidget* mainWidget;
 
-public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UTexture2D* Weapon1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UTexture2D* Weapon2;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UTexture2D* SubWeapon;
+
 	void MakeTitleWidget();
 
 	void MakeShopWidget();
 
 	void MakeMainWidget();
+
+	void MoveToStartPos();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_MovePos();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_MovePos(FVector MovePos);
 
 	void SetHP(float value);
 
