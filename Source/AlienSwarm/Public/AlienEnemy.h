@@ -37,12 +37,11 @@ public:
 	UPROPERTY()
 	class ADoorActor* doorActor;
 	
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Comp")
 	class USphereComponent* sphereCollision;
 	
-	/*UPROPERTY()
-	class AGeometryCollectionActor* explosionEnemy;*/
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Comp")
+	class UGeometryCollectionComponent* explosionComp;
 
 	// 실시간 타겟과의 거리 비교
 	void TargetDistCheck(AAlienSwarmCharacter* target);
@@ -98,6 +97,10 @@ public:
 	void DoDamageToTargetPlayer();
 
 	virtual void TakeHit(int32 damage) override;
+
+	// 죽으면 몸 터져
+	UFUNCTION()
+	void ExplosionBody();
 
 
 public:

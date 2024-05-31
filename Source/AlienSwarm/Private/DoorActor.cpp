@@ -63,6 +63,11 @@ void ADoorActor::Tick(float DeltaTime)
 	door->SetRelativeLocation(doorPos);
 }
 
+//void ADoorActor::EnemyAttackDoor()
+//{
+//	
+//}
+
 void ADoorActor::DoorOpen(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (openstart || bIsOpened) {

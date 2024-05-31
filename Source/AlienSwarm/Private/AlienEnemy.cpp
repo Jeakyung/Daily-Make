@@ -2,13 +2,14 @@
 
 
 #include "AlienEnemy.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/Components/SphereComponent.h>
+#include "GeometryCollection/GeometryCollectionComponent.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include <../../../../../../../Source/Runtime/Engine/Public/EngineUtils.h>
 #include <AlienAIController.h>
 #include "AlienSwarm/AlienSwarmCharacter.h"
 #include <EnemyAnimInstance.h>
 #include "HitInterface.h"
-#include <../../../../../../../Source/Runtime/Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
 AAlienEnemy::AAlienEnemy()
@@ -20,7 +21,11 @@ AAlienEnemy::AAlienEnemy()
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 
 	sphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("sphereCollision"));
+	sphereCollision->SetupAttachment(RootComponent);
 	sphereCollision->SetSphereRadius(80.f);
+
+	explosionComp = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("explosionComp"));
+	explosionComp->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -29,17 +34,21 @@ void AAlienEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	AIEnemyController = Cast<AAlienAIController>(GetController());
-	// doorActor = Cast<ADoorActor>();
+	enemyAnim = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+
 
 	TargetCheck();
+
+	// sphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ADoorActor::EnemyAttackDoor);
 
 	if (AIEnemyController == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NULL"));
 	}
 
-	enemyAnim = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
-
+	// GetMesh()->SetHiddenInGame(true);
+	explosionComp->AddImpulse(FVector(200.f));
+	explosionComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 }
 
@@ -204,9 +213,15 @@ void AAlienEnemy::TakeHit(int32 damage)
 	
 	if (currentHP <= 0)
 	{
+		ExplosionBody();
 		Destroy();
 		UE_LOG(LogTemp, Warning, TEXT("DieEnemy"));
 	}
 	// UE_LOG(LogTemp, Warning, TEXT("HitDamege"));
+}
+
+void AAlienEnemy::ExplosionBody()
+{
+	
 }
 

@@ -53,6 +53,9 @@ public:
 
 	UPROPERTY(Replicated)
 	FVector doorPos;
+	
+	/*UPROPERTY(Replicated)
+	void EnemyAttackDoor();*/
 
 	UFUNCTION()
 	void DoorOpen(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

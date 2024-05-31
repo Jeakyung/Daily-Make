@@ -277,7 +277,7 @@ void AAlienSwarmCharacter::TurnPlayer()
 		// 플레이어와의 충돌 무시
 		FCollisionQueryParams params;
 		params.AddIgnoredActor(this);
-		UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"),mouseLocation.X, mouseLocation.Y, mouseLocation.Z);
+		
 		FHitResult hitResult;
 		// 부딪힌 것이 있는지 판별하는 변수 
 		bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Visibility, params);
