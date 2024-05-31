@@ -26,7 +26,7 @@ class AAlienSwarmCharacter : public ACharacter,public IHitInterface
 	USpringArmComponent* CameraBoom;
 
 	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 	
 	/** MappingContext */
@@ -212,11 +212,24 @@ public:
 
 	// 클라우드 회전, 마우스 위치에 따른 조준 값 전달 (임시)
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_TurnPlayer();
+	void ServerRPC_TurnPlayer(FRotator newTurn);
 
-	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_TurnPlayer(FVector _mousePos, FRotator _turn);
+	UPROPERTY(ReplicatedUsing=OnRep_TargetRotation)
+	FRotator TargetRotation;
 
+	UFUNCTION()
+	void OnRep_TargetRotation();
 
+	//UFUNCTION(NetMulticast, Reliable)
+	//void MultiRPC_TurnPlayer(FVector _mousePos, FRotator _turn);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_CameraMove();
+
+ 	UFUNCTION(NetMulticast, Reliable)
+ 	void ClientRPC_CameraMove(FVector newPos);
+
+	
+	
 };
 

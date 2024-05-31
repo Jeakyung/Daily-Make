@@ -64,6 +64,9 @@ AAlienSwarmCharacter::AAlienSwarmCharacter()
 	FollowCamera->SetRelativeRotation(FRotator(-60,0,0));
 
 
+	bReplicates = true;
+	SetReplicateMovement(true);
+
 }
 
 void AAlienSwarmCharacter::BeginPlay()
@@ -72,15 +75,15 @@ void AAlienSwarmCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	//Add Input Mapping Context
-	PlayerController = Cast<ATestPlayerController>(Controller);
-	if (PlayerController)
+	auto* pc = Cast<APlayerController>(Controller);
+	if (pc)
 	{
-		
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(pc->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+	PlayerController = Cast<ATestPlayerController>(Controller);
 	// 카메라 최초 위치
 	cameraLoc = FollowCamera->GetRelativeLocation();
 	
@@ -110,8 +113,8 @@ void AAlienSwarmCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	ServerRPC_TurnPlayer();
-	CameraMove();
+	TurnPlayer();
+	ServerRPC_CameraMove();
 
 	if (nullptr != Weapon)
 	{
@@ -261,13 +264,18 @@ void AAlienSwarmCharacter::OnIASubWeapon(const FInputActionValue& Value)
 
 void AAlienSwarmCharacter::TurnPlayer()
 {
-	if (nullptr != Controller)
+	if (IsLocallyControlled())
 	{
-		
+		auto* pc = Cast<ATestPlayerController>(Controller);
+		if (nullptr == pc)
+		{
+			return;
+		}
+
 		FVector mouseLocation, mouseDirection;
 		mouseDirection.Normalize();
 		// 플레이어의 마우스 위치와 방향 값을 각각 mouseLocation과 mouseDirection에 넣어준다.
-		PlayerController->DeprojectMousePositionToWorld(mouseLocation, mouseDirection);
+		pc->DeprojectMousePositionToWorld(mouseLocation, mouseDirection);
 		
 		// 라인 그리기
 		// start : 카메라 위치
@@ -277,7 +285,7 @@ void AAlienSwarmCharacter::TurnPlayer()
 		// 플레이어와의 충돌 무시
 		FCollisionQueryParams params;
 		params.AddIgnoredActor(this);
-		
+
 		FHitResult hitResult;
 		// 부딪힌 것이 있는지 판별하는 변수 
 		bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Visibility, params);
@@ -291,8 +299,13 @@ void AAlienSwarmCharacter::TurnPlayer()
 		FRotator turnDir = direction.Rotation();
 		FRotator turn = FRotator(0, turnDir.Yaw + 10, 0);
 		
+		DrawDebugSphere(GetWorld(), mousePos, 50.0f, 3, FColor::Red, false, 0, 0, 1);
+
+		//this->SetActorRotation(turn);
+
+		ServerRPC_TurnPlayer(turn);
 		
-		MultiRPC_TurnPlayer(mousePos, turn);
+		//MultiRPC_TurnPlayer(mousePos, turn);
 		
 
 
@@ -313,8 +326,7 @@ void AAlienSwarmCharacter::CameraMove()
 	newPos.X -= 300; 
 
 	
-	FollowCamera->SetRelativeLocation(newPos);
-
+	ClientRPC_CameraMove(newPos);
 
 
 
@@ -499,24 +511,41 @@ void AAlienSwarmCharacter::MultiRPC_SubWeapon_Implementation()
 }
 //////////////////////////////////////////////
 
-void AAlienSwarmCharacter::ServerRPC_TurnPlayer_Implementation()
+void AAlienSwarmCharacter::ServerRPC_TurnPlayer_Implementation(FRotator newTurn)
 {
-	TurnPlayer();
-
+	TargetRotation = newTurn;
+	OnRep_TargetRotation();
 }
 
-void AAlienSwarmCharacter::MultiRPC_TurnPlayer_Implementation(FVector _mousePos, FRotator _turn)
+void AAlienSwarmCharacter::OnRep_TargetRotation()
 {
-	DrawDebugSphere(GetWorld(), _mousePos, 50.0f, 3, FColor::Red, false, 0, 0, 1);
-
-	// 플레이어를 trun 방향으로 회전 시킨다. 
-	this->SetActorRotation(_turn);
-
+	SetActorRotation(TargetRotation);
 }
+
+
+//void AAlienSwarmCharacter::MultiRPC_TurnPlayer_Implementation(FVector _mousePos, FRotator _turn)
+//{
+//	
+//	DrawDebugSphere(GetWorld(), _mousePos, 50.0f, 3, FColor::Red, false, 0, 0, 1);
+//
+//	// 플레이어를 trun 방향으로 회전 시킨다. 
+//	this->SetActorRotation(_turn);
+//}
 void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	//rotYaw를 일정 주기마다 각 클라이언트에 뿌려서 클라이언트의 변수값을 고찬다,
-	DOREPLIFETIME(AAlienSwarmCharacter, mousePos);
+	DOREPLIFETIME(AAlienSwarmCharacter, mousePos);	
+	DOREPLIFETIME(AAlienSwarmCharacter, TargetRotation);
+}
+
+void AAlienSwarmCharacter::ServerRPC_CameraMove_Implementation()
+{
+	CameraMove();
+}
+
+void AAlienSwarmCharacter::ClientRPC_CameraMove_Implementation(FVector newPos)
+{
+	FollowCamera->SetRelativeLocation(newPos);
 }
