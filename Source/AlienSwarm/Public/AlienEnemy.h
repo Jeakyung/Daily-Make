@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AlienAIController.h"
+#include "HitInterface.h"
 #include "AlienEnemy.generated.h"
 
 UCLASS()
-class ALIENSWARM_API AAlienEnemy : public ACharacter
+class ALIENSWARM_API AAlienEnemy : public ACharacter, public IHitInterface
 {
 	GENERATED_BODY()
 
@@ -38,7 +39,9 @@ public:
 	
 	UPROPERTY()
 	class USphereComponent* sphereCollision;
-
+	
+	/*UPROPERTY()
+	class AGeometryCollectionActor* explosionEnemy;*/
 
 
 	// 실시간 타겟과의 거리 비교
@@ -49,7 +52,7 @@ public:
 	int32 maxHP=30;
 	// 현재체력
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	int32 currentHP;
+	int32 currentHP=maxHP;
 
 	// 공격력
 	UPROPERTY(EditAnywhere, Category = Enemy)
@@ -57,7 +60,7 @@ public:
 	
 	//이동 속도
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float traceSpeed = 710.f;
+	float traceSpeed = 720.f;
 
 	TArray<AAlienSwarmCharacter*> targetList;
 
@@ -94,6 +97,8 @@ public:
 	UFUNCTION()
 	void DoDamageToTargetPlayer();
 
+	virtual void TakeHit(int32 damage) override;
+
 
 public:
 	// 애니메이션
@@ -109,5 +114,7 @@ public:
 	// 죽음 애니메이션	
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	bool bDieAnim = false;
+
+
 
 };

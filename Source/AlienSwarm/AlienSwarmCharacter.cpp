@@ -110,7 +110,7 @@ void AAlienSwarmCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	//TurnPlayer();
+	ServerRPC_TurnPlayer();
 	CameraMove();
 
 	if (nullptr != Weapon)

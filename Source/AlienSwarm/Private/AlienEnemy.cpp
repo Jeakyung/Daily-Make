@@ -7,6 +7,7 @@
 #include <AlienAIController.h>
 #include "AlienSwarm/AlienSwarmCharacter.h"
 #include <EnemyAnimInstance.h>
+#include "HitInterface.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
@@ -196,4 +197,16 @@ void AAlienEnemy::DoDamageToTargetPlayer()
 }
 
 
+void AAlienEnemy::TakeHit(int32 damage)
+{
+	currentHP -= damage;
+	UE_LOG(LogTemp, Warning, TEXT("enemyHP: %d"), currentHP);
+	
+	if (currentHP <= 0)
+	{
+		Destroy();
+		UE_LOG(LogTemp, Warning, TEXT("DieEnemy"));
+	}
+	// UE_LOG(LogTemp, Warning, TEXT("HitDamege"));
+}
 
