@@ -213,10 +213,10 @@ public:
 	
 
 	// 클라우드 회전, 마우스 위치에 따른 조준 값 전달 (임시)
- 	UFUNCTION(Server, Reliable)
- 	void ServerRPC_TurnPlayer(FVector _mousePos, FRotator _turn);
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_TurnPlayer();
 
- 	UFUNCTION(NetMulticast, Reliable)
+	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_TurnPlayer(FVector _mousePos, FRotator _turn);
 
 

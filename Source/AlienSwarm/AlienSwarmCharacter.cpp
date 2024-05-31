@@ -292,8 +292,8 @@ void AAlienSwarmCharacter::TurnPlayer()
 		FRotator turn = FRotator(0, turnDir.Yaw + 10, 0);
 		
 		
-
-		ServerRPC_TurnPlayer(mousePos, turn);
+		MultiRPC_TurnPlayer(mousePos, turn);
+		
 
 
 	}
@@ -500,9 +500,10 @@ void AAlienSwarmCharacter::MultiRPC_SubWeapon_Implementation()
 }
 //////////////////////////////////////////////
 
-void AAlienSwarmCharacter::ServerRPC_TurnPlayer_Implementation(FVector _mousePos, FRotator _turn)
+void AAlienSwarmCharacter::ServerRPC_TurnPlayer_Implementation()
 {
-	MultiRPC_TurnPlayer(_mousePos,_turn);
+	TurnPlayer();
+
 }
 
 void AAlienSwarmCharacter::MultiRPC_TurnPlayer_Implementation(FVector _mousePos, FRotator _turn)
@@ -511,7 +512,7 @@ void AAlienSwarmCharacter::MultiRPC_TurnPlayer_Implementation(FVector _mousePos,
 
 	// 플레이어를 trun 방향으로 회전 시킨다. 
 	this->SetActorRotation(_turn);
-	
+
 }
 void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
