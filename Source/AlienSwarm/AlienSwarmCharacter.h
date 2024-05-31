@@ -175,8 +175,6 @@ public:
 	
 	class UMainWidget* mainWidget;
 
-	class ATestPlayerController* testPC;
-
 	UPROPERTY(EditDefaultsOnly)
 	int32 MaxHP = 1000;
 	int32 HP = MaxHP;
@@ -186,7 +184,7 @@ public:
 	void ServerRPC_TakeDamage(int32 damage);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_TakeDamage(int32 damage);
+	void MultiRPC_TakeDamage(float value);
 
 	
 	// 1번 무기 교체 시 다른 클라우드에도 변경 값 적용

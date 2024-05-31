@@ -37,7 +37,7 @@ void AAlienEnemy::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("NULL"));
 	}
 
- 	enemyAnim = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+	enemyAnim = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
 
 
 }
@@ -58,7 +58,7 @@ void AAlienEnemy::Tick(float DeltaTime)
 		{
 			SetActorLocation(enemyAnim->currentEnemyLoc);
 			// AIEnemyController->StopMovement();
-			
+
 		}
 		else
 		{
@@ -83,7 +83,7 @@ void AAlienEnemy::TargetDistCheck(AAlienSwarmCharacter* target)
 	if (CurrentDistance < attakDistance)
 	{
 		bMoveAnim = false;
-	
+
 		bAttackAnim = true;
 		AIEnemyController->Attack();
 	}
@@ -171,8 +171,28 @@ void AAlienEnemy::DoorStateCheck()
 }
 
 void AAlienEnemy::AttackDoor()
-{	
+{
 	// 문의 체력이 0이 될 때 까지 공격
+}
+
+void AAlienEnemy::DoDamageToTargetPlayer()
+{
+	if (myTarget)
+	{
+		FVector playerLoc = myTarget->GetActorLocation();
+		if ((playerLoc - GetActorLocation()).Size() < attakDistance)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("aaattttttaaaccckkkk"));
+
+			IHitInterface* targetPlayer = Cast<IHitInterface>(myTarget);
+			if (targetPlayer)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("targetPlayer HP -300"));
+				targetPlayer->TakeHit(enemyCP);
+			}
+		}
+
+	}
 }
 
 

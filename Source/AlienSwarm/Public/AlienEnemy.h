@@ -46,14 +46,14 @@ public:
 
 	// 최대체력
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	int32 maxHP;
+	int32 maxHP=30;
 	// 현재체력
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	int32 currentHP;
 
 	// 공격력
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	int32 enemyCP = 30;
+	int32 enemyCP = 300;
 	
 	//이동 속도
 	UPROPERTY(EditAnywhere, Category = Enemy)
@@ -89,6 +89,10 @@ public:
 	// 문 공격
 	UFUNCTION()
 	void AttackDoor();
+
+	// 타겟 플레이어에게 데미지 가함
+	UFUNCTION()
+	void DoDamageToTargetPlayer();
 
 
 public:

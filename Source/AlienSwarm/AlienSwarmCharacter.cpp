@@ -432,20 +432,19 @@ void AAlienSwarmCharacter::TakeHit(int32 damage)
 // damage
 void AAlienSwarmCharacter::ServerRPC_TakeDamage_Implementation(int32 damage)
 {
-	MultiRPC_TakeDamage(damage);
-	
-
-}
-void AAlienSwarmCharacter::MultiRPC_TakeDamage_Implementation(int32 damage)
-{
-
 	HP -= damage;
 
 
 	float hpratio = (float)HP / (float)MaxHP;
 
-	testPC->SetHP(hpratio);
 
+	MultiRPC_TakeDamage(hpratio);
+
+}
+
+void AAlienSwarmCharacter::MultiRPC_TakeDamage_Implementation(float value)
+{
+	PlayerController->SetHP(value);
 
 	UE_LOG(LogTemp, Warning, TEXT("PlayerTakeDamage"));
 }
