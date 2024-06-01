@@ -75,7 +75,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(Replicated)
 	FVector end;
 
 	virtual bool OnFire(FVector mousePos);
@@ -89,6 +89,18 @@ public:
 	UFUNCTION()
 	void CalculateEndPoint(FVector mousePos);
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_CalEndPoint(FVector _endPos);
+	
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_CalEndPoint(FVector _endPos);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_CalEndPoint(FVector _endPos);
+
+	UFUNCTION()
+	void OnRep_CalEndPoint();
+
 	UFUNCTION()
 	FORCEINLINE int32 GetCurrentAmmo() {return currentAmmo;}
 
@@ -100,7 +112,4 @@ public:
 
 	UFUNCTION()
 	void Equip(AActor* ownedActor);
-
-	UFUNCTION()
-	void UnEquip();
 };

@@ -116,15 +116,15 @@ void AAlienSwarmCharacter::Tick(float DeltaTime)
 	TurnPlayer();
 	CameraMove();
 
-	if (nullptr != Weapon)
+	if (nullptr != Weapon && SelectedWeapon == 1)
 	{
 		Weapon->CalculateEndPoint(mousePos);
 	}
-	if (nullptr != Weapon2)
+	else if (nullptr != Weapon2 && SelectedWeapon == 2)
 	{
 		Weapon2->CalculateEndPoint(mousePos);
 	}
-	if (nullptr != SubWeapon)
+	else if (nullptr != SubWeapon && SelectedWeapon == 3)
 	{
 		SubWeapon->CalculateEndPoint(mousePos);
 	}

@@ -8,6 +8,7 @@
 #include "HitInterface.h"
 #include "../AlienSwarmCharacter.h"
 #include "TestPlayerController.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values
@@ -29,7 +30,7 @@ AWeaponBase::AWeaponBase()
 	aimmingLaser = CreateDefaultSubobject<UNiagaraComponent>(TEXT("AimmingLaser"));
 	aimmingLaser->SetupAttachment(firePoint);
 	
-
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
@@ -89,6 +90,7 @@ bool AWeaponBase::TakeMagazine()
 void AWeaponBase::CalculateEndPoint(FVector mousePos)
 {
 	FVector start = firePoint->GetComponentLocation();
+
 	end = mousePos;
 	end.Z += start.Z;
 	end = end - start;
@@ -96,6 +98,43 @@ void AWeaponBase::CalculateEndPoint(FVector mousePos)
 	end *= shootingRange;
 	end += start;
 	end.Z = start.Z;
+
+	FHitResult hits;
+	bool bHit = GetWorld()->LineTraceSingleByChannel(hits, start, end, ECC_Visibility);
+	if (bHit) {
+		end = hits.ImpactPoint;
+	}
+
+	ServerRPC_CalEndPoint(end);
+}
+
+void AWeaponBase::ServerRPC_CalEndPoint_Implementation(FVector _end)
+{
+	end = _end;
+
+	//UE_LOG(LogTemp, Warning, TEXT("CalendPos : %f %f %f"), end.X, end.Y, end.Z);
+
+	OnRep_CalEndPoint();
+	//MultiRPC_CalEndPoint(end);
+	//ClientRPC_CalEndPoint(end);
+}
+
+void AWeaponBase::ClientRPC_CalEndPoint_Implementation(FVector _endPos)
+{
+	//UE_LOG(LogTemp, Warning, TEXT("ClientendPos : %f %f %f"), _endPos.X, _endPos.Y, _endPos.Z);
+	aimmingLaser->SetVectorParameter(TEXT("Beam End"), _endPos);
+}
+
+void AWeaponBase::MultiRPC_CalEndPoint_Implementation(FVector _endPos)
+{
+	//UE_LOG(LogTemp, Warning, TEXT("MultiendPos : %f %f %f"), _endPos.X, _endPos.Y, _endPos.Z);
+	aimmingLaser->SetVectorParameter(TEXT("Beam End"), _endPos);
+}
+
+void AWeaponBase::OnRep_CalEndPoint()
+{
+	//UE_LOG(LogTemp, Warning, TEXT("OnRependPos : %f %f %f"), _endPos.X, _endPos.Y, _endPos.Z);
+	aimmingLaser->SetVectorParameter(TEXT("Beam End"), end);
 }
 
 void AWeaponBase::Equip(AActor* ownedActor)
@@ -112,11 +151,10 @@ void AWeaponBase::Equip(AActor* ownedActor)
 	}
 }
 
-void AWeaponBase::UnEquip()
+void AWeaponBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	//무기 교체시 사용될 예정? 맵 구석으로 이동시키고 안보임 처리하는게 좋은거 아닌지?
-	pc = nullptr;
-	playerREF = nullptr;
-	SetOwner(nullptr);
-}
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	//rotYaw를 일정 주기마다 각 클라이언트에 뿌려서 클라이언트의 변수값을 고찬다,
+	DOREPLIFETIME(AWeaponBase, end);
+}

@@ -16,7 +16,7 @@ class ALIENSWARM_API ATestPlayerController : public APlayerController
 	
 protected:
 	// To add mapping context
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(EditDefaultsOnly)

@@ -9,7 +9,7 @@
 
 void ATestPlayerController::BeginPlay()
 {
-	
+	Super::BeginPlay();
 }
 
 void ATestPlayerController::MakeTitleWidget()
