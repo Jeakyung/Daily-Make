@@ -114,7 +114,7 @@ void AAlienSwarmCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	TurnPlayer();
-	ServerRPC_CameraMove();
+	CameraMove();
 
 	if (nullptr != Weapon)
 	{
@@ -159,7 +159,7 @@ void AAlienSwarmCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 		// SubWeapon
 		EnhancedInputComponent->BindAction(IA_SubWeapon, ETriggerEvent::Started, this, &AAlienSwarmCharacter::OnIASubWeapon);
-
+		
 	}
 	else
 	{
@@ -314,22 +314,30 @@ void AAlienSwarmCharacter::TurnPlayer()
 
 void AAlienSwarmCharacter::CameraMove()
 {
-	double distance = FVector::Distance(GetActorLocation(),mousePos); 
-
-	
-
-	FVector mouseLoc = mousePos - GetActorLocation()+cameraLoc;
-	mouseLoc.Z = FollowCamera->GetRelativeLocation().Z;
-	//mouseLoc.X -= 300.0f;
-
-	FVector newPos = FMath::Lerp(cameraLoc, mouseLoc, 0.2);
-	newPos.X -= 300; 
-
-	
-	ClientRPC_CameraMove(newPos);
+	if (IsLocallyControlled())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Cam move"));
+		auto* pc = Cast<ATestPlayerController>(Controller);
+		if (nullptr == pc)
+		{
+			return;
+		}
+		double distance = FVector::Distance(GetActorLocation(), mousePos);
 
 
 
+		FVector mouseLoc = mousePos - GetActorLocation() + cameraLoc;
+		mouseLoc.Z = FollowCamera->GetRelativeLocation().Z;
+		//mouseLoc.X -= 300.0f;
+
+		FVector newPos = FMath::Lerp(cameraLoc, mouseLoc, 0.2);
+		newPos.X -= 300;
+
+		
+		ServerRPC_CameraMove(newPos);
+
+
+	}
 }
 
 void AAlienSwarmCharacter::PlayFireMontage()
@@ -522,15 +530,18 @@ void AAlienSwarmCharacter::OnRep_TargetRotation()
 	SetActorRotation(TargetRotation);
 }
 
+void AAlienSwarmCharacter::ServerRPC_CameraMove_Implementation(FVector _newPos)
+{
+	camMove = _newPos;
+	OnRep_CameraMove();
+}
 
-//void AAlienSwarmCharacter::MultiRPC_TurnPlayer_Implementation(FVector _mousePos, FRotator _turn)
-//{
-//	
-//	DrawDebugSphere(GetWorld(), _mousePos, 50.0f, 3, FColor::Red, false, 0, 0, 1);
-//
-//	// 플레이어를 trun 방향으로 회전 시킨다. 
-//	this->SetActorRotation(_turn);
-//}
+void AAlienSwarmCharacter::OnRep_CameraMove()
+{
+	FollowCamera->SetRelativeLocation(camMove);
+}
+
+
 void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -538,14 +549,6 @@ void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	//rotYaw를 일정 주기마다 각 클라이언트에 뿌려서 클라이언트의 변수값을 고찬다,
 	DOREPLIFETIME(AAlienSwarmCharacter, mousePos);	
 	DOREPLIFETIME(AAlienSwarmCharacter, TargetRotation);
+	DOREPLIFETIME(AAlienSwarmCharacter, camMove);
 }
 
-void AAlienSwarmCharacter::ServerRPC_CameraMove_Implementation()
-{
-	CameraMove();
-}
-
-void AAlienSwarmCharacter::ClientRPC_CameraMove_Implementation(FVector newPos)
-{
-	FollowCamera->SetRelativeLocation(newPos);
-}

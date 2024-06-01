@@ -220,16 +220,15 @@ public:
 	UFUNCTION()
 	void OnRep_TargetRotation();
 
-	//UFUNCTION(NetMulticast, Reliable)
-	//void MultiRPC_TurnPlayer(FVector _mousePos, FRotator _turn);
 
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_CameraMove();
+	void ServerRPC_CameraMove(FVector _newPos);
 
- 	UFUNCTION(NetMulticast, Reliable)
- 	void ClientRPC_CameraMove(FVector newPos);
+	UPROPERTY(ReplicatedUsing = OnRep_CameraMove)
+	FVector camMove;
+	
+	UFUNCTION()
+	void OnRep_CameraMove();
 
-	
-	
 };
 
