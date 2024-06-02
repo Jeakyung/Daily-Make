@@ -74,11 +74,11 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
-	UPROPERTY(Replicated)
-	FVector end;
 
 	virtual bool OnFire(FVector mousePos);
+
+	UPROPERTY(ReplicatedUsing = OnRep_CalEndPoint)
+	FVector end;
 
 	UFUNCTION()
 	bool OnReload();

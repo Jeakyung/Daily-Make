@@ -316,7 +316,7 @@ void AAlienSwarmCharacter::CameraMove()
 {
 	if (IsLocallyControlled())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Cam move"));
+		//UE_LOG(LogTemp, Warning, TEXT("Cam move"));
 		auto* pc = Cast<ATestPlayerController>(Controller);
 		if (nullptr == pc)
 		{

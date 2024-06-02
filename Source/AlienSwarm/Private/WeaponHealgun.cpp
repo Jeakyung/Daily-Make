@@ -24,7 +24,7 @@ bool AWeaponHealgun::OnFire(FVector mousePos)
 		if (bResult) {
 			IHitInterface* target = Cast<IHitInterface>(hitInfo.GetActor());
 			if (target) {
-				target->TakeHit(damage);
+				target->TakeHit(-damage);
 			}
 		}
 		currentAmmo--;
