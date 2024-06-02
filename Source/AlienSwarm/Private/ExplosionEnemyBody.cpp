@@ -12,7 +12,12 @@ AExplosionEnemyBody::AExplosionEnemyBody()
 
 void AExplosionEnemyBody::BeginPlay()
 {
-	explosionComp->AddImpulse(FVector(200.f));
+	explosionComp->AddImpulse(FVector(350.f));
 	explosionComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
+	explosionComp->DamageThreshold[0] = 1.f;
+	explosionComp->DamageThreshold[1] = 1.f;
+	explosionComp->DamageThreshold[2] = 1.f;
+
+	// use root proxy for navigation => true 
 }

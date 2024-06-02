@@ -86,7 +86,8 @@ void AAlienEnemy::Tick(float DeltaTime)
 		else if (targetResetTime <= curTime)
 		{
 			curTime = 0.f;
-			TargetCheck();
+			// TargetCheck();
+			EnemyDie();
 		}
 	}
 	else
@@ -213,7 +214,15 @@ void AAlienEnemy::AttackDoor()
 	// 문의 체력이 0이 된 경우 원래 타겟이었던 플레이어를 쫒음
 	// if (doorActor->doorHP <= 0)
 	{
-		
+	}
+	// else
+	{
+		// 뒤에서 피격을 당했다면
+		// if (TakeHit) 이 코드 err
+		{
+			enemyAnim->bAttackedBack = true;
+
+		}
 	}
 }
 

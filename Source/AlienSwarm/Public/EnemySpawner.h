@@ -26,12 +26,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// 에너미 스폰되는 시간 간격
 	float currentTime=0.f;
 	float SpawnTime = 5.f;
 
 	UFUNCTION()
 	void SpawnEnemy();
 
+	// 스포너당 최대 스폰 에너미 개수
 	int MaxEnemyCount = 5;
 	int EnemyCount = 0;
 

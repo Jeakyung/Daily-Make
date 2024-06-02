@@ -105,10 +105,10 @@ public:
 
 	// 타겟 재설정 시간
 	float curTime=0.f;
-	float targetResetTime = 1.f;
+	float targetResetTime = 3.f;
 
 	// 문 공격 상태
-	bool bAttackDoor = true;
+	bool bAttackDoor = false;
 
 
 
