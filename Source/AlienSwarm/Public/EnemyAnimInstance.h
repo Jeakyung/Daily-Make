@@ -45,4 +45,7 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly)
 	FVector currentEnemyLoc;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Enemy)
+	bool bAttackedBack = false;
 };

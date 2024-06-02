@@ -10,6 +10,8 @@
 #include "AlienSwarm/AlienSwarmCharacter.h"
 #include <EnemyAnimInstance.h>
 #include "HitInterface.h"
+#include <ExplosionEnemyBody.h>
+#include "Engine/World.h"
 
 // Sets default values
 AAlienEnemy::AAlienEnemy()
@@ -24,8 +26,8 @@ AAlienEnemy::AAlienEnemy()
 	sphereCollision->SetupAttachment(RootComponent);
 	sphereCollision->SetSphereRadius(80.f);
 
-	explosionComp = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("explosionComp"));
-	explosionComp->SetupAttachment(RootComponent);
+	// explosionComp = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("explosionComp"));
+	// explosionComp->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -46,9 +48,7 @@ void AAlienEnemy::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("NULL"));
 	}
 
-	// GetMesh()->SetHiddenInGame(true);
-	explosionComp->AddImpulse(FVector(200.f));
-	explosionComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	// explosionEnemy = Cast<AExplosionEnemyBody>(GetActorClassDefaultComponent);
 
 }
 
@@ -74,6 +74,24 @@ void AAlienEnemy::Tick(float DeltaTime)
 		{
 			TargetDistCheck(myTarget);
 		}
+	}
+
+	if (!bAttackDoor)
+	{
+		// 일정시간마다 타겟 재탐색
+		if (curTime < targetResetTime)
+		{
+			curTime += DeltaTime;
+		}
+		else if (targetResetTime <= curTime)
+		{
+			curTime = 0.f;
+			TargetCheck();
+		}
+	}
+	else
+	{
+		AttackDoor();
 	}
 
 }
@@ -116,6 +134,14 @@ void AAlienEnemy::TargetDistCheck(AAlienSwarmCharacter* target)
 
 void AAlienEnemy::TargetCheck()
 {
+	// 문과 오버랩된 경우
+	/*if ()
+	{
+		bAttackDoor = true;
+		return;
+	}*/
+
+
 	for (TActorIterator<AAlienSwarmCharacter> target(GetWorld()); target; ++target)
 	{
 		// myTarget = *target;
@@ -183,6 +209,12 @@ void AAlienEnemy::DoorStateCheck()
 void AAlienEnemy::AttackDoor()
 {
 	// 문의 체력이 0이 될 때 까지 공격
+
+	// 문의 체력이 0이 된 경우 원래 타겟이었던 플레이어를 쫒음
+	// if (doorActor->doorHP <= 0)
+	{
+		
+	}
 }
 
 void AAlienEnemy::DoDamageToTargetPlayer()
@@ -210,18 +242,35 @@ void AAlienEnemy::TakeHit(int32 damage)
 {
 	currentHP -= damage;
 	UE_LOG(LogTemp, Warning, TEXT("enemyHP: %d"), currentHP);
-	
+
 	if (currentHP <= 0)
 	{
-		ExplosionBody();
-		Destroy();
+		EnemyDie();
+
 		UE_LOG(LogTemp, Warning, TEXT("DieEnemy"));
 	}
 	// UE_LOG(LogTemp, Warning, TEXT("HitDamege"));
 }
 
-void AAlienEnemy::ExplosionBody()
+void AAlienEnemy::EnemyDie()
 {
-	
+	FVector loc = GetActorLocation();
+	FRotator rot = GetActorRotation();
+
+	FActorSpawnParameters params;
+	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	// 터지는 메시 스폰
+	// GetWorld()->SpawnActor<AExplosionEnemyBody>(explosionEnemy, GetActorLocation, GetActorRotation, params);
+	auto* spawnedActor = GetWorld()->SpawnActor<AExplosionEnemyBody>(explosionEnemy, loc, rot, params);
+	if (spawnedActor != nullptr)
+	{
+		FVector spawnedActorLoc = spawnedActor->GetActorLocation();
+		UE_LOG(LogTemp, Warning, TEXT("SpawnedEnemyLoc; %f, %f, %f"), spawnedActorLoc.X, spawnedActorLoc.Y, spawnedActorLoc.Z);
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("nonSpawnd"));
+
+	Destroy();
 }
 

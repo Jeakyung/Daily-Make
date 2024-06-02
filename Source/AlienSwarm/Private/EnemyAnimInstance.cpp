@@ -38,6 +38,7 @@ void UEnemyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		}
 	}
 
+
 }
 
 void UEnemyAnimInstance::AnimNotify_PrepareAttack()

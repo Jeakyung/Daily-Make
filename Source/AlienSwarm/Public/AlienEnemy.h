@@ -40,8 +40,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Comp")
 	class USphereComponent* sphereCollision;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Comp")
-	class UGeometryCollectionComponent* explosionComp;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Comp")
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AExplosionEnemyBody> explosionEnemy;
 
 	// 실시간 타겟과의 거리 비교
 	void TargetDistCheck(AAlienSwarmCharacter* target);
@@ -100,7 +101,15 @@ public:
 
 	// 죽으면 몸 터져
 	UFUNCTION()
-	void ExplosionBody();
+	void EnemyDie();
+
+	// 타겟 재설정 시간
+	float curTime=0.f;
+	float targetResetTime = 1.f;
+
+	// 문 공격 상태
+	bool bAttackDoor = true;
+
 
 
 public:
