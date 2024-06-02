@@ -90,8 +90,9 @@ bool AWeaponBase::TakeMagazine()
 void AWeaponBase::CalculateEndPoint(FVector mousePos)
 {
 	FVector start = firePoint->GetComponentLocation();
-
-	end = mousePos;
+	FVector _end;
+	
+	/*end = mousePos;
 	end.Z += start.Z;
 	end = end - start;
 	end.Normalize();
@@ -103,9 +104,23 @@ void AWeaponBase::CalculateEndPoint(FVector mousePos)
 	bool bHit = GetWorld()->LineTraceSingleByChannel(hits, start, end, ECC_Visibility);
 	if (bHit) {
 		end = hits.ImpactPoint;
-	}
+	}*/
 
-	ServerRPC_CalEndPoint(end);
+	_end = mousePos;
+	_end.Z += start.Z;
+	_end = _end - start;
+	_end.Normalize();
+	_end *= shootingRange;
+	_end += start;
+	_end.Z = start.Z;
+
+	FHitResult hits;
+	bool bHit = GetWorld()->LineTraceSingleByChannel(hits, start, _end, ECC_Visibility);
+	if (bHit) {
+		_end = hits.ImpactPoint;
+	}
+	//end = _end;
+	ServerRPC_CalEndPoint(_end);
 }
 
 void AWeaponBase::ServerRPC_CalEndPoint_Implementation(FVector _end)
@@ -133,8 +148,9 @@ void AWeaponBase::MultiRPC_CalEndPoint_Implementation(FVector _endPos)
 
 void AWeaponBase::OnRep_CalEndPoint()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("OnRependPos : %f %f %f"), _endPos.X, _endPos.Y, _endPos.Z);
+	//UE_LOG(LogTemp, Warning, TEXT("OnRep endPos : %f %f %f"), end.X, end.Y, end.Z);
 	aimmingLaser->SetVectorParameter(TEXT("Beam End"), end);
+
 }
 
 void AWeaponBase::Equip(AActor* ownedActor)

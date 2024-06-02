@@ -316,7 +316,11 @@ void AAlienSwarmCharacter::CameraMove()
 {
 	if (IsLocallyControlled())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Cam move"));
+<<<<<<< HEAD
+		
+=======
+		//UE_LOG(LogTemp, Warning, TEXT("Cam move"));
+>>>>>>> c45c88d9572d1de5e76013c3f65fa0b1913909bd
 		auto* pc = Cast<ATestPlayerController>(Controller);
 		if (nullptr == pc)
 		{
@@ -447,8 +451,6 @@ void AAlienSwarmCharacter::TakeHit(int32 damage)
 }
 
 
-
-
 // damage
 void AAlienSwarmCharacter::ServerRPC_TakeDamage_Implementation(int32 damage)
 {
@@ -462,12 +464,15 @@ void AAlienSwarmCharacter::ServerRPC_TakeDamage_Implementation(int32 damage)
 
 }
 
+
 void AAlienSwarmCharacter::MultiRPC_TakeDamage_Implementation(float value)
 {
 	PlayerController->SetHP(value);
 
 	UE_LOG(LogTemp, Warning, TEXT("PlayerTakeDamage"));
 }
+
+
 
 // 2번 무기 교체 시 다른 클라우드에도 변경 값 적용
 void AAlienSwarmCharacter::ServerRPC_SecondWeapon_Implementation()
@@ -483,7 +488,7 @@ void AAlienSwarmCharacter::MultiRPC_SecondWeapon_Implementation()
 
 	ChangeWeapon(Weapon2);
 }
-//////////////////////////////////////////////
+//============================================
 
 
 // 1번 무기 교체 시 다른 클라우드에도 변경 값 적용
@@ -500,7 +505,7 @@ void AAlienSwarmCharacter::MultiRPC_FirstWeapon_Implementation()
 
 	ChangeWeapon(Weapon);
 }
-//////////////////////////////////////////////
+//============================================
 
 
 // 보조 무기 교체 시 다른 클라우드에도 변경 값 적용
@@ -517,8 +522,10 @@ void AAlienSwarmCharacter::MultiRPC_SubWeapon_Implementation()
 
 	ChangeWeapon(SubWeapon);
 }
-//////////////////////////////////////////////
+//============================================
 
+
+// 클라우드 회전, 마우스 위치에 따른 조준 값 전달 
 void AAlienSwarmCharacter::ServerRPC_TurnPlayer_Implementation(FRotator newTurn)
 {
 	TargetRotation = newTurn;
@@ -529,7 +536,10 @@ void AAlienSwarmCharacter::OnRep_TargetRotation()
 {
 	SetActorRotation(TargetRotation);
 }
+//============================================
 
+
+// 클라이언트 마우스에 따라 카메라 이동
 void AAlienSwarmCharacter::ServerRPC_CameraMove_Implementation(FVector _newPos)
 {
 	camMove = _newPos;
@@ -540,15 +550,19 @@ void AAlienSwarmCharacter::OnRep_CameraMove()
 {
 	FollowCamera->SetRelativeLocation(camMove);
 }
+//============================================
+
 
 
 void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	//rotYaw를 일정 주기마다 각 클라이언트에 뿌려서 클라이언트의 변수값을 고찬다,
+	// rotYaw를 일정 주기마다 각 클라이언트에 뿌려서 클라이언트의 변수값을 고찬다,
 	DOREPLIFETIME(AAlienSwarmCharacter, mousePos);	
+	// 플레이어 회전 동기화
 	DOREPLIFETIME(AAlienSwarmCharacter, TargetRotation);
+	// 마우스 이동에 따른 카메라 이동 동기화
 	DOREPLIFETIME(AAlienSwarmCharacter, camMove);
 }
 

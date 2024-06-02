@@ -186,6 +186,9 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_TakeDamage(float value);
 
+
+
+
 	
 	// 1번 무기 교체 시 다른 클라우드에도 변경 값 적용
 	UFUNCTION(Server, Reliable)
@@ -193,7 +196,9 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_FirstWeapon();
-	
+	//============================================
+
+
 
 	// 2번 무기 교체 시 다른 클라우드에도 변경 값 적용
 	UFUNCTION(Server, Reliable)
@@ -201,6 +206,10 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_SecondWeapon();
+	//============================================
+
+
+
 
 	// 보조 무기 교체 시 다른 클라우드에도 변경 값 적용
 	UFUNCTION(Server, Reliable)
@@ -208,9 +217,13 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_SubWeapon();
-	
+	//============================================
 
-	// 클라우드 회전, 마우스 위치에 따른 조준 값 전달 (임시)
+
+
+
+
+	// 클라우드 회전, 마우스 위치에 따른 조준 값 전달 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_TurnPlayer(FRotator newTurn);
 
@@ -219,8 +232,11 @@ public:
 
 	UFUNCTION()
 	void OnRep_TargetRotation();
+	//============================================
 
 
+
+	// 클라이언트 마우스에 따라 카메라 이동
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_CameraMove(FVector _newPos);
 
@@ -229,6 +245,12 @@ public:
 	
 	UFUNCTION()
 	void OnRep_CameraMove();
+	//============================================
+
+	// 플레이어끼리 공격이 가능하게 해주는 기능
+
+
+
 
 };
 

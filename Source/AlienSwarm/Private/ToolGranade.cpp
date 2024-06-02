@@ -12,7 +12,7 @@ bool AToolGranade::OnFire(FVector mousePos)
 		TArray<FOverlapResult> hitsInfos;
 		FCollisionQueryParams params;
 		params.AddIgnoredActor(this);
-		bool bResult = GetWorld()->OverlapMultiByChannel(hitsInfos, mousePos, FQuat::Identity, ECC_GameTraceChannel2, FCollisionShape::MakeSphere(250.0f), params);
+		bool bResult = GetWorld()->OverlapMultiByChannel(hitsInfos, mousePos, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(250.0f), params);
 		DrawDebugSphere(GetWorld(), mousePos, 250.0f, 32, FColor::Red, false, 3.0f, 0, 2.0f);
 
 		if (bResult) {
