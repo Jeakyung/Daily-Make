@@ -40,7 +40,7 @@ public:
 	void AnimNotify_AttackPoint();
 	
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere)
 	bool bEnemyDisableMovement = false;
 	
 	UPROPERTY(EditDefaultsOnly)

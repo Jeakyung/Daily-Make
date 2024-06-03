@@ -70,7 +70,6 @@ void AAlienEnemy::Tick(float DeltaTime)
 		{
 			SetActorLocation(enemyAnim->currentEnemyLoc);
 			// AIEnemyController->StopMovement();
-
 		}
 		else
 		{
@@ -81,22 +80,37 @@ void AAlienEnemy::Tick(float DeltaTime)
 	if (!bAttackDoor)
 	{
 		// 일정시간마다 타겟 재탐색
+
 		if (curTime < targetResetTime)
 		{
 			curTime += DeltaTime;
+
 		}
 		else if (targetResetTime <= curTime)
 		{
 			curTime = 0.f;
 			TargetCheck();
 			//EnemyDie();
+			UE_LOG(LogTemp, Warning, TEXT("22"));
 		}
+
 	}
 	else
 	{
 		AttackDoor();
 	}
 
+	if (1)
+	{
+		//UEnum::GetValueAsString();
+
+
+
+		FString str = FString::Printf(TEXT("enemyAnim->bEnemyDisableMovement : %s"), enemyAnim->bEnemyDisableMovement ? L"TRUE" : L"FALSE");
+
+		FVector loc = GetActorLocation() + FVector(0, 0, 50);
+		DrawDebugString(GetWorld(), loc, str, nullptr, FColor::White, 0, true);
+	}
 }
 
 // Called to bind functionality to input
@@ -110,21 +124,24 @@ void AAlienEnemy::TargetDistCheck(AAlienSwarmCharacter* target)
 {
 	CurrentDistance = (target->GetActorLocation() - GetActorLocation()).Size();
 
+	//AIEnemyController->MoveToActor(target);
 	// 거리가 공격 가능 범위보다 작다면 공격한다
 	if (CurrentDistance < attakDistance)
 	{
 		bMoveAnim = false;
-
 		bAttackAnim = true;
 		// AIEnemyController->Attack();
 	}
 	// 거리가 공격 가능 범위보다 크다면 타겟에게 다가간다
 	else
 	{
-		bAttackAnim = false;
-		bMoveAnim = true;
+		if (bAttackAnim == false)
+		{
+			bMoveAnim = true;
+		}
+
 		// 타겟을 향해 이동
-		AIEnemyController->MoveToActor(target);
+		//AIEnemyController->MoveToActor(target);
 
 		if (bHitTheDoor)
 		{
@@ -148,7 +165,7 @@ void AAlienEnemy::TargetCheck()
 
 	for (TActorIterator<AAlienSwarmCharacter> target(GetWorld()); target; ++target)
 	{
-		// myTarget = *target;
+		//myTarget = *target;
 		targetList.Add(*target);
 	}
 
@@ -167,7 +184,7 @@ void AAlienEnemy::TargetCheck()
 
 	int32 nearestTargetIndex = 0;
 
-	if (targetList.Num() > 1)
+	if (targetList.Num() > 0)
 	{
 		FVector targetDistance;
 
@@ -189,6 +206,11 @@ void AAlienEnemy::TargetCheck()
 	}
 	// 가장 가까이에 있는 플레이어를 타겟으로 설정
 	myTarget = targetList[nearestTargetIndex];
+	AIEnemyController->MoveToActor(myTarget, 80.0f);
+	TargetDistCheck(myTarget);
+
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Index : %d, Target : %s"), nearestTargetIndex, *myTarget->GetActorNameOrLabel()));
+
 	// CurrentDistance = (myTarget->GetActorLocation() - GetActorLocation()).Size();
 
 

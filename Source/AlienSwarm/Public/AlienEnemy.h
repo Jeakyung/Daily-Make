@@ -31,7 +31,7 @@ public:
 	UPROPERTY()
 	AAlienSwarmCharacter* myTarget;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UEnemyAnimInstance* enemyAnim;
 
 	UPROPERTY()
@@ -67,7 +67,7 @@ public:
 
 	// 공격 가능 거리	
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float attakDistance = 130.f;
+	float attakDistance = 150.f;
 	
 	// 현재 타켓과 에너미 사이의 거리
 	UPROPERTY(EditAnywhere, Category = Enemy)
@@ -105,12 +105,12 @@ public:
 
 	// 타겟 재설정 시간
 	float curTime=0.f;
-	float targetResetTime = 3.f;
+	float targetResetTime = 2.f;
 
 	// 문 공격 상태
 	bool bAttackDoor = false;
 
-
+	bool bStopMovement = false;
 
 public:
 	// 애니메이션

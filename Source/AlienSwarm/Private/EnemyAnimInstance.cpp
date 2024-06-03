@@ -52,8 +52,11 @@ void UEnemyAnimInstance::AnimNotify_AttackStart()
 }
 
 void UEnemyAnimInstance::AnimNotify_AttackEnd()
-{	
+{
 	bEnemyDisableMovement = false;
+
+	enemy->bAttackAnim = false;
+
 	// enemy->TargetDistCheck(enemy->myTarget);
 }
 
