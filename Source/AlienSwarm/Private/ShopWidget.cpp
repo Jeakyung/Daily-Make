@@ -21,5 +21,10 @@ void UShopWidget::StartGame()
 	pc->MakeMainWidget();
 	pc->MoveToStartPos();
 
+	AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(pc->GetPawn());
+	playerREF->SpawnWeapon();
+	playerREF->ChangeWeapon(playerREF->Weapon);
+
+
 	ConditionalBeginDestroy();
 }

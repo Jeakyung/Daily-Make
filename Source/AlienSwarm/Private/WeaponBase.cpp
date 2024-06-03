@@ -29,6 +29,7 @@ AWeaponBase::AWeaponBase()
 
 	aimmingLaser = CreateDefaultSubobject<UNiagaraComponent>(TEXT("AimmingLaser"));
 	aimmingLaser->SetupAttachment(firePoint);
+	aimmingLaser->bAutoActivate = false;
 	
 	bReplicates = true;
 }

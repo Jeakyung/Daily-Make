@@ -23,6 +23,7 @@ ADoorActor::ADoorActor()
 	openColl = CreateDefaultSubobject<UBoxComponent>(TEXT("OpenColl"));
 	openColl->SetupAttachment(rootComp);
 
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned

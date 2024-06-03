@@ -35,6 +35,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(VisibleAnywhere)
 	bool bIsLocked = false;
 
 	bool bIsOpened = false;
