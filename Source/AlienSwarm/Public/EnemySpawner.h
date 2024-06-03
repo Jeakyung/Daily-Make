@@ -29,16 +29,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// 에너미 스폰되는 시간 간격
-	float currentTime=0.f;
-	float SpawnTime = 2.f;
-
 	UFUNCTION()
 	void SpawnEnemy();
-
-	// 스포너당 최대 스폰 에너미 개수
-	int MaxEnemyCount = 5;
-	int EnemyCount = 0;
 
 	UPROPERTY(EditAnywhere)
 	class USceneComponent* sceneComp;
@@ -46,9 +38,22 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* overlapCheckBox;
 
-	bool bOverlapToComp = false;
-
 	UFUNCTION()
 	void PlayerOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	// 에너미 스폰되는 시간 간격
+	float currentTime=0.f;
+	float SpawnTime = 2.f;
+
+	// 스포너당 최대 스폰 에너미 개수
+	int MaxEnemyCount = 5;
+	int EnemyCount = 0;
+
+	// 오벌랩되면 에너미 스폰
+	bool bOverlapToComp = false;
+
+	// 무한 스폰
+	bool bSpawnInfinity = false;
+
 
 };

@@ -44,9 +44,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AExplosionEnemyBody> explosionEnemy;
 
-	// 실시간 타겟과의 거리 비교
-	void TargetDistCheck(AAlienSwarmCharacter* target);
-
 	// 최대체력
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	int32 maxHP=30;
@@ -62,16 +59,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	float traceSpeed = 720.f;
 
-	TArray<AAlienSwarmCharacter*> targetList;
-
-	// 타겟과 에너미 사이에 문이 존재하는지 체크
-	UFUNCTION()
-	void TargetCheck();
-
 	bool bHasTarget = false;
-
-	UPROPERTY()
-	class AAlienAIController* AIEnemyController;
 	
 	// 공격 가능 거리	
 	UPROPERTY(EditAnywhere, Category = Enemy)
@@ -84,6 +72,18 @@ public:
 	// 현재 타켓과 에너미 사이의 거리
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	float CurrentDistance;
+
+	TArray<AAlienSwarmCharacter*> targetList;
+
+	UPROPERTY()
+	class AAlienAIController* AIEnemyController;
+
+	// 실시간 타겟과의 거리 비교
+	void TargetDistCheck(AAlienSwarmCharacter* target);
+
+	// 타겟과 에너미 사이에 문이 존재하는지 체크
+	UFUNCTION()
+	void TargetCheck();
 
 	// 문이 열려 있는지 확인
 	UFUNCTION()

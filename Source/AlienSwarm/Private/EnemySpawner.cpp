@@ -32,6 +32,7 @@ void AEnemySpawner::BeginPlay()
 	Super::BeginPlay();
 
 	// SpawnEnemy();
+	overlapCheckBox->OnComponentBeginOverlap.AddDynamic(this, &AEnemySpawner::PlayerOverlap);
 }
 
 // Called every frame
@@ -39,9 +40,10 @@ void AEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	overlapCheckBox->OnComponentBeginOverlap.AddDynamic(this, &AEnemySpawner::PlayerOverlap);
-
-	if (bOverlapToComp)
+	if(bSpawnInfinity){
+		SpawnEnemy();
+	}
+	else if (bOverlapToComp)
 	{
 		if (currentTime < SpawnTime)
 		{
@@ -50,20 +52,20 @@ void AEnemySpawner::Tick(float DeltaTime)
 		else if (currentTime >= DeltaTime) {
 			SpawnEnemy();
 			currentTime = 0;
-		}
+			EnemyCount++;
 
+			if(EnemyCount >MaxEnemyCount){
+				bOverlapToComp = false;
+			}
+		}
 	}
 
+	
 
 }
 
 void AEnemySpawner::SpawnEnemy()
 {
-	if (MaxEnemyCount == ++EnemyCount)
-	{
-		Destroy();
-	}
-
 	// 처음에만 위치값 저장하고 다음부터는 가져다 씀
 	static FVector loc = GetActorLocation();
 	static FRotator rot = GetActorRotation();
@@ -86,6 +88,8 @@ void AEnemySpawner::PlayerOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 		UE_LOG(LogTemp, Warning, TEXT("Overlaped on Player"));
 		// SpawnEnemy();
 	}
-	// bOverlapToComp = false;
+	
 }
+
+
 
