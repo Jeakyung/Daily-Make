@@ -100,10 +100,8 @@ void AAlienSwarmCharacter::BeginPlay()
 		}
 	}
 
-	SpawnWeapon();
+	
 
-
-	ChangeWeapon(Weapon);
 
 	//PlayerController->SetShowMouseCursor(true);
 }
@@ -316,11 +314,7 @@ void AAlienSwarmCharacter::CameraMove()
 {
 	if (IsLocallyControlled())
 	{
-<<<<<<< HEAD
-		
-=======
-		//UE_LOG(LogTemp, Warning, TEXT("Cam move"));
->>>>>>> c45c88d9572d1de5e76013c3f65fa0b1913909bd
+
 		auto* pc = Cast<ATestPlayerController>(Controller);
 		if (nullptr == pc)
 		{
@@ -454,6 +448,8 @@ void AAlienSwarmCharacter::TakeHit(int32 damage)
 // damage
 void AAlienSwarmCharacter::ServerRPC_TakeDamage_Implementation(int32 damage)
 {
+	HP = FMath::Clamp(HP, 0, MaxHP);
+
 	HP -= damage;
 
 
