@@ -46,6 +46,7 @@ public:
 	float SpawnTime = 2.f;
 
 	// 스포너당 최대 스폰 에너미 개수
+	UPROPERTY(EditAnywhere)
 	int MaxEnemyCount = 5;
 	int EnemyCount = 0;
 

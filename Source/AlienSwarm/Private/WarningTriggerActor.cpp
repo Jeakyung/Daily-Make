@@ -3,10 +3,11 @@
 
 #include "WarningTriggerActor.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Components/BoxComponent.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/Engine/DirectionalLight.h>
 #include "EngineUtils.h"
 #include "RedLightActor.h"
 #include "DoorActor.h"
-#include <../../../../../../../Source/Runtime/Engine/Classes/Engine/DirectionalLight.h>
+#include "EnemySpawner.h"
 
 // Sets default values
 AWarningTriggerActor::AWarningTriggerActor()
@@ -54,11 +55,15 @@ void AWarningTriggerActor::ServerRPC_ActiveWarning_Implementation()
 	for (TActorIterator<ADoorActor> it(GetWorld()); it; ++it) {
 		doors.Add(*it);
 	}
+	TArray<AEnemySpawner*> spawners;
+	/*for (TActorIterator<AEnemySpawner> it(GetWorld()); it; ++it) {
+		spawners.Add(*it);
+	}*/
 	
-	MultiRPC_ActiveWarning(redLights, doors);
+	MultiRPC_ActiveWarning(redLights, doors, spawners);
 }
 
-void AWarningTriggerActor::MultiRPC_ActiveWarning_Implementation(const TArray<class ARedLightActor*>& redLights, const TArray<class ADoorActor*>& doors)
+void AWarningTriggerActor::MultiRPC_ActiveWarning_Implementation(const TArray<class ARedLightActor*>& redLights, const TArray<class ADoorActor*>& doors, const TArray<AEnemySpawner*>& spawners)
 {
 	if(dirLight) {
 		ADirectionalLight* dLight = Cast<ADirectionalLight>(dirLight);
@@ -74,5 +79,9 @@ void AWarningTriggerActor::MultiRPC_ActiveWarning_Implementation(const TArray<cl
 	for (int32 i = 0; i < doors.Num(); i++) {
 		doors[i]->bIsLocked = true;
 	}
+
+	/*for (int32 i = 0; i < spawners.Num(); i++) {
+		spawners[i]->bSpawnInfinity = true;
+	}*/
 }
 

@@ -39,5 +39,5 @@ public:
 	void ServerRPC_ActiveWarning();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_ActiveWarning(const TArray<class ARedLightActor*>& redLights, const TArray<class ADoorActor*>& doors);
+	void MultiRPC_ActiveWarning(const TArray<class ARedLightActor*>& redLights, const TArray<class ADoorActor*>& doors, const TArray<AEnemySpawner*>& spawners);
 };

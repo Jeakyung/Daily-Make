@@ -17,6 +17,7 @@
 #include "TestPlayerController.h"
 #include "MainWidget.h"
 #include "Net/UnrealNetwork.h"
+#include "NiagaraComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -399,6 +400,7 @@ void AAlienSwarmCharacter::ChangeWeapon(AWeaponBase* ChangeWeapons)
 		ChangeWeapons->SetActorRelativeRotation(FRotator(-11, 81, -81));
 		ChangeWeapons->SetActorRelativeScale3D(FVector(1.25f));
 		ChangeWeapons->Equip(this);
+		ChangeWeapons->aimmingLaser->Activate(true);
 		UE_LOG(LogTemp, Warning, TEXT("spawnWeapon1"));
 			
 	}
@@ -412,6 +414,7 @@ void AAlienSwarmCharacter::DetachWeapon(AWeaponBase* Weapons)
 	{
 		Weapons->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		Weapons->SetActorLocation(FVector(0,0,-30000));
+		Weapons->aimmingLaser->Deactivate();
 	}
 }
 
