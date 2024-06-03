@@ -79,7 +79,7 @@ public:
 
 	// 공격 가능 거리	
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	float attakDistance = 170.f;
+	float attakDistance = 130.f;
 	
 	// 현재 타켓과 에너미 사이의 거리
 	UPROPERTY(EditAnywhere, Category = Enemy)

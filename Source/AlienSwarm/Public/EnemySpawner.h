@@ -18,6 +18,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AAlienEnemy> enemy;
 
+	UPROPERTY(EditAnywhere)
+	class AAlienSwarmCharacter* player;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -28,7 +31,7 @@ public:
 
 	// 에너미 스폰되는 시간 간격
 	float currentTime=0.f;
-	float SpawnTime = 5.f;
+	float SpawnTime = 2.f;
 
 	UFUNCTION()
 	void SpawnEnemy();
@@ -36,5 +39,16 @@ public:
 	// 스포너당 최대 스폰 에너미 개수
 	int MaxEnemyCount = 5;
 	int EnemyCount = 0;
+
+	UPROPERTY(EditAnywhere)
+	class USceneComponent* sceneComp;
+
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* overlapCheckBox;
+
+	bool bOverlapToComp = false;
+
+	UFUNCTION()
+	void PlayerOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 };

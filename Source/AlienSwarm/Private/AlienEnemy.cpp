@@ -57,6 +57,8 @@ void AAlienEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// UE_LOG(LogTemp, Warning, TEXT("target<->enemy dist : %f"), CurrentDistance);
+
 	if (myTarget != nullptr)
 	{
 		TargetDistCheck(myTarget);
@@ -86,8 +88,8 @@ void AAlienEnemy::Tick(float DeltaTime)
 		else if (targetResetTime <= curTime)
 		{
 			curTime = 0.f;
-			// TargetCheck();
-			EnemyDie();
+			TargetCheck();
+			//EnemyDie();
 		}
 	}
 	else
@@ -114,7 +116,7 @@ void AAlienEnemy::TargetDistCheck(AAlienSwarmCharacter* target)
 		bMoveAnim = false;
 
 		bAttackAnim = true;
-		AIEnemyController->Attack();
+		// AIEnemyController->Attack();
 	}
 	// 거리가 공격 가능 범위보다 크다면 타겟에게 다가간다
 	else
@@ -142,6 +144,7 @@ void AAlienEnemy::TargetCheck()
 		return;
 	}*/
 
+	targetList.Empty();
 
 	for (TActorIterator<AAlienSwarmCharacter> target(GetWorld()); target; ++target)
 	{
@@ -152,8 +155,8 @@ void AAlienEnemy::TargetCheck()
 	FVector nearestDistance = targetList[0]->GetActorLocation() - GetActorLocation();
 	float nearestDistanceLength = nearestDistance.Size();
 
-	UE_LOG(LogTemp, Warning, TEXT("%f, %f, %f"), nearestDistance.X, nearestDistance.Y, nearestDistance.Z);
-	UE_LOG(LogTemp, Warning, TEXT("closestDistanceLength: %f"), nearestDistanceLength);
+	/*UE_LOG(LogTemp, Warning, TEXT("%f, %f, %f"), nearestDistance.X, nearestDistance.Y, nearestDistance.Z);
+	UE_LOG(LogTemp, Warning, TEXT("closestDistanceLength: %f"), nearestDistanceLength);*/
 
 
 	// 가장 가까이 있는 타겟 탐색
