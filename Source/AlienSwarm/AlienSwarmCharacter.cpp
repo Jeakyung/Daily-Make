@@ -100,7 +100,7 @@ void AAlienSwarmCharacter::BeginPlay()
 		}
 	}
 
-	
+
 
 
 	//PlayerController->SetShowMouseCursor(true);
@@ -452,20 +452,29 @@ void AAlienSwarmCharacter::ServerRPC_TakeDamage_Implementation(int32 damage)
 
 	HP -= damage;
 
-
 	float hpratio = (float)HP / (float)MaxHP;
-
 
 	MultiRPC_TakeDamage(hpratio);
 
+	UE_LOG(LogTemp, Warning, TEXT("%d"), HP);
 }
 
 
 void AAlienSwarmCharacter::MultiRPC_TakeDamage_Implementation(float value)
 {
-	PlayerController->SetHP(value);
+	if (IsLocallyControlled())
+	{
 
-	UE_LOG(LogTemp, Warning, TEXT("PlayerTakeDamage"));
+		auto* pc = Cast<ATestPlayerController>(Controller);
+		if (nullptr == pc)
+		{
+			return;
+		}
+
+		PlayerController->SetHP(value);
+
+
+	}
 }
 
 
