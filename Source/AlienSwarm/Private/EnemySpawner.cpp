@@ -67,8 +67,8 @@ void AEnemySpawner::Tick(float DeltaTime)
 void AEnemySpawner::SpawnEnemy()
 {
 	// 처음에만 위치값 저장하고 다음부터는 가져다 씀
-	static FVector loc = GetActorLocation();
-	static FRotator rot = GetActorRotation();
+	FVector loc = GetActorLocation();
+	FRotator rot = GetActorRotation();
 
 	FActorSpawnParameters params;
 	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
