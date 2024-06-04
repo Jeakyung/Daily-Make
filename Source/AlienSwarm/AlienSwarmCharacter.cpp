@@ -104,6 +104,7 @@ void AAlienSwarmCharacter::BeginPlay()
 
 
 
+
 	//PlayerController->SetShowMouseCursor(true);
 }
 
@@ -402,7 +403,7 @@ void AAlienSwarmCharacter::ChangeWeapon(AWeaponBase* ChangeWeapons)
 		ChangeWeapons->Equip(this);
 		ChangeWeapons->aimmingLaser->Activate(true);
 		UE_LOG(LogTemp, Warning, TEXT("spawnWeapon1"));
-			
+		ChangeWeapons->SetActorHiddenInGame(false);
 	}
 	
 }
@@ -412,9 +413,7 @@ void AAlienSwarmCharacter::DetachWeapon(AWeaponBase* Weapons)
 {
 	if (Weapons)
 	{
-		Weapons->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		Weapons->SetActorLocation(FVector(0,0,-30000));
-		Weapons->aimmingLaser->Deactivate();
+		Weapons->SetActorHiddenInGame(true);
 	}
 }
 
@@ -565,9 +564,6 @@ void AAlienSwarmCharacter::OnRep_CameraMove()
 void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	// rotYaw를 일정 주기마다 각 클라이언트에 뿌려서 클라이언트의 변수값을 고찬다,
-	DOREPLIFETIME(AAlienSwarmCharacter, mousePos);	
 	// 플레이어 회전 동기화
 	DOREPLIFETIME(AAlienSwarmCharacter, TargetRotation);
 	// 마우스 이동에 따른 카메라 이동 동기화

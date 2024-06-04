@@ -105,7 +105,6 @@ public:
 	void TurnPlayer();
 
 	// 마우스의 위치
-	UPROPERTY(Replicated)
 	FVector mousePos;
 
 	// 마우스의 위치에 맞게 카메라를 이동시키는 함수
