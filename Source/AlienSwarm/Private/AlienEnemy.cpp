@@ -57,7 +57,7 @@ void AAlienEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// UE_LOG(LogTemp, Warning, TEXT("target<->enemy dist : %f"), CurrentDistance);
+	//UE_LOG(LogTemp, Warning, TEXT("target<->enemy dist : %f"), CurrentDistance);
 
 	if (myTarget != nullptr)
 	{
@@ -131,14 +131,14 @@ void AAlienEnemy::TargetDistCheck(AAlienSwarmCharacter* target)
 		bMoveAnim = false;
 		bAttackAnim = true;
 		// AIEnemyController->Attack();
+		//여기서 공격으로 바꾸기
 	}
 	// 거리가 공격 가능 범위보다 크다면 타겟에게 다가간다
 	else
 	{
-		if (bAttackAnim == false)
-		{
-			bMoveAnim = true;
-		}
+		//if (bAttackAnim == false)
+		bAttackAnim = false;
+		bMoveAnim = true;
 
 		// 타겟을 향해 이동
 		//AIEnemyController->MoveToActor(target);
@@ -206,7 +206,7 @@ void AAlienEnemy::TargetCheck()
 	}
 	// 가장 가까이에 있는 플레이어를 타겟으로 설정
 	myTarget = targetList[nearestTargetIndex];
-	AIEnemyController->MoveToActor(myTarget, 80.0f);
+	AIEnemyController->MoveToActor(myTarget, 70.0f);
 	TargetDistCheck(myTarget);
 
 	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Index : %d, Target : %s"), nearestTargetIndex, *myTarget->GetActorNameOrLabel()));
@@ -269,6 +269,10 @@ void AAlienEnemy::DoDamageToTargetPlayer()
 		}
 
 	}
+	//이동 스테이트로 바꾸기
+	//if(bAttackAnim = false && bMoveAnim = true){
+	//	//여기서 공격 후 대기로 바꾸기
+	//}
 }
 
 

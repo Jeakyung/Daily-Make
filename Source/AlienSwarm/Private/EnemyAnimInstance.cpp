@@ -19,23 +19,9 @@ void UEnemyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	if (enemy != nullptr)
 	{
-		if (enemy->bMoveAnim)
-		{
-			bMove = true;
-		}
-		else
-		{
-			bMove = false;
-		}
+		bMove = enemy->bMoveAnim;
 
-		if (enemy->bAttackAnim)
-		{
-			bAttack = true;
-		}
-		else
-		{
-			bAttack = false;
-		}
+		bAttack = enemy->bAttackAnim;
 	}
 
 
@@ -58,6 +44,7 @@ void UEnemyAnimInstance::AnimNotify_AttackEnd()
 	enemy->bAttackAnim = false;
 
 	// enemy->TargetDistCheck(enemy->myTarget);
+	// 여기에서 이동 스테이트로 변경
 }
 
 void UEnemyAnimInstance::AnimNotify_AttackPoint()
