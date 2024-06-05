@@ -27,6 +27,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	class UBoxComponent* openColl;
 
+	UPROPERTY(EditDefaultsOnly)
+	class UBoxComponent* lockBox;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -35,8 +38,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(ReplicatedUsing= OnRep_bIsLocked, VisibleAnywhere)
 	bool bIsLocked = false;
+
+	UFUNCTION()
+	void OnRep_bIsLocked();
 
 	bool bIsOpened = false;
 
@@ -69,4 +75,16 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_DoorClose();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DoorLock();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_DoorLock();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DoorUnLock();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_DoorUnLock();
 };
