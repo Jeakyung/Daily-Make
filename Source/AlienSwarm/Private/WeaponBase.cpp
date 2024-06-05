@@ -26,6 +26,7 @@ AWeaponBase::AWeaponBase()
 
 	firePoint = CreateDefaultSubobject<USceneComponent>(TEXT("FirePoint"));
 	firePoint->SetupAttachment(gunBody);
+	firePoint->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
 
 	aimmingLaser = CreateDefaultSubobject<UNiagaraComponent>(TEXT("AimmingLaser"));
 	aimmingLaser->SetupAttachment(firePoint);
@@ -88,72 +89,6 @@ bool AWeaponBase::TakeMagazine()
 	}
 }
 
-void AWeaponBase::CalculateEndPoint(FVector mousePos)
-{
-	FVector start = firePoint->GetComponentLocation();
-	FVector _end;
-	
-	/*end = mousePos;
-	end.Z += start.Z;
-	end = end - start;
-	end.Normalize();
-	end *= shootingRange;
-	end += start;
-	end.Z = start.Z;
-
-	FHitResult hits;
-	bool bHit = GetWorld()->LineTraceSingleByChannel(hits, start, end, ECC_Visibility);
-	if (bHit) {
-		end = hits.ImpactPoint;
-	}*/
-
-	_end = mousePos;
-	_end.Z += start.Z;
-	_end = _end - start;
-	_end.Normalize();
-	_end *= shootingRange;
-	_end += start;
-	_end.Z = start.Z;
-
-	FHitResult hits;
-	bool bHit = GetWorld()->LineTraceSingleByChannel(hits, start, _end, ECC_Visibility);
-	if (bHit) {
-		_end = hits.ImpactPoint;
-	}
-	//end = _end;
-	ServerRPC_CalEndPoint(_end);
-}
-
-void AWeaponBase::ServerRPC_CalEndPoint_Implementation(FVector _end)
-{
-	end = _end;
-
-	//UE_LOG(LogTemp, Warning, TEXT("CalendPos : %f %f %f"), end.X, end.Y, end.Z);
-
-	OnRep_CalEndPoint();
-	//MultiRPC_CalEndPoint(end);
-	//ClientRPC_CalEndPoint(end);
-}
-
-void AWeaponBase::ClientRPC_CalEndPoint_Implementation(FVector _endPos)
-{
-	//UE_LOG(LogTemp, Warning, TEXT("ClientendPos : %f %f %f"), _endPos.X, _endPos.Y, _endPos.Z);
-	aimmingLaser->SetVectorParameter(TEXT("Beam End"), _endPos);
-}
-
-void AWeaponBase::MultiRPC_CalEndPoint_Implementation(FVector _endPos)
-{
-	//UE_LOG(LogTemp, Warning, TEXT("MultiendPos : %f %f %f"), _endPos.X, _endPos.Y, _endPos.Z);
-	aimmingLaser->SetVectorParameter(TEXT("Beam End"), _endPos);
-}
-
-void AWeaponBase::OnRep_CalEndPoint()
-{
-	//UE_LOG(LogTemp, Warning, TEXT("OnRep endPos : %f %f %f"), end.X, end.Y, end.Z);
-	aimmingLaser->SetVectorParameter(TEXT("Beam End"), end);
-
-}
-
 void AWeaponBase::Equip(AActor* ownedActor)
 {
 	playerREF = Cast<AAlienSwarmCharacter>(ownedActor);
@@ -166,12 +101,4 @@ void AWeaponBase::Equip(AActor* ownedActor)
 		pc->SetAmmo(currentAmmo);
 		pc->SetMeg(currentMagazine);
 	}
-}
-
-void AWeaponBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	//rotYaw를 일정 주기마다 각 클라이언트에 뿌려서 클라이언트의 변수값을 고찬다,
-	DOREPLIFETIME(AWeaponBase, end);
 }

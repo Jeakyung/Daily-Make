@@ -19,6 +19,7 @@ bool AWeaponHealgun::OnFire(FVector mousePos)
 		params.AddIgnoredActor(GetOwner());
 		FHitResult hitInfo;
 		//Block되는 채널을 찾음
+		FVector end = start + firePoint->GetForwardVector() * shootingRange;
 		bool bResult = GetWorld()->LineTraceSingleByChannel(hitInfo, start, end, ECC_GameTraceChannel1, params);
 		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 5.0f);
 		if (bResult) {

@@ -19,6 +19,7 @@ bool AWeaponShotgun::OnFire(FVector mousePos)
 		params.AddIgnoredActor(GetOwner());
 		TArray<FHitResult> hitInfos;
 		//Ignore되는 채널을 찾음
+		FVector end = start + firePoint->GetForwardVector() * shootingRange;
 		bool bResult = GetWorld()->SweepMultiByChannel(hitInfos, start, end, FQuat::Identity, ECC_GameTraceChannel2, FCollisionShape::MakeSphere(attackArea), params);
 		DrawDebugCylinder(GetWorld(), start, end, attackArea, 32, FColor::Red, false, 5.0f);
 		if (bResult) {

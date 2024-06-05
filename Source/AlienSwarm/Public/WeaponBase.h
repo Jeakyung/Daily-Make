@@ -77,29 +77,11 @@ public:
 
 	virtual bool OnFire(FVector mousePos);
 
-	UPROPERTY(ReplicatedUsing = OnRep_CalEndPoint)
-	FVector end;
-
 	UFUNCTION()
 	bool OnReload();
 	
 	UFUNCTION()
 	bool TakeMagazine();
-
-	UFUNCTION()
-	void CalculateEndPoint(FVector mousePos);
-
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_CalEndPoint(FVector _endPos);
-	
-	UFUNCTION(Client, Reliable)
-	void ClientRPC_CalEndPoint(FVector _endPos);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_CalEndPoint(FVector _endPos);
-
-	UFUNCTION()
-	void OnRep_CalEndPoint();
 
 	UFUNCTION()
 	FORCEINLINE int32 GetCurrentAmmo() {return currentAmmo;}
