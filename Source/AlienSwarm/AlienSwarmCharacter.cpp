@@ -93,7 +93,7 @@ void AAlienSwarmCharacter::BeginPlay()
 	cameraLoc = FollowCamera->GetRelativeLocation();
 	
 	//현재 열려있는 맵의 이름이 TitleLevel이면(실제 리턴되는 값은 UEDPIE_0_TitleLevel임)
-	if (IsLocallyControlled()) {
+	if (IsLocallyControlled() && PlayerController) {
 		if (GetWorld()->GetMapName().Contains(TEXT("TitleLevel"))) {
 			PlayerController->MakeTitleWidget();
 		}

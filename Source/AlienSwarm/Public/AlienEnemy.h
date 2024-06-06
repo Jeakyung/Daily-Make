@@ -53,7 +53,7 @@ public:
 
 	// 공격력
 	UPROPERTY(EditAnywhere, Category = Enemy)
-	int32 enemyCP = 300;
+	int32 enemyCP = 100;
 	
 	//이동 속도
 	UPROPERTY(EditAnywhere, Category = Enemy)
