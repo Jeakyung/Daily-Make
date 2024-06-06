@@ -94,14 +94,20 @@ public:
 	void AttackDoor();
 
 	// 타겟 플레이어에게 데미지 가함
-	UFUNCTION()
-	void DoDamageToTargetPlayer();
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DoDamageToTargetPlayer();
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_DoDamageToTargetPlayer();
 
+	// 에너미 공격받음
+	UFUNCTION()
 	virtual void TakeHit(int32 damage) override;
 
 	// 죽으면 몸 터져
-	UFUNCTION()
-	void EnemyDie();
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_EnemyDie();
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_EnemyDie();
 
 	// 타겟 재설정 시간
 	float curTime=0.f;
@@ -111,6 +117,7 @@ public:
 	bool bAttackDoor = false;
 
 	bool bStopMovement = false;
+
 
 public:
 	// 애니메이션

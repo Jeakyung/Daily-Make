@@ -50,6 +50,6 @@ void UEnemyAnimInstance::AnimNotify_AttackEnd()
 void UEnemyAnimInstance::AnimNotify_AttackPoint()
 {
 	// 플레이어 체력 손실
-	enemy->DoDamageToTargetPlayer();
+	enemy->MultiRPC_DoDamageToTargetPlayer();
 }
 

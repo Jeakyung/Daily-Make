@@ -28,6 +28,10 @@ AAlienEnemy::AAlienEnemy()
 
 	// explosionComp = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("explosionComp"));
 	// explosionComp->SetupAttachment(RootComponent);
+
+	bReplicates = true;
+	SetReplicateMovement(true);
+
 }
 
 // Called when the game starts or when spawned
@@ -46,6 +50,10 @@ void AAlienEnemy::BeginPlay()
 	if (AIEnemyController == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NULL"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HAVE CONTROLLER"));
 	}
 
 	// explosionEnemy = Cast<AExplosionEnemyBody>(GetActorClassDefaultComponent);
@@ -206,7 +214,8 @@ void AAlienEnemy::TargetCheck()
 	}
 	// 가장 가까이에 있는 플레이어를 타겟으로 설정
 	myTarget = targetList[nearestTargetIndex];
-	AIEnemyController->MoveToActor(myTarget, 70.0f);
+	if (AIEnemyController)
+		AIEnemyController->MoveToActor(myTarget, 70.0f);
 	TargetDistCheck(myTarget);
 
 	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Index : %d, Target : %s"), nearestTargetIndex, *myTarget->GetActorNameOrLabel()));
@@ -251,7 +260,9 @@ void AAlienEnemy::AttackDoor()
 	}
 }
 
-void AAlienEnemy::DoDamageToTargetPlayer()
+void AAlienEnemy::ServerRPC_DoDamageToTargetPlayer_Implementation()
+{}
+void AAlienEnemy::MultiRPC_DoDamageToTargetPlayer_Implementation()
 {
 	if (myTarget)
 	{
@@ -264,12 +275,13 @@ void AAlienEnemy::DoDamageToTargetPlayer()
 			if (targetPlayer)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("targetPlayer HP -300"));
+
 				targetPlayer->TakeHit(enemyCP);
 			}
 		}
 
 	}
-	//이동 스테이트로 바꾸기
+	//이동 스테이트로 바꾸기DoDamageToTargetPlayer
 	//if(bAttackAnim = false && bMoveAnim = true){
 	//	//여기서 공격 후 대기로 바꾸기
 	//}
@@ -283,14 +295,17 @@ void AAlienEnemy::TakeHit(int32 damage)
 
 	if (currentHP <= 0)
 	{
-		EnemyDie();
+		ServerRPC_EnemyDie();
 
 		UE_LOG(LogTemp, Warning, TEXT("DieEnemy"));
 	}
 	// UE_LOG(LogTemp, Warning, TEXT("HitDamege"));
 }
 
-void AAlienEnemy::EnemyDie()
+void AAlienEnemy::ServerRPC_EnemyDie_Implementation()
+{
+}
+void AAlienEnemy::MultiRPC_EnemyDie_Implementation()
 {
 	FVector loc = GetActorLocation();
 	FRotator rot = GetActorRotation();

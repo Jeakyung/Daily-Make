@@ -23,7 +23,9 @@ AEnemySpawner::AEnemySpawner()
 	overlapCheckBox->SetupAttachment(RootComponent);
 	overlapCheckBox->SetGenerateOverlapEvents(true);
 	overlapCheckBox->SetBoxExtent(FVector(100.f, 100.f, 50.f));
-
+	
+	bReplicates = true;
+	SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned
@@ -40,7 +42,7 @@ void AEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(bSpawnInfinity){
+	if (bSpawnInfinity) {
 		SpawnEnemy();
 	}
 	else if (bOverlapToComp)
@@ -54,27 +56,33 @@ void AEnemySpawner::Tick(float DeltaTime)
 			currentTime = 0;
 			EnemyCount++;
 
-			if(EnemyCount >MaxEnemyCount){
+			if (EnemyCount > MaxEnemyCount) {
 				bOverlapToComp = false;
 			}
 		}
 	}
 
-	
+
 
 }
 
 void AEnemySpawner::SpawnEnemy()
 {
-	// 처음에만 위치값 저장하고 다음부터는 가져다 씀
-	FVector loc = GetActorLocation();
-	FRotator rot = GetActorRotation();
+	// 서버에서만 에너미 스폰
+	if (HasAuthority())
+	{
+		// 처음에만 위치값 저장하고 다음부터는 가져다 씀
+		FVector loc = GetActorLocation();
+		FRotator rot = GetActorRotation();
 
-	FActorSpawnParameters params;
-	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		FActorSpawnParameters params;
+		// 자신을 생성되는 에너미의 오너로 설정
+		params.Owner = this;
+		params.Instigator = GetInstigator();
+		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	GetWorld()->SpawnActor<AAlienEnemy>(enemy, loc, rot, params);
-
+		GetWorld()->SpawnActor<AAlienEnemy>(enemy, loc, rot, params);
+	}
 }
 
 void AEnemySpawner::PlayerOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -88,7 +96,7 @@ void AEnemySpawner::PlayerOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 		UE_LOG(LogTemp, Warning, TEXT("Overlaped on Player"));
 		// SpawnEnemy();
 	}
-	
+
 }
 
 
