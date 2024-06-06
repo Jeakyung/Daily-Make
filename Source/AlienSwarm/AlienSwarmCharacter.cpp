@@ -19,6 +19,8 @@
 #include "Net/UnrealNetwork.h"
 #include "NiagaraComponent.h"
 #include "MainGameModeBase.h"
+#include "GameOverWidget.h"
+
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -558,13 +560,11 @@ void AAlienSwarmCharacter::OnRep_CameraMove()
 // 피 0되면 죽는 기능
 void AAlienSwarmCharacter::DiePlayer()
 {
-	
 	if (HP <= 0)
 	{
 		bDie = true;
 		GetCharacterMovement()->DisableMovement();
-		
-
+	
 		//PlayerController->ServerRPC_ChangeSpectator();
 
 	}

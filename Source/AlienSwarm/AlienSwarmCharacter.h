@@ -259,5 +259,7 @@ public:
 	bool bDie = false;
 
 
+	UPROPERTY(EditDefaultsOnly,Category = TPS)
+	TSubclassOf<class UWidget> GameOverUI;
 };
 
