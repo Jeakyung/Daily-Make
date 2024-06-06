@@ -18,6 +18,8 @@
 #include "MainWidget.h"
 #include "Net/UnrealNetwork.h"
 #include "NiagaraComponent.h"
+#include "MainGameModeBase.h"
+
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -103,7 +105,7 @@ void AAlienSwarmCharacter::BeginPlay()
 
 
 
-
+	
 
 	//PlayerController->SetShowMouseCursor(true);
 }
@@ -443,8 +445,14 @@ void AAlienSwarmCharacter::ServerRPC_TakeDamage_Implementation(int32 damage)
 
 	float hpratio = (float)HP / (float)MaxHP;
 
+	if (HP <= 1 && 1 == 1)
+	{
+		DiePlayer();
+	}
+
 	MultiRPC_TakeDamage(hpratio);
 
+		
 	UE_LOG(LogTemp, Warning, TEXT("%d"), HP);
 }
 
@@ -460,9 +468,9 @@ void AAlienSwarmCharacter::MultiRPC_TakeDamage_Implementation(float value)
 			return;
 		}
 
+	
 		PlayerController->SetHP(value);
-
-
+	
 	}
 }
 
@@ -547,6 +555,24 @@ void AAlienSwarmCharacter::OnRep_CameraMove()
 //============================================
 
 
+// 피 0되면 죽는 기능
+void AAlienSwarmCharacter::DiePlayer()
+{
+	
+	if (HP <= 0)
+	{
+		bDie = true;
+		GetCharacterMovement()->DisableMovement();
+		
+
+		//PlayerController->ServerRPC_ChangeSpectator();
+
+	}
+}
+
+
+
+
 
 void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -555,5 +581,6 @@ void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME(AAlienSwarmCharacter, TargetRotation);
 	// 마우스 이동에 따른 카메라 이동 동기화
 	DOREPLIFETIME(AAlienSwarmCharacter, camMove);
+	DOREPLIFETIME(AAlienSwarmCharacter, bDie);
 }
 

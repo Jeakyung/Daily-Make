@@ -5,11 +5,18 @@
 #include "TitleWidget.h"
 #include "ShopWidget.h"
 #include "MainWidget.h"
+#include "MainGameModeBase.h"
 #include "../AlienSwarmCharacter.h"
+#include "GameFramework/SpectatorPawn.h"
 
 void ATestPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (HasAuthority())
+	{
+		gameMode = Cast<AMainGameModeBase>(GetWorld()->GetAuthGameMode());
+	}
 }
 
 void ATestPlayerController::MakeTitleWidget()
@@ -90,5 +97,28 @@ void ATestPlayerController::SetMeg(int32 value)
 {
 	if (mainWidget) {
 		mainWidget->SetRemainMeg(value);
+	}
+}
+
+
+// 관전자 모드 (일단 안씀 Enemy와 충돌남)
+void ATestPlayerController::ServerRPC_ChangeSpectator_Implementation()
+{
+	auto* currentPlayer = GetPawn();
+	
+	if (currentPlayer)
+	{
+
+		FTransform playerTF = currentPlayer->GetActorTransform();
+		FActorSpawnParameters params;
+		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		auto* newPawn = GetWorld()->SpawnActor<ASpectatorPawn>(gameMode->SpectatorClass, playerTF, params);
+
+	
+		
+		Possess(newPawn);
+		
+		currentPlayer->Destroy();
 	}
 }

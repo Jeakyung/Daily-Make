@@ -140,7 +140,7 @@ public:
 
 	// 발사 모션 실행되는 기능
 	void PlayFireMontage();
-
+	
 	// 재장전 애니메이션 몽타주
 	UPROPERTY(EditAnywhere, Category = TPS)
 	class UAnimMontage* ReloadMontage;
@@ -246,9 +246,17 @@ public:
 	void OnRep_CameraMove();
 	//============================================
 
-	// 플레이어끼리 공격이 가능하게 해주는 기능
+	
+	// 죽는 몽타주 생성
+	UPROPERTY(EditAnywhere, Category = TPS)
+	class UAnimMontage* DeathMontage;
+	
+	// HP가 0일때 죽는 기능
+	void DiePlayer();
 
-
+	// 죽었는지 판별하는 기능
+	UPROPERTY(Replicated)
+	bool bDie = false;
 
 
 };

@@ -39,7 +39,7 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	// 플레이어의 이동 방향과 앞방향을 Dot해서 Horizontal에 대입하고싶다.
 	Horizontal = FVector::DotProduct(velociy, player->GetActorRightVector());
 
-
+	bDie = player->bDie;
 }
 
 void UPlayerAnimInstance::AnimNotify_ReloadFinished()
@@ -47,6 +47,13 @@ void UPlayerAnimInstance::AnimNotify_ReloadFinished()
 	player->OnMyReloadFinished();
 	
 }
+
+void UPlayerAnimInstance::AnimNotify_Death()
+{
+	
+}
+
+
 
 
 
