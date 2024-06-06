@@ -19,4 +19,6 @@ public:
 
 	virtual bool OnFire(FVector mousePos) override;
 	
+	bool bCanFire = true;
+	float coolDown = 3.0f;
 };

@@ -72,18 +72,6 @@ void ADoorActor::Tick(float DeltaTime)
 	door->SetRelativeLocation(doorPos);
 }
 
-void ADoorActor::OnRep_bIsLocked()
-{
-	UE_LOG(LogTemp, Warning, TEXT("onrep"));
-	if (bIsLocked)
-	{
-		lockBox->SetCollisionProfileName(TEXT("BlockAll"));
-	}
-	else {
-		lockBox->SetCollisionProfileName(TEXT("NoCollision"));
-	}
-}
-
 //void ADoorActor::EnemyAttackDoor()
 //{
 //	
@@ -92,7 +80,7 @@ void ADoorActor::OnRep_bIsLocked()
 void ADoorActor::DoorOpen(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
-	AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(OtherActor);
+	/*AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(OtherActor);
 	if (playerREF) {
 		if (playerREF->SelectedWeapon == 3) {
 			if (playerREF->SubWeapon){
@@ -110,7 +98,7 @@ void ADoorActor::DoorOpen(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 			}
 		}
 	}
-	else if (openstart || bIsOpened) {
+	else */if (openstart || bIsOpened || bIsLocked) {
 		return;
 	}
 	else {
@@ -127,6 +115,7 @@ void ADoorActor::ServerRPC_DoorOpen_Implementation()
 
 void ADoorActor::DoorClose(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
 	TArray<AActor*> overlapList;
 	openColl->GetOverlappingActors(overlapList);
 	
@@ -143,13 +132,10 @@ void ADoorActor::ServerRPC_DoorClose_Implementation()
 	closestart = true;
 }
 
-void ADoorActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void ADoorActor::DoorLock()
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	//rotYaw를 일정 주기마다 각 클라이언트에 뿌려서 클라이언트의 변수값을 고찬다,
-	DOREPLIFETIME(ADoorActor, doorPos);
-	DOREPLIFETIME(ADoorActor, bIsLocked);
+	SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
+	ServerRPC_DoorLock();
 }
 
 void ADoorActor::ServerRPC_DoorLock_Implementation()
@@ -157,8 +143,12 @@ void ADoorActor::ServerRPC_DoorLock_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("serverlock"));
 	bIsLocked = true;
 	OnRep_bIsLocked();
-	//lockBox->SetCollisionProfileName(TEXT("BlockAll"));
-	//MultiRPC_DoorLock();
+}
+
+void ADoorActor::DoorUnLock()
+{
+	SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
+	ServerRPC_DoorUnLock();
 }
 
 void ADoorActor::ServerRPC_DoorUnLock_Implementation()
@@ -166,26 +156,25 @@ void ADoorActor::ServerRPC_DoorUnLock_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("serverunlock"));
 	bIsLocked = false;
 	OnRep_bIsLocked();
-	//lockBox->SetCollisionProfileName(TEXT("NoCollision"));
-	//MultiRPC_DoorUnLock();
 }
 
-
-
-
-
-
-
-
-
-void ADoorActor::MultiRPC_DoorLock_Implementation()
+void ADoorActor::OnRep_bIsLocked()
 {
-	//bIsLocked = true;
-	//lockBox->SetCollisionProfileName(TEXT("BlockAll"));
+	UE_LOG(LogTemp, Warning, TEXT("onrep"));
+	if (bIsLocked)
+	{
+		lockBox->SetCollisionProfileName(TEXT("BlockAll"));
+	}
+	else {
+		lockBox->SetCollisionProfileName(TEXT("NoCollision"));
+	}
 }
 
-void ADoorActor::MultiRPC_DoorUnLock_Implementation()
+void ADoorActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	//bIsLocked = false;
-	//lockBox->SetCollisionProfileName(TEXT("NoCollision"));
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	//rotYaw를 일정 주기마다 각 클라이언트에 뿌려서 클라이언트의 변수값을 고찬다,
+	DOREPLIFETIME(ADoorActor, doorPos);
+	DOREPLIFETIME(ADoorActor, bIsLocked);
 }

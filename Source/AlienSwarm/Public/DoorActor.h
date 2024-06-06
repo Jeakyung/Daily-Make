@@ -38,7 +38,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(ReplicatedUsing= OnRep_bIsLocked, VisibleAnywhere)
+	UPROPERTY(ReplicatedUsing = OnRep_bIsLocked, VisibleAnywhere)
 	bool bIsLocked = false;
 
 	UFUNCTION()
@@ -76,15 +76,13 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_DoorClose();
 
+	void DoorLock();
+
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_DoorLock();
 
-	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_DoorLock();
+	void DoorUnLock();
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_DoorUnLock();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_DoorUnLock();
 };
