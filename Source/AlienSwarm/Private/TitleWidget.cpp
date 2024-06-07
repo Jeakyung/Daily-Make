@@ -9,6 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "AlienSwarmGameInstance.h"
 #include "Components/EditableText.h"
+#include "RoomListItemUI.h"
+#include "Components/ScrollBox.h"
 
 void UTitleWidget::NativeConstruct()
 {
@@ -27,6 +29,8 @@ void UTitleWidget::NativeConstruct()
 	Btn_CloseRoomList->OnClicked.AddDynamic(this, &UTitleWidget::CloseRoomList);
 
 	Btn_Quit->OnClicked.AddDynamic(this, &UTitleWidget::QuitGame);
+
+	Btn_Refresh->OnClicked.AddDynamic(this, &UTitleWidget::OnClickFindRoom);
 }
 
 void UTitleWidget::ShowRoomSetting()
@@ -59,4 +63,18 @@ void UTitleWidget::CloseRoomList()
 void UTitleWidget::QuitGame()
 {
 	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, true);
+}
+
+void UTitleWidget::OnClickFindRoom()
+{
+	
+}
+
+void UTitleWidget::AddRoomInfoUI(const FSessionInfo& info)
+{
+	auto ui = CreateWidget<URoomListItemUI>(this, roomItemUIFactory);
+
+	ui->Setup(info);
+
+	RoomList->AddChild(ui);
 }

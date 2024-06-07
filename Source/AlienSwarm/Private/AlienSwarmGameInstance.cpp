@@ -3,6 +3,7 @@
 
 #include "AlienSwarmGameInstance.h"
 #include "OnlineSessionSettings.h"
+#include "Online/OnlineSessionNames.h"
 
 void UAlienSwarmGameInstance::Init()
 {
@@ -13,6 +14,7 @@ void UAlienSwarmGameInstance::Init()
 		sessionInterface = subsys->GetSessionInterface();
 
 		sessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UAlienSwarmGameInstance::OnCreateSessionComplete);
+		sessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UAlienSwarmGameInstance::OnFindSessionComplete);
 
 	}
 }
@@ -47,6 +49,45 @@ void UAlienSwarmGameInstance::OnCreateSessionComplete(FName sessionName, bool bW
 	{
 		GetWorld()->ServerTravel(TEXT("/Game/Levels/WaitLevel?listen"));
 	}
+}
+
+void UAlienSwarmGameInstance::OnFindSessionComplete(bool bWasSuccessful)
+{
+	if (bWasSuccessful)
+	{
+		auto result = sessionInSearch->SearchResults;
+		for (auto item : result) {
+			if (item.IsValid() == false){
+				continue;
+			}
+
+			FSessionInfo info;
+			info.Set(item);
+
+			FString roomName;
+			item.Session.SessionSettings.Get(FName("ROOM_NAME"), roomName);
+			FString hostName;
+			item.Session.SessionSettings.Get(FName("HOST_NAME"), hostName);
+
+			info.roomName = StringBase64Decode(roomName);
+			info.hostName = StringBase64Decode(hostName);
+
+			//OnMySessionSearchCompleteDelegate.Broadcast(info);
+		}
+	}
+}
+
+void UAlienSwarmGameInstance::FindOtherSessions()
+{
+	sessionInSearch = MakeShareable(new FOnlineSessionSearch);
+
+	sessionInSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+
+	sessionInSearch->bIsLanQuery = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
+
+	sessionInSearch->MaxSearchResults = 10;
+
+	sessionInterface->FindSessions(0, sessionInSearch.ToSharedRef());
 }
 
 FString UAlienSwarmGameInstance::StringBase64Encode(const FString& str)
