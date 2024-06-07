@@ -441,21 +441,30 @@ void AAlienSwarmCharacter::TakeHit(int32 damage)
 // damage
 void AAlienSwarmCharacter::ServerRPC_TakeDamage_Implementation(int32 damage)
 {
-	HP = FMath::Clamp(HP, 0, MaxHP);
+	
 
-	HP -= damage;
+		HP = FMath::Clamp(HP, 0, MaxHP);
 
-	float hpratio = (float)HP / (float)MaxHP;
 
-	if (HP <= 1 && 1 == 1)
-	{
-		DiePlayer();
-	}
+		int32 truedamage = damage;
 
-	MultiRPC_TakeDamage(hpratio);
+		HP -= truedamage;
 
-		
-	UE_LOG(LogTemp, Warning, TEXT("%d"), HP);
+
+		float hpratio = (float)HP / (float)MaxHP;
+
+		if (HP <= 1)
+		{
+			DiePlayer();
+		}
+
+		float Test =hpratio;
+
+		MultiRPC_TakeDamage(Test);
+
+
+		UE_LOG(LogTemp, Warning, TEXT("%d"), HP);
+
 }
 
 
@@ -565,7 +574,7 @@ void AAlienSwarmCharacter::DiePlayer()
 		bDie = true;
 		GetCharacterMovement()->DisableMovement();
 	
-		//PlayerController->ServerRPC_ChangeSpectator();
+		PlayerController->ServerRPC_ChangeSpectator();
 
 	}
 }
