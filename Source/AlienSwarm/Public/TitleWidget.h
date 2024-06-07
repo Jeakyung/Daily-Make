@@ -37,7 +37,10 @@ public:
 	class UButton* Btn_CloseRoomList;
 
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
-	class UVerticalBox* RoomList;
+	class UButton* Btn_Refresh;
+
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	class UScrollBox* RoomList;
 
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UEditableText* EditedRoomName;
@@ -50,6 +53,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	class UAlienSwarmGameInstance* gi;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class URoomListItemUI> roomItemUIFactory;
 
 	UFUNCTION()
 	void ShowRoomSetting();
@@ -68,4 +74,10 @@ public:
 
 	UFUNCTION()
 	void QuitGame();
+
+	UFUNCTION()
+	void OnClickFindRoom();
+
+	UFUNCTION()
+	void AddRoomInfoUI(const struct FSessionInfo& info);
 };
