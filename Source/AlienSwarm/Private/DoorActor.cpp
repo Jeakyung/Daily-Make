@@ -80,26 +80,12 @@ void ADoorActor::Tick(float DeltaTime)
 
 void ADoorActor::DoorOpen(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
-	/*AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(OtherActor);
+	AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(OtherActor);
 	if (playerREF) {
-		if (playerREF->SelectedWeapon == 3) {
-			if (playerREF->SubWeapon){
-				AToolEngineering* temp = Cast<AToolEngineering>(playerREF->SubWeapon);
-				if (temp)
-				{
-					if (bIsLocked) {
-						ServerRPC_DoorUnLock();
-					}
-					else {
-						ServerRPC_DoorLock();
-					}
-					return;
-				}
-			}
-		}
+		SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
 	}
-	else */if (openstart || bIsOpened || bIsLocked) {
+	
+	if (openstart || bIsOpened || bIsLocked) {
 		return;
 	}
 	else {
@@ -116,7 +102,11 @@ void ADoorActor::ServerRPC_DoorOpen_Implementation()
 
 void ADoorActor::DoorClose(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
+	AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(OtherActor);
+	if (playerREF) {
+		SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
+	}
+
 	TArray<AActor*> overlapList;
 	openColl->GetOverlappingActors(overlapList);
 	

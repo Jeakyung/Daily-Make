@@ -22,19 +22,40 @@ public:
 	class UButton* Btn_Create;
 
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	class UButton* Btn_CloseRoomSetting;
+
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	class UButton* Btn_InsideCreate;
+
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UButton* Btn_Join;
 
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UButton* Btn_Quit;
 
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	class UButton* Btn_CloseRoomList;
+
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UVerticalBox* RoomList;
 
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
-	class UButton* Btn_CloseRoomList;
+	class UEditableText* EditedRoomName;
 
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* RoomListSpan;
+
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation* RoomSettingSpan;
+
+	UPROPERTY(EditDefaultsOnly)
+	class UAlienSwarmGameInstance* gi;
+
+	UFUNCTION()
+	void ShowRoomSetting();
+
+	UFUNCTION()
+	void CloseRoomSetting();
 
 	UFUNCTION()
 	void CreateRoom();

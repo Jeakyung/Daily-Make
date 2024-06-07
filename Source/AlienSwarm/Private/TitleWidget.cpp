@@ -7,23 +7,43 @@
 #include "Animation/WidgetAnimation.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "AlienSwarmGameInstance.h"
+#include "Components/EditableText.h"
 
 void UTitleWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	Btn_Create->OnClicked.AddDynamic(this, &UTitleWidget::CreateRoom);
+	gi = Cast<UAlienSwarmGameInstance>(GetWorld()->GetGameInstance());
+
+	Btn_Create->OnClicked.AddDynamic(this, &UTitleWidget::ShowRoomSetting);
+
+	Btn_CloseRoomSetting->OnClicked.AddDynamic(this, &UTitleWidget::CloseRoomSetting);
+
+	Btn_InsideCreate->OnClicked.AddDynamic(this, &UTitleWidget::CreateRoom);
 
 	Btn_Join->OnClicked.AddDynamic(this, &UTitleWidget::ShowRoomList);
 
-	Btn_Quit->OnClicked.AddDynamic(this, &UTitleWidget::QuitGame);
-
 	Btn_CloseRoomList->OnClicked.AddDynamic(this, &UTitleWidget::CloseRoomList);
+
+	Btn_Quit->OnClicked.AddDynamic(this, &UTitleWidget::QuitGame);
+}
+
+void UTitleWidget::ShowRoomSetting()
+{
+	PlayAnimation(RoomSettingSpan);
+}
+
+void UTitleWidget::CloseRoomSetting()
+{
+	PlayAnimation(RoomSettingSpan, 0.0f, 1, EUMGSequencePlayMode::Reverse);
 }
 
 void UTitleWidget::CreateRoom()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("TestLevel"));
+	if (gi) {
+		gi->CreateMySession(EditedRoomName->GetText().ToString());
+	}
 }
 
 void UTitleWidget::ShowRoomList()
@@ -33,7 +53,6 @@ void UTitleWidget::ShowRoomList()
 
 void UTitleWidget::CloseRoomList()
 {
-	float animPlayTime = RoomListSpan->GetEndTime();
 	PlayAnimation(RoomListSpan, 0.0f, 1, EUMGSequencePlayMode::Reverse);
 }
 

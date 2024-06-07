@@ -109,7 +109,7 @@ void AToolBulletBox::ServerRPC_ReduceMeg_Implementation(AActor* OtherActor)
 	if (bSet) {
 		AAlienSwarmCharacter* touchedPlayer = Cast<AAlienSwarmCharacter>(OtherActor);
 		if (touchedPlayer) {
-			//SetOwner(touchedPlayer);
+			SetOwner(touchedPlayer);
 			bool bIsTake;
 			switch (touchedPlayer->SelectedWeapon)
 			{
