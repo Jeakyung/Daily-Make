@@ -175,7 +175,7 @@ public:
 	class UMainWidget* mainWidget;
 
 	UPROPERTY(EditDefaultsOnly)
-	int32 MaxHP = 1000;
+	int32 MaxHP = 10;
 	int32 HP = MaxHP;
 
 
@@ -247,6 +247,7 @@ public:
 	//============================================
 
 	
+
 	// 죽는 몽타주 생성
 	UPROPERTY(EditAnywhere, Category = TPS)
 	class UAnimMontage* DeathMontage;
@@ -257,9 +258,15 @@ public:
 	// 죽었는지 판별하는 기능
 	UPROPERTY(Replicated)
 	bool bDie = false;
+	//============================================
+
 
 
 	UPROPERTY(EditDefaultsOnly,Category = TPS)
-	TSubclassOf<class UWidget> GameOverUI;
+	TSubclassOf<class UUserWidget> GameOverUI;
+
+	void OnActiveGameOverUI(bool value);
+
+	class UGameOverWidget* GameOverWidget;
 };
 

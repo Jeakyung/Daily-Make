@@ -20,6 +20,7 @@
 #include "NiagaraComponent.h"
 #include "MainGameModeBase.h"
 #include "GameOverWidget.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
 
 
 
@@ -572,14 +573,30 @@ void AAlienSwarmCharacter::DiePlayer()
 
 	if (HP <= 0)
 	{
+		// 피 0이 되면 bDie를 true로 만들고 애니메이션 실행
 		bDie = true;
+
+		// 움직임 멈춤
 		GetCharacterMovement()->DisableMovement();
+
+		// 관전 모드로 되기 전에 무기 없애기
 		DetachWeapon(Weapon);
 		DetachWeapon(Weapon2);
 		DetachWeapon(SubWeapon);
-		PlayerController->ServerRPC_ChangeSpectator();
+
+		//GameOverWidget->OnActiveGameOverPanel(true);
+
+		// 3초뒤에
+
+		// 마우스만 움직이고
+		// GameOver UI띄우기
 
 	}
+}
+
+void AAlienSwarmCharacter::OnActiveGameOverUI(bool value)
+{
+	
 }
 
 
@@ -593,6 +610,7 @@ void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME(AAlienSwarmCharacter, TargetRotation);
 	// 마우스 이동에 따른 카메라 이동 동기화
 	DOREPLIFETIME(AAlienSwarmCharacter, camMove);
+	// 죽음처리 동기화
 	DOREPLIFETIME(AAlienSwarmCharacter, bDie);
 }
 
