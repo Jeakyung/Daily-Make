@@ -569,11 +569,14 @@ void AAlienSwarmCharacter::OnRep_CameraMove()
 // 피 0되면 죽는 기능
 void AAlienSwarmCharacter::DiePlayer()
 {
+
 	if (HP <= 0)
 	{
 		bDie = true;
 		GetCharacterMovement()->DisableMovement();
-	
+		DetachWeapon(Weapon);
+		DetachWeapon(Weapon2);
+		DetachWeapon(SubWeapon);
 		PlayerController->ServerRPC_ChangeSpectator();
 
 	}
