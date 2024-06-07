@@ -260,9 +260,26 @@ void AAlienEnemy::AttackDoor()
 	}
 }
 
+void AAlienEnemy::TakeHit(int32 damage)
+{
+	ServerRPC_TakeDamage(damage);
+}
+
+void AAlienEnemy::ServerRPC_TakeDamage_Implementation(int32 damage)
+{
+	currentHP -= damage;
+	UE_LOG(LogTemp, Warning, TEXT("enemyHP: %d"), currentHP);
+
+	if (currentHP <= 0)
+	{
+		MultiRPC_EnemyDie();
+
+		UE_LOG(LogTemp, Warning, TEXT("DieEnemy"));
+	}
+	// UE_LOG(LogTemp, Warning, TEXT("HitDamege"));
+}
+
 void AAlienEnemy::ServerRPC_DoDamageToTargetPlayer_Implementation()
-{}
-void AAlienEnemy::MultiRPC_DoDamageToTargetPlayer_Implementation()
 {
 	if (myTarget)
 	{
@@ -288,23 +305,6 @@ void AAlienEnemy::MultiRPC_DoDamageToTargetPlayer_Implementation()
 }
 
 
-void AAlienEnemy::TakeHit(int32 damage)
-{
-	currentHP -= damage;
-	UE_LOG(LogTemp, Warning, TEXT("enemyHP: %d"), currentHP);
-
-	if (currentHP <= 0)
-	{
-		ServerRPC_EnemyDie();
-
-		UE_LOG(LogTemp, Warning, TEXT("DieEnemy"));
-	}
-	// UE_LOG(LogTemp, Warning, TEXT("HitDamege"));
-}
-
-void AAlienEnemy::ServerRPC_EnemyDie_Implementation()
-{
-}
 void AAlienEnemy::MultiRPC_EnemyDie_Implementation()
 {
 	FVector loc = GetActorLocation();

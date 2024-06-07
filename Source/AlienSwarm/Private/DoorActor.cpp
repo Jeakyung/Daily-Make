@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "../AlienSwarmCharacter.h"
+#include "HitInterface.h"
 #include "ToolEngineering.h"
 
 // Sets default values
@@ -149,6 +150,10 @@ void ADoorActor::DoorUnLock()
 {
 	SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
 	ServerRPC_DoorUnLock();
+}
+
+void ADoorActor::TakeHit(int32 damage)
+{
 }
 
 void ADoorActor::ServerRPC_DoorUnLock_Implementation()

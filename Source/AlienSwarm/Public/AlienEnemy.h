@@ -44,6 +44,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AExplosionEnemyBody> explosionEnemy;
 
+	TArray<AAlienSwarmCharacter*> targetList;
+	
 	// 최대체력
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	int32 maxHP=30;
@@ -59,6 +61,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	float traceSpeed = 720.f;
 
+		// 타겟 재설정 시간
+	float curTime=0.f;
+	float targetResetTime = 2.f;
+
+	// 문 공격 상태
+	bool bAttackDoor = false;
+
+	bool bStopMovement = false;
+
 	bool bHasTarget = false;
 	
 	// 공격 가능 거리	
@@ -73,11 +84,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	float CurrentDistance;
 
-	TArray<AAlienSwarmCharacter*> targetList;
 
 	UPROPERTY()
 	class AAlienAIController* AIEnemyController;
 
+	UFUNCTION()
 	// 실시간 타겟과의 거리 비교
 	void TargetDistCheck(AAlienSwarmCharacter* target);
 
@@ -96,27 +107,18 @@ public:
 	// 타겟 플레이어에게 데미지 가함
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_DoDamageToTargetPlayer();
-	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_DoDamageToTargetPlayer();
 
-	// 에너미 공격받음
-	UFUNCTION()
+	// takeHit는 그대로 받아오고
 	virtual void TakeHit(int32 damage) override;
 
-	// 죽으면 몸 터져
+	// 받아온 takeHit 인터페이스 서버통해 구현 
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_EnemyDie();
+	void ServerRPC_TakeDamage(int32 damage);
+
+
+	// 죽으면 몸 터져
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_EnemyDie();
-
-	// 타겟 재설정 시간
-	float curTime=0.f;
-	float targetResetTime = 2.f;
-
-	// 문 공격 상태
-	bool bAttackDoor = false;
-
-	bool bStopMovement = false;
 
 
 public:

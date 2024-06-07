@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "HitInterface.h"
 #include "DoorActor.generated.h"
 
 UCLASS()
-class ALIENSWARM_API ADoorActor : public AActor
+class ALIENSWARM_API ADoorActor : public AActor, public IHitInterface
 {
 	GENERATED_BODY()
 	
@@ -54,6 +55,8 @@ public:
 
 	float doorOpenTime = 0.5f;
 
+	int32 doorHP = 600;
+
 	FVector doorClosePos;
 
 	FVector doorOpenPos;
@@ -85,4 +88,7 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_DoorUnLock();
+
+	virtual void TakeHit(int32 damage) override;
+	
 };
