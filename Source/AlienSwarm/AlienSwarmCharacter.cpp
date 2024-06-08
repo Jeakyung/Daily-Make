@@ -463,10 +463,7 @@ void AAlienSwarmCharacter::ServerRPC_TakeDamage_Implementation(int32 damage)
 
 		float hpratio = (float)HP / (float)MaxHP;
 
-		if (HP <= 1)
-		{
-			DiePlayer();
-		}
+		
 
 		float Test =hpratio;
 
@@ -491,7 +488,11 @@ void AAlienSwarmCharacter::MultiRPC_TakeDamage_Implementation(float value)
 
 	
 		PlayerController->SetHP(value);
-	
+
+		if (HP <= 1)
+		{
+			DiePlayer();
+		}
 	}
 }
 
@@ -579,30 +580,26 @@ void AAlienSwarmCharacter::OnRep_CameraMove()
 // 피 0되면 죽는 기능
 void AAlienSwarmCharacter::DiePlayer()
 {
-
-	if (HP <= 0)
+	if (IsLocallyControlled())
 	{
-		// 피 0이 되면 bDie를 true로 만들고 애니메이션 실행
-		bDie = true;
+		if (HP <= 0)
+		{
+			// 피 0이 되면 bDie를 true로 만들고 애니메이션 실행
+			bDie = true;
 
-		// 움직임 멈춤
-		GetCharacterMovement()->DisableMovement();
+			// 움직임 멈춤
+			GetCharacterMovement()->DisableMovement();
 
-		// 관전 모드로 되기 전에 무기 없애기
-		DetachWeapon(Weapon);
-		DetachWeapon(Weapon2);
-		DetachWeapon(SubWeapon);
+			// 관전 모드로 되기 전에 무기 없애기
+			DetachWeapon(Weapon);
+			DetachWeapon(Weapon2);
+			DetachWeapon(SubWeapon);
 
-		PlayerController->MakeGameOverWidget();
+			PlayerController->MakeGameOverWidget();
 
-		// 관전 모드 실행
-		PlayerController->ServerRPC_ChangeSpectator();
-
-
-		// 3초뒤에
-
-		// 마우스만 움직이고
-		// GameOver UI띄우기
+			// 관전 모드 실행
+			PlayerController->ServerRPC_ChangeSpectator();
+		}
 
 	}
 }
