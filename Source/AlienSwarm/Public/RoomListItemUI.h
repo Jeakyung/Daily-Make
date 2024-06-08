@@ -27,6 +27,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UTextBlock* Text_Num;
 
+	int32 index;
+
 	UFUNCTION()
 	void OnMyClickJoinRoom();
 

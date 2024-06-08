@@ -51,6 +51,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* RoomSettingSpan;
 
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	class UCircularThrobber* Throbber_Loading;
+
 	UPROPERTY(EditDefaultsOnly)
 	class UAlienSwarmGameInstance* gi;
 
@@ -77,6 +80,9 @@ public:
 
 	UFUNCTION()
 	void OnClickFindRoom();
+
+	UFUNCTION()
+	void OnMySetActiveFindingThrobber(bool bSearching);
 
 	UFUNCTION()
 	void AddRoomInfoUI(const struct FSessionInfo& info);

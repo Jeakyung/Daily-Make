@@ -22,7 +22,10 @@ struct FSessionInfo
 	UPROPERTY(BlueprintReadOnly)
 	int32 currentPlayerCount;
 
-	FORCEINLINE void Set(const FOnlineSessionSearchResult& item) {
+	int32 index;
+
+	FORCEINLINE void Set(int32 _index, const FOnlineSessionSearchResult& item) {
+		index = _index;
 		//item.Session.SessionSettings.Get(FName("ROOM_NAME"), roomName);
 		//item.Session.SessionSettings.Get(FName("HOST_NAME"), hostName);
 		// 방장의 이름
@@ -53,6 +56,10 @@ public:
 
 	IOnlineSessionPtr sessionInterface;
 
+	FSessioinSearchDelegate OnMySessionSearchCompleteDelegate;
+
+	FSessioinSearchFinishedDelegate OnMySessionSearchFinisherDelegate;
+
 	FString mySessionName = TEXT("DailyMake");
 
 	TSharedPtr<FOnlineSessionSearch> sessionInSearch;
@@ -66,6 +73,10 @@ public:
 	void OnFindSessionComplete(bool bWasSuccessful);
 
 	void FindOtherSessions();
+
+	void JoinMySession(int32 index);
+
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type result);
 
 	FString StringBase64Encode(const FString& str);
 	FString StringBase64Decode(const FString& str);

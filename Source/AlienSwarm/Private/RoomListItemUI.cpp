@@ -13,11 +13,12 @@ void URoomListItemUI::NativeConstruct()
 
 void URoomListItemUI::OnMyClickJoinRoom()
 {
-	
+	Cast<UAlienSwarmGameInstance>(GetWorld()->GetGameInstance())->JoinMySession(index);
 }
 
 void URoomListItemUI::Setup(const FSessionInfo& info)
 {
+	index = info.index;
 	Text_RoomName->SetText(FText::FromString(info.roomName));
 	int32 currentNum = info.currentPlayerCount;
 	Text_Num->SetText(FText::FromString(FString::Printf(TEXT("%d"), currentNum)));

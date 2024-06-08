@@ -15,7 +15,7 @@ void UAlienSwarmGameInstance::Init()
 
 		sessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UAlienSwarmGameInstance::OnCreateSessionComplete);
 		sessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UAlienSwarmGameInstance::OnFindSessionComplete);
-
+		sessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UAlienSwarmGameInstance::OnJoinSessionComplete);
 	}
 }
 
@@ -56,29 +56,38 @@ void UAlienSwarmGameInstance::OnFindSessionComplete(bool bWasSuccessful)
 	if (bWasSuccessful)
 	{
 		auto result = sessionInSearch->SearchResults;
-		for (auto item : result) {
-			if (item.IsValid() == false){
+		for (int32 i = 0; i < result.Num(); i++) {
+			if (result[i].IsValid() == false) {
 				continue;
 			}
 
 			FSessionInfo info;
-			info.Set(item);
+			info.Set(i, result[i]);
 
 			FString roomName;
-			item.Session.SessionSettings.Get(FName("ROOM_NAME"), roomName);
+			result[i].Session.SessionSettings.Get(FName("ROOM_NAME"), roomName);
 			FString hostName;
-			item.Session.SessionSettings.Get(FName("HOST_NAME"), hostName);
+			result[i].Session.SessionSettings.Get(FName("HOST_NAME"), hostName);
 
 			info.roomName = StringBase64Decode(roomName);
 			info.hostName = StringBase64Decode(hostName);
 
-			//OnMySessionSearchCompleteDelegate.Broadcast(info);
+			OnMySessionSearchCompleteDelegate.Broadcast(info);
+		}
+	}
+	else {
+		if (OnMySessionSearchFinisherDelegate.IsBound()) {
+			OnMySessionSearchFinisherDelegate.Broadcast(false);
 		}
 	}
 }
 
 void UAlienSwarmGameInstance::FindOtherSessions()
 {
+	if (OnMySessionSearchFinisherDelegate.IsBound()) {
+		OnMySessionSearchFinisherDelegate.Broadcast(true);
+	}
+
 	sessionInSearch = MakeShareable(new FOnlineSessionSearch);
 
 	sessionInSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
@@ -98,6 +107,11 @@ FString UAlienSwarmGameInstance::StringBase64Encode(const FString& str)
 	return FBase64::Encode(arrayData);
 }
 
+void UAlienSwarmGameInstance::JoinMySession(int32 index)
+{
+	sessionInterface->JoinSession(0, FName(*mySessionName), sessionInSearch->SearchResults[index]);
+}
+
 FString UAlienSwarmGameInstance::StringBase64Decode(const FString& str)
 {
 	// Get ÇÒ ¶§ : base64 ·Î Decode -> TArray<uint8> -> TCHAR
@@ -105,4 +119,17 @@ FString UAlienSwarmGameInstance::StringBase64Decode(const FString& str)
 	FBase64::Decode(str, arrayData);
 	std::string ut8String((char*)(arrayData.GetData()), arrayData.Num());
 	return UTF8_TO_TCHAR(ut8String.c_str());
+}
+
+void UAlienSwarmGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type result)
+{
+	if (result == EOnJoinSessionCompleteResult::Success) {
+		auto* pc = GetWorld()->GetFirstPlayerController();
+		FString url;
+		sessionInterface->GetResolvedConnectString(SessionName, url);
+
+		if (!url.IsEmpty()) {
+			pc->ClientTravel(url, ETravelType::TRAVEL_Absolute);
+		}
+	}
 }

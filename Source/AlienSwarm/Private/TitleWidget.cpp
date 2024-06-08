@@ -11,12 +11,16 @@
 #include "Components/EditableText.h"
 #include "RoomListItemUI.h"
 #include "Components/ScrollBox.h"
+#include "Components/CircularThrobber.h"
 
 void UTitleWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
 	gi = Cast<UAlienSwarmGameInstance>(GetWorld()->GetGameInstance());
+
+	gi->OnMySessionSearchCompleteDelegate.AddDynamic(this, &UTitleWidget::AddRoomInfoUI);
+	gi->OnMySessionSearchFinisherDelegate.AddDynamic(this, &UTitleWidget::OnMySetActiveFindingThrobber);
 
 	Btn_Create->OnClicked.AddDynamic(this, &UTitleWidget::ShowRoomSetting);
 
@@ -53,6 +57,10 @@ void UTitleWidget::CreateRoom()
 void UTitleWidget::ShowRoomList()
 {
 	PlayAnimation(RoomListSpan);
+
+	if (gi) {
+		gi->FindOtherSessions();
+	}
 }
 
 void UTitleWidget::CloseRoomList()
@@ -67,7 +75,16 @@ void UTitleWidget::QuitGame()
 
 void UTitleWidget::OnClickFindRoom()
 {
-	
+	RoomList->ClearChildren();
+	if (gi) {
+		gi->FindOtherSessions();
+	}
+}
+
+void UTitleWidget::OnMySetActiveFindingThrobber(bool bSearching)
+{
+	Throbber_Loading->SetVisibility(bSearching ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	Btn_Refresh->SetIsEnabled(!bSearching);
 }
 
 void UTitleWidget::AddRoomInfoUI(const FSessionInfo& info)

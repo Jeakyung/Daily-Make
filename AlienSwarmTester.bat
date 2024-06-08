@@ -1,0 +1,1 @@
+"C:\Program Files\Epic Games\UE_5.3\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Users\Choi\Documents\Unreal Projects\Daily-Make\AlienSwarm.uproject" -game -ResX=1200 -ResY=800 -WinX=0 -WinY=100 -log
