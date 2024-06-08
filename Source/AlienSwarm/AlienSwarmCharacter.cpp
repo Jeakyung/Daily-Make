@@ -153,6 +153,9 @@ void AAlienSwarmCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		// SubWeapon
 		EnhancedInputComponent->BindAction(IA_SubWeapon, ETriggerEvent::Started, this, &AAlienSwarmCharacter::OnIASubWeapon);
 		
+		// Open GameOver UI
+		EnhancedInputComponent->BindAction(IA_OpenGO, ETriggerEvent::Started, this, &AAlienSwarmCharacter::OnIAOpenGO);
+
 	}
 	else
 	{
@@ -253,6 +256,11 @@ void AAlienSwarmCharacter::OnIASubWeapon(const FInputActionValue& Value)
 	ServerRPC_SubWeapon();
 	
 	UE_LOG(LogTemp, Warning, TEXT("SubWeapon"));
+}
+
+void AAlienSwarmCharacter::OnIAOpenGO(const FInputActionValue& Value)
+{
+	PlayerController->MakeGameOverWidget();
 }
 
 void AAlienSwarmCharacter::TurnPlayer()

@@ -57,6 +57,9 @@ class AAlienSwarmCharacter : public ACharacter,public IHitInterface
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* IA_SubWeapon;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* IA_OpenGO;
+
 public:
 	AAlienSwarmCharacter();
 	
@@ -84,6 +87,9 @@ protected:
 
 	// 보조 무기로 변경하는 기능
 	void OnIASubWeapon(const FInputActionValue& Value);
+
+	// GameOver UI 열기 버튼
+	void OnIAOpenGO(const FInputActionValue& Value);
 
 protected:
 
