@@ -588,7 +588,7 @@ void AAlienSwarmCharacter::DiePlayer()
 		PlayerController->MakeGameOverWidget();
 
 		// 관전 모드 실행
-		//PlayerController->ServerRPC_ChangeSpectator(true);
+		PlayerController->ServerRPC_ChangeSpectator();
 
 
 		// 3초뒤에

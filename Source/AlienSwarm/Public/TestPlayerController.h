@@ -77,7 +77,7 @@ public:
 
 	// 관전자 모드 (일단 안씀 Enemy와 충돌남)
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_ChangeSpectator(bool value);
+	void ServerRPC_ChangeSpectator();
 
 	class AMainGameModeBase* gameMode;
 };

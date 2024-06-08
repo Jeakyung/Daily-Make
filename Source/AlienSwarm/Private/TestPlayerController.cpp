@@ -115,16 +115,14 @@ void ATestPlayerController::SetMeg(int32 value)
 }
 
 
-// 관전자 모드 (일단 안씀 Enemy와 충돌남)
-void ATestPlayerController::ServerRPC_ChangeSpectator_Implementation(bool value)
+// 관전자 모드
+void ATestPlayerController::ServerRPC_ChangeSpectator_Implementation()
 {
 	auto* currentPlayer = GetPawn();
 	
 	if (currentPlayer)
 	{
-		if (false == value)
-		{
-
+		
 			FTransform playerTF = currentPlayer->GetActorTransform();
 			FActorSpawnParameters params;
 			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -136,9 +134,6 @@ void ATestPlayerController::ServerRPC_ChangeSpectator_Implementation(bool value)
 			Possess(newPawn);
 
 			currentPlayer->Destroy();
-		}
-		else
-			return;
 		
 	}
 }

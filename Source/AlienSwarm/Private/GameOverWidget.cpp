@@ -32,5 +32,5 @@ void UGameOverWidget::OnClickQuit()
 void UGameOverWidget::OnClickShowOP()
 {
 	// 관전 모드 실행
-	PlayerController->ServerRPC_ChangeSpectator(true);
+	SetVisibility(ESlateVisibility::Hidden);
 }
