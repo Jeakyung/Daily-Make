@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -47,8 +46,7 @@ public:
 	class ATestPlayerController* PlayerController;
 
 
-	UFUNCTION()
-	void OnActiveGameOverPanel(bool value);
+
 
 	UFUNCTION()
 	void OnClickStay();

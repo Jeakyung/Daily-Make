@@ -7,6 +7,7 @@
 #include "MainWidget.h"
 #include "MainGameModeBase.h"
 #include "../AlienSwarmCharacter.h"
+#include "GameOverWidget.h"
 #include "GameFramework/SpectatorPawn.h"
 
 void ATestPlayerController::BeginPlay()
@@ -56,6 +57,19 @@ void ATestPlayerController::MakeMainWidget()
 
 			SetInputMode(FInputModeGameOnly());
 			SetShowMouseCursor(false);
+		}
+	}
+}
+
+void ATestPlayerController::MakeGameOverWidget()
+{
+	if (gameOver_bp) {
+		GameOverWidget = CreateWidget<UGameOverWidget>(GetWorld(), gameOver_bp);
+		if (GameOverWidget) {
+			GameOverWidget->AddToViewport();
+
+			//SetInputMode(FInputModeUIOnly());
+			SetShowMouseCursor(true);
 		}
 	}
 }

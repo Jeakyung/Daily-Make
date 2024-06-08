@@ -14,10 +14,7 @@ void UGameOverWidget::NativeConstruct()
 	Button_ShowOP->OnClicked.AddDynamic(this, &UGameOverWidget::OnClickShowOP);
 }
 
-void UGameOverWidget::OnActiveGameOverPanel(bool value)
-{
-	GameOverPanel->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
-}
+
 
 void UGameOverWidget::OnClickStay()
 {

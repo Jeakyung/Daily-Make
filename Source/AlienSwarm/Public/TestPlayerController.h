@@ -28,6 +28,9 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class UMainWidget> mainWidget_bp;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UGameOverWidget> gameOver_bp;
+
 public:
 	UPROPERTY()
 	class UTitleWidget* titleWidget;
@@ -37,6 +40,9 @@ public:
 
 	UPROPERTY()
 	class UMainWidget* mainWidget;
+
+	UPROPERTY()
+	class UGameOverWidget* GameOverWidget;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UTexture2D* Weapon1;
@@ -52,6 +58,8 @@ public:
 	void MakeShopWidget();
 
 	void MakeMainWidget();
+
+	void MakeGameOverWidget();
 
 	void MoveToStartPos();
 

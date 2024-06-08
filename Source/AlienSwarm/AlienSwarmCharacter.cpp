@@ -21,6 +21,7 @@
 #include "MainGameModeBase.h"
 #include "GameOverWidget.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
+#include "GameOverWidget.h"
 
 
 
@@ -584,7 +585,11 @@ void AAlienSwarmCharacter::DiePlayer()
 		DetachWeapon(Weapon2);
 		DetachWeapon(SubWeapon);
 
-		//GameOverWidget->OnActiveGameOverPanel(true);
+		PlayerController->MakeGameOverWidget();
+
+		// 관전 모드 실행
+		//PlayerController->ServerRPC_ChangeSpectator(true);
+
 
 		// 3초뒤에
 
@@ -594,10 +599,7 @@ void AAlienSwarmCharacter::DiePlayer()
 	}
 }
 
-void AAlienSwarmCharacter::OnActiveGameOverUI(bool value)
-{
-	
-}
+
 
 
 
@@ -612,5 +614,7 @@ void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME(AAlienSwarmCharacter, camMove);
 	// 죽음처리 동기화
 	DOREPLIFETIME(AAlienSwarmCharacter, bDie);
+	// HP 동기화
+	DOREPLIFETIME(AAlienSwarmCharacter, HP);
 }
 

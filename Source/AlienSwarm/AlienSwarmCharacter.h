@@ -176,9 +176,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	int32 MaxHP = 10;
+
+	UPROPERTY(Replicated)
 	int32 HP = MaxHP;
 
 
+	// 데미지 받는 기능
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_TakeDamage(int32 damage);
 
@@ -261,12 +264,8 @@ public:
 	//============================================
 
 
-
-	UPROPERTY(EditDefaultsOnly,Category = TPS)
-	TSubclassOf<class UUserWidget> GameOverUI;
-
-	void OnActiveGameOverUI(bool value);
-
 	class UGameOverWidget* GameOverWidget;
+
+	
 };
 
