@@ -27,6 +27,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UPROPERTY()
 	AAlienSwarmCharacter* myTarget;
@@ -50,8 +52,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	int32 maxHP=30;
 	// 현재체력
-	UPROPERTY(EditAnywhere, Category = Enemy)
-	int32 currentHP=maxHP;
+	UPROPERTY(Replicated, EditAnywhere, Category = Enemy)
+	int32 currentHP = maxHP;
 
 	// 공격력
 	UPROPERTY(EditAnywhere, Category = Enemy)
@@ -115,10 +117,12 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_TakeDamage(int32 damage);
 
-
 	// 죽으면 몸 터져
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_EnemyDie();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_SetHP(int32 hp);
 
 
 public:
