@@ -41,6 +41,9 @@ void ARedLightActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (HasAuthority()) {
+		SetOwner(GetWorld()->GetFirstPlayerController());
+	}
 }
 
 // Called every frame

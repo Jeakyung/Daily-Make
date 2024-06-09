@@ -50,7 +50,7 @@ public:
 	void ChargeMeg(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_ReduceMeg(AActor* OtherActor);
+	void ServerRPC_ReduceMeg(AAlienSwarmCharacter* touchedPlayer);
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_ReduceMeg(int32 _meg);
