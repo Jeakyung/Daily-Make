@@ -101,43 +101,33 @@ void AToolBulletBox::MultiRPC_SetBox_Implementation(FVector mousePos)
 
 void AToolBulletBox::ChargeMeg(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AAlienSwarmCharacter* touchedPlayer = Cast<AAlienSwarmCharacter>(OtherActor);
-	if (touchedPlayer && HasAuthority()) {
-		SetOwner(touchedPlayer->GetController());
-		ServerRPC_ReduceMeg(touchedPlayer);
-	}
+	ServerRPC_ReduceMeg(OtherActor);
 }
 
-void AToolBulletBox::ServerRPC_ReduceMeg_Implementation(AAlienSwarmCharacter* touchedPlayer)
+void AToolBulletBox::ServerRPC_ReduceMeg_Implementation(AActor* OtherActor)
 {
-	if (bSet) {		
-		bool bIsTake;
-		switch (touchedPlayer->SelectedWeapon)
-		{
-		case 1:
-			if (touchedPlayer->Weapon != nullptr) {
+	if (bSet) {
+		AAlienSwarmCharacter* touchedPlayer = Cast<AAlienSwarmCharacter>(OtherActor);
+		if (touchedPlayer) {
+			SetOwner(touchedPlayer);
+			bool bIsTake;
+			switch (touchedPlayer->SelectedWeapon)
+			{
+			case 1:
 				bIsTake = touchedPlayer->Weapon->TakeMagazine();
-			}
-			else {
-				bIsTake = false;
-			}
-			break;
-		case 2:
-			if (touchedPlayer->Weapon2 != nullptr) {
+				break;
+			case 2:
 				bIsTake = touchedPlayer->Weapon2->TakeMagazine();
-			}
-			else {
+				break;
+			default:
 				bIsTake = false;
+				break;
 			}
-			break;
-		default:
-			bIsTake = false;
-			break;
-		}
 
-		if (bIsTake) {
-			megCount--;
-			MultiRPC_ReduceMeg(megCount);
+			if (bIsTake) {
+				megCount--;
+				MultiRPC_ReduceMeg(megCount);
+			}
 		}
 	}
 	//SetOwner(nullptr);

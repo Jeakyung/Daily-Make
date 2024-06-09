@@ -32,9 +32,6 @@ public:
 	UFUNCTION()
 	void SpawnEnemy();
 
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_SpawnEnemy();
-
 	UPROPERTY(EditAnywhere)
 	class USceneComponent* sceneComp;
 
@@ -57,7 +54,6 @@ public:
 	bool bOverlapToComp = false;
 
 	// 무한 스폰
-	UPROPERTY(VisibleAnywhere)
 	bool bSpawnInfinity = false;
 
 

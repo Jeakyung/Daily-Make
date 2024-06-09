@@ -29,17 +29,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	TArray<ARedLightActor*> redLights;
-	
-	TArray<ADoorActor*> doors;
-	
-	TArray<AEnemySpawner*> spawners;
-
 	UPROPERTY(EditAnywhere)
 	AActor* dirLight;
-
-	UPROPERTY(EditAnywhere)
-	class AClearCheakActor* clearCheak;
 
 	UFUNCTION()
 	void ActiveWarning(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -48,5 +39,5 @@ public:
 	void ServerRPC_ActiveWarning();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_ActiveWarning();
+	void MultiRPC_ActiveWarning(const TArray<class ARedLightActor*>& redLights, const TArray<class ADoorActor*>& doors, const TArray<AEnemySpawner*>& spawners);
 };

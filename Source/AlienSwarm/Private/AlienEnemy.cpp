@@ -10,6 +10,7 @@
 #include "AlienSwarm/AlienSwarmCharacter.h"
 #include <EnemyAnimInstance.h>
 #include "HitInterface.h"
+#include "Net/UnrealNetwork.h"
 #include <ExplosionEnemyBody.h>
 #include "Engine/World.h"
 
@@ -126,6 +127,14 @@ void AAlienEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AAlienEnemy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	// 에너미 체력 동기화
+	DOREPLIFETIME(AAlienEnemy, currentHP);
 }
 
 void AAlienEnemy::TargetDistCheck(AAlienSwarmCharacter* target)
@@ -262,13 +271,26 @@ void AAlienEnemy::AttackDoor()
 
 void AAlienEnemy::TakeHit(int32 damage)
 {
+	UE_LOG(LogTemp, Warning, TEXT("takeHitFunc"));
+	UE_LOG(LogTemp, Error, TEXT("enemyHP: %d"), currentHP);
 	ServerRPC_TakeDamage(damage);
+}
+
+void AAlienEnemy::MultiRPC_SetHP_Implementation(int32 hp)
+{	
+	UE_LOG(LogTemp, Warning, TEXT("MultiSerHPFunc"));
+	currentHP = hp;
 }
 
 void AAlienEnemy::ServerRPC_TakeDamage_Implementation(int32 damage)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ServerTakeDamageFunc"));
+
 	currentHP -= damage;
 	UE_LOG(LogTemp, Warning, TEXT("enemyHP: %d"), currentHP);
+
+	MultiRPC_SetHP(currentHP);
+
 
 	if (currentHP <= 0)
 	{
