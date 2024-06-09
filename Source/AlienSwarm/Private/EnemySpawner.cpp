@@ -8,7 +8,7 @@
 #include "Components/PrimitiveComponent.h"
 #include <../../../../../../../Source/Runtime/Core/Public/Delegates/Delegate.h>
 #include <../AlienSwarmCharacter.h>
-
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -35,6 +35,10 @@ void AEnemySpawner::BeginPlay()
 
 	// SpawnEnemy();
 	overlapCheckBox->OnComponentBeginOverlap.AddDynamic(this, &AEnemySpawner::PlayerOverlap);
+
+	if (HasAuthority()) {
+		SetOwner(GetWorld()->GetFirstPlayerController());
+	}
 }
 
 // Called every frame
@@ -42,17 +46,16 @@ void AEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bSpawnInfinity) {
-		SpawnEnemy();
-	}
-	else if (bOverlapToComp)
+	if (bOverlapToComp || bSpawnInfinity)
 	{
-		if (currentTime < SpawnTime)
+		if (currentTime < SpawnTime || bSpawnInfinity)
 		{
 			currentTime += DeltaTime;
 		}
-		else if (currentTime >= DeltaTime) {
-			SpawnEnemy();
+		
+		if (currentTime > SpawnTime) {
+			//SpawnEnemy();
+			ServerRPC_SpawnEnemy();
 			currentTime = 0;
 			EnemyCount++;
 
@@ -85,6 +88,25 @@ void AEnemySpawner::SpawnEnemy()
 	}
 }
 
+void AEnemySpawner::ServerRPC_SpawnEnemy_Implementation()
+{
+	// 서버에서만 에너미 스폰
+	if (HasAuthority())
+	{
+		// 처음에만 위치값 저장하고 다음부터는 가져다 씀
+		FVector loc = GetActorLocation();
+		FRotator rot = GetActorRotation();
+
+		FActorSpawnParameters params;
+		// 자신을 생성되는 에너미의 오너로 설정
+		params.Owner = this;
+		params.Instigator = GetInstigator();
+		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		GetWorld()->SpawnActor<AAlienEnemy>(enemy, loc, rot, params);
+	}
+}
+
 void AEnemySpawner::PlayerOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// 부딪힌 대상이 플레이어라면 에너미 스폰
@@ -92,7 +114,9 @@ void AEnemySpawner::PlayerOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 
 	if (player)
 	{
-		bOverlapToComp = true;
+		if (EnemyCount < MaxEnemyCount) {
+			bOverlapToComp = true;
+		}
 		UE_LOG(LogTemp, Warning, TEXT("Overlaped on Player"));
 		// SpawnEnemy();
 	}

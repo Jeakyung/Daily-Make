@@ -8,6 +8,8 @@
 #include "RedLightActor.h"
 #include "DoorActor.h"
 #include "EnemySpawner.h"
+#include "ClearCheakActor.h"
+#include "../AlienSwarmCharacter.h"
 
 // Sets default values
 AWarningTriggerActor::AWarningTriggerActor()
@@ -30,6 +32,20 @@ void AWarningTriggerActor::BeginPlay()
 	Super::BeginPlay();
 	
 	triggerComp->OnComponentBeginOverlap.AddDynamic(this, &AWarningTriggerActor::ActiveWarning);
+
+	redLights.Empty();
+	doors.Empty();
+	spawners.Empty();
+
+	for (TActorIterator<ARedLightActor> it(GetWorld()); it; ++it) {
+		redLights.Add(*it);
+	}
+	for (TActorIterator<ADoorActor> it(GetWorld()); it; ++it) {
+		doors.Add(*it);
+	}
+	for (TActorIterator<AEnemySpawner> it(GetWorld()); it; ++it) {
+		spawners.Add(*it);
+	}
 }
 
 // Called every frame
@@ -41,35 +57,30 @@ void AWarningTriggerActor::Tick(float DeltaTime)
 
 void AWarningTriggerActor::ActiveWarning(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("111111"));
-	ServerRPC_ActiveWarning();
+	AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(OtherActor);
+	if (playerREF && HasAuthority()) {
+		SetOwner(playerREF->GetController());
+		UE_LOG(LogTemp, Warning, TEXT("111111"));
+		ServerRPC_ActiveWarning();
+	}
 }
 
 void AWarningTriggerActor::ServerRPC_ActiveWarning_Implementation()
 {
-	TArray<ARedLightActor*> redLights;
-	for(TActorIterator<ARedLightActor> it(GetWorld()); it ; ++it){
-		redLights.Add(*it);
-	}
-	TArray<ADoorActor*> doors;
-	for (TActorIterator<ADoorActor> it(GetWorld()); it; ++it) {
-		doors.Add(*it);
-	}
-	TArray<AEnemySpawner*> spawners;
-	/*for (TActorIterator<AEnemySpawner> it(GetWorld()); it; ++it) {
-		spawners.Add(*it);
-	}*/
-	
-	MultiRPC_ActiveWarning(redLights, doors, spawners);
+	MultiRPC_ActiveWarning();
 }
 
-void AWarningTriggerActor::MultiRPC_ActiveWarning_Implementation(const TArray<class ARedLightActor*>& redLights, const TArray<class ADoorActor*>& doors, const TArray<AEnemySpawner*>& spawners)
+void AWarningTriggerActor::MultiRPC_ActiveWarning_Implementation()
 {
 	if(dirLight) {
 		ADirectionalLight* dLight = Cast<ADirectionalLight>(dirLight);
 		if(dLight) {
 			dLight->SetLightColor(FColor(150,150,150));
 		}
+	}
+
+	if (clearCheak) {
+		clearCheak->bIsClearReady = true;
 	}
 
 	for(int32 i = 0; i < redLights.Num(); i++) {
@@ -80,8 +91,8 @@ void AWarningTriggerActor::MultiRPC_ActiveWarning_Implementation(const TArray<cl
 		doors[i]->bIsLocked = true;
 	}
 
-	/*for (int32 i = 0; i < spawners.Num(); i++) {
+	for (int32 i = 0; i < spawners.Num(); i++) {
 		spawners[i]->bSpawnInfinity = true;
-	}*/
+	}
 }
 
