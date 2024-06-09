@@ -58,7 +58,7 @@ public:
 
 	FSessioinSearchDelegate OnMySessionSearchCompleteDelegate;
 
-	FSessioinSearchFinishedDelegate OnMySessionSearchFinisherDelegate;
+	FSessioinSearchFinishedDelegate OnMySessionSearchFinishedDelegate;
 
 	FString mySessionName = TEXT("DailyMake");
 

@@ -71,30 +71,43 @@ void UAlienSwarmGameInstance::OnFindSessionComplete(bool bWasSuccessful)
 
 			info.roomName = StringBase64Decode(roomName);
 			info.hostName = StringBase64Decode(hostName);
+			
+			//int32 num = sessionInterface->GetNamedSession(FName(roomName))->NumOpenPublicConnections;
+
+			//UE_LOG(LogTemp, Warning, TEXT("Num1 : %d"), sessionInterface->GetNamedSession(FName(*roomName))->NumOpenPublicConnections);
+			//FOnlineSessionSettings* set = sessionInterface->GetSessionSettings(FName(*roomName));
+			//sessionInterface->UpdateSession(FName(*roomName), *set);
+			/*int32 LobbyMemberCount = SteamMatchmakingPtr->GetNumLobbyMembers(SessionInfo->SessionId);
+			int32 MaxLobbyMembers = SteamMatchmakingPtr->GetLobbyMemberLimit(SessionInfo->SessionId);
+			Session->NumOpenPublicConnections = MaxLobbyMembers - LobbyMemberCount;*/
+
+			//num = sessionInterface->GetNamedSession(FName(*roomName))->NumOpenPublicConnections;
+			//UE_LOG(LogTemp, Warning, TEXT("Num2 : %d"), sessionInterface->GetNamedSession(FName(*roomName))->NumOpenPublicConnections);
 
 			OnMySessionSearchCompleteDelegate.Broadcast(info);
 		}
 	}
-	else {
-		if (OnMySessionSearchFinisherDelegate.IsBound()) {
-			OnMySessionSearchFinisherDelegate.Broadcast(false);
-		}
+
+	if (OnMySessionSearchFinishedDelegate.IsBound()) {
+		OnMySessionSearchFinishedDelegate.Broadcast(false);
 	}
 }
 
 void UAlienSwarmGameInstance::FindOtherSessions()
 {
-	if (OnMySessionSearchFinisherDelegate.IsBound()) {
-		OnMySessionSearchFinisherDelegate.Broadcast(true);
+	if (OnMySessionSearchFinishedDelegate.IsBound()) {
+		OnMySessionSearchFinishedDelegate.Broadcast(true);
 	}
 
 	sessionInSearch = MakeShareable(new FOnlineSessionSearch);
 
-	sessionInSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+	sessionInSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Near);
 
 	sessionInSearch->bIsLanQuery = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
 
 	sessionInSearch->MaxSearchResults = 10;
+
+	sessionInSearch->TimeoutInSeconds = 5;
 
 	sessionInterface->FindSessions(0, sessionInSearch.ToSharedRef());
 }

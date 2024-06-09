@@ -29,6 +29,7 @@ void AStartActor::BeginPlay()
 	Super::BeginPlay();
 	
 	BoxComp->OnComponentBeginOverlap.AddDynamic(this, &AStartActor::StartOverlap);
+	BoxComp->OnComponentEndOverlap.AddDynamic(this, &AStartActor::StartOverlapEnd);
 }
 
 // Called every frame
@@ -43,11 +44,13 @@ void AStartActor::StartOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(OtherActor);
 	if (playerREF) {
 		waitingPlayers++;
+		UE_LOG(LogTemp, Warning, TEXT("On : %d"), waitingPlayers);
 		int32 playerNum = 0;
 		for (TActorIterator<AAlienSwarmCharacter> target(GetWorld()); target; ++target)
 		{
 			playerNum++;
 		}
+		UE_LOG(LogTemp, Warning, TEXT("PlayerNum : %d"), playerNum);
 		if (waitingPlayers == playerNum) {
 			ServerRPC_GameStart();
 		}
@@ -59,7 +62,9 @@ void AStartActor::StartOverlapEnd(UPrimitiveComponent* OverlappedComponent, AAct
 	AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(OtherActor);
 	if (playerREF) {
 		waitingPlayers--;
+		UE_LOG(LogTemp, Warning, TEXT("Out Cheaked: %d"), waitingPlayers);
 	}
+	UE_LOG(LogTemp, Warning, TEXT("Out : %d"), waitingPlayers);
 }
 
 void AStartActor::ServerRPC_GameStart_Implementation()

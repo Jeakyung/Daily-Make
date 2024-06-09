@@ -20,7 +20,7 @@ void UTitleWidget::NativeConstruct()
 	gi = Cast<UAlienSwarmGameInstance>(GetWorld()->GetGameInstance());
 
 	gi->OnMySessionSearchCompleteDelegate.AddDynamic(this, &UTitleWidget::AddRoomInfoUI);
-	gi->OnMySessionSearchFinisherDelegate.AddDynamic(this, &UTitleWidget::OnMySetActiveFindingThrobber);
+	gi->OnMySessionSearchFinishedDelegate.AddDynamic(this, &UTitleWidget::OnMySetActiveFindingThrobber);
 
 	Btn_Create->OnClicked.AddDynamic(this, &UTitleWidget::ShowRoomSetting);
 
