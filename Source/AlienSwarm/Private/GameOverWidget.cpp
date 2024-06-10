@@ -27,7 +27,7 @@ void UGameOverWidget::OnClickStay()
 void UGameOverWidget::OnClickQuit()
 {
 	auto* pc = GetWorld()->GetFirstPlayerController();
-	pc->ClientTravel("/Game/Net/Maps/LobbyMap", ETravelType::TRAVEL_Absolute);
+	pc->ClientTravel("/Game/Levels/TitleLevel", ETravelType::TRAVEL_Absolute);
 }
 
 void UGameOverWidget::OnClickShowOP()
