@@ -33,6 +33,9 @@ public:
 	UPROPERTY()
 	AAlienSwarmCharacter* myTarget;
 
+	UPROPERTY()
+	class ADoorActor* myDoorTarget;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UEnemyAnimInstance* enemyAnim;
 
@@ -68,12 +71,16 @@ public:
 	float targetResetTime = 2.f;
 
 	// 문 공격 상태
-	bool bAttackDoor = false;
+	bool bIsTargetDoor = false;
 
 	bool bStopMovement = false;
 
 	bool bHasTarget = false;
-	
+
+	bool bAttackedBack = false;
+
+	bool bisAttackPoint = false;
+
 	// 공격 가능 거리	
 	UPROPERTY(EditAnywhere, Category = Enemy)
 	bool bHitTheDoor = false;

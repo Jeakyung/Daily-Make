@@ -31,6 +31,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	class UBoxComponent* lockBox;
 
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,12 +40,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(ReplicatedUsing = OnRep_bIsLocked, VisibleAnywhere)
+	UPROPERTY(ReplicatedUsing = OnRep_bIsLocked, EditAnywhere)
 	bool bIsLocked = false;
 
 	UFUNCTION()
 	void OnRep_bIsLocked();
 
+	UPROPERTY(EditAnywhere, Category=door)
 	bool bIsOpened = false;
 
 	bool openstart = false;
@@ -55,6 +57,7 @@ public:
 
 	float doorOpenTime = 0.5f;
 
+	UPROPERTY(ReplicatedUsing=OnRep_HPCheck, VisibleAnywhere)
 	int32 doorHP = 600;
 
 	FVector doorClosePos;
@@ -89,6 +92,15 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_DoorUnLock();
 
+	UFUNCTION()
+	void OnRep_HPCheck();
+
 	virtual void TakeHit(int32 damage) override;
 	
+	UPROPERTY(EditAnywhere, Category=door)
+	bool bIsDestroyed = false;
+
+	//UFUNCTION()
+	/*void EnemyOverlapDoorClosed(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	*/
 };

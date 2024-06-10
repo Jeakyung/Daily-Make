@@ -7,11 +7,12 @@
 #include "../AlienSwarmCharacter.h"
 #include "HitInterface.h"
 #include "ToolEngineering.h"
+#include "AlienEnemy.h"
 
 // Sets default values
 ADoorActor::ADoorActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	rootComp = CreateDefaultSubobject<USceneComponent>(TEXT("RootComp"));
@@ -39,10 +40,12 @@ ADoorActor::ADoorActor()
 void ADoorActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	openColl->OnComponentBeginOverlap.AddDynamic(this, &ADoorActor::DoorOpen);
 	openColl->OnComponentEndOverlap.AddDynamic(this, &ADoorActor::DoorClose);
-	
+
+	// openColl->OnComponentBeginOverlap.AddDynamic(this, &ADoorActor::EnemyOverlapDoorClosed);
+
 	doorClosePos = door->GetRelativeLocation();
 	doorOpenPos = doorClosePos - FVector(0.0f, 142.0f, 0.0f);
 	doorPos = doorClosePos;
@@ -53,24 +56,47 @@ void ADoorActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(openstart) {
-		doorTimer = FMath::Clamp(doorTimer + DeltaTime, 0.0f, doorOpenTime);
-		doorPos = FMath::Lerp(doorClosePos, doorOpenPos, doorTimer/ doorOpenTime);
-		if (doorTimer == doorOpenTime){
-			openstart = false;
-			bIsOpened = true;
+	if (!bIsDestroyed) {
+
+		if (openstart) {
+			doorTimer = FMath::Clamp(doorTimer + DeltaTime, 0.0f, doorOpenTime);
+			doorPos = FMath::Lerp(doorClosePos, doorOpenPos, doorTimer / doorOpenTime);
+			if (doorTimer == doorOpenTime) {
+				openstart = false;
+				bIsOpened = true;
+			}
+		}
+		else if (closestart) {
+			doorTimer = FMath::Clamp(doorTimer - DeltaTime, 0.0f, doorOpenTime);
+			doorPos = FMath::Lerp(doorClosePos, doorOpenPos, doorTimer / doorOpenTime);
+			if (doorTimer == 0.0f) {
+				closestart = false;
+				bIsOpened = false;
+			}
 		}
 	}
-	else if (closestart) {
-		doorTimer = FMath::Clamp(doorTimer - DeltaTime, 0.0f, doorOpenTime);
-		doorPos = FMath::Lerp(doorClosePos, doorOpenPos, doorTimer/ doorOpenTime);
-		if (doorTimer == 0.0f) {
-			closestart = false;
-			bIsOpened = false;
-		}
+	else {
+		doorPos = doorOpenPos;
 	}
 
 	door->SetRelativeLocation(doorPos);
+
+	
+	if (doorHP <= 0)
+	{
+		bIsLocked = false;
+		lockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		// openColl->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		door->SetVisibility(false);
+		bIsDestroyed = true;
+		bIsOpened = true;
+
+
+ 		// enemy->bIsTargetDoor = false;
+
+		
+	}
+	
 }
 
 //void ADoorActor::EnemyAttackDoor()
@@ -81,17 +107,50 @@ void ADoorActor::Tick(float DeltaTime)
 void ADoorActor::DoorOpen(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(OtherActor);
-	if (playerREF) {
+	AAlienEnemy* enemy = Cast<AAlienEnemy>(OtherActor);
+
+	if (playerREF)
+	{
 		SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
 	}
 	
+	else if(enemy) 
+	{
+		if (bIsLocked && !enemy->bAttackedBack)
+		{
+			if (doorHP > 0)
+			{
+				enemy->bIsTargetDoor = true;
+				enemy->myDoorTarget = this;
+
+				UE_LOG(LogTemp, Warning, TEXT("mytargetisdoor"));
+			}
+			else
+			{
+				enemy->bIsTargetDoor = false;
+
+				bIsOpened = true;
+				bIsLocked = false;
+
+			}
+		}
+		else {
+		
+			enemy->TargetCheck();
+			//enemy->bMoveAnim = true;
+			//enemy->bAttackAnim = false;
+		}
+
+	}
+
 	if (openstart || bIsOpened || bIsLocked) {
 		return;
 	}
 	else {
 		ServerRPC_DoorOpen();
 	}
-	
+
+
 }
 
 void ADoorActor::ServerRPC_DoorOpen_Implementation()
@@ -103,17 +162,19 @@ void ADoorActor::ServerRPC_DoorOpen_Implementation()
 void ADoorActor::DoorClose(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(OtherActor);
-	if (playerREF) {
+	AAlienEnemy* enemy = Cast<AAlienEnemy>(OtherActor);
+
+	if (playerREF || enemy) {
 		SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
 	}
 
 	TArray<AActor*> overlapList;
 	openColl->GetOverlappingActors(overlapList);
-	
+
 	if (overlapList.Num() > 1) {
 		return;
 	}
-	
+
 	ServerRPC_DoorClose();
 }
 
@@ -142,9 +203,60 @@ void ADoorActor::DoorUnLock()
 	ServerRPC_DoorUnLock();
 }
 
+void ADoorActor::OnRep_HPCheck()
+{	
+	UE_LOG(LogTemp, Warning, TEXT("hp changed!!!"));
+}
+
 void ADoorActor::TakeHit(int32 damage)
 {
+	doorHP-=damage;
+	UE_LOG(LogTemp, Warning, TEXT("doorHP: %d"), doorHP);
+
+	
 }
+
+//void ADoorActor::EnemyOverlapDoorClosed(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+//{
+//	AAlienEnemy* enemy = Cast<AAlienEnemy>(OtherActor);
+//
+//	if (enemy)
+//	{
+//		if (bIsLocked && !enemy->bAttackedBack)
+//		{
+//			if (doorHP > 0)
+//			{
+//				enemy->bIsTargetDoor = true;
+//				// enemy->bDoorOpen = false;
+//
+//				// 이동 멈추고 문 공격 동작
+//				//enemy->AIEnemyController->StopMovement();
+//
+//				enemy->bMoveAnim = false;
+//				enemy->bAttackAnim = true;
+//
+//				TakeHit(enemy->enemyCP);
+//
+//			}
+//			else
+//			{
+//				FTimerHandle hnd;
+//				GetWorld()->GetTimerManager().SetTimer(hnd, [&]() {
+//					enemy->bIsTargetDoor = false;
+//				}, 2.f, false);
+//				enemy->bIsTargetDoor = false;
+//				bIsOpened = true;
+//				bIsLocked = false;
+//			}
+//		}
+//		else {
+//			enemy->bDoorOpen = true;
+//
+//			enemy->bMoveAnim = true;
+//			enemy->bAttackAnim = false;
+//		}
+//	}
+//}
 
 void ADoorActor::ServerRPC_DoorUnLock_Implementation()
 {
@@ -172,4 +284,6 @@ void ADoorActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
 	//rotYaw를 일정 주기마다 각 클라이언트에 뿌려서 클라이언트의 변수값을 고찬다,
 	DOREPLIFETIME(ADoorActor, doorPos);
 	DOREPLIFETIME(ADoorActor, bIsLocked);
-}
+	DOREPLIFETIME(ADoorActor, doorHP);
+}// Fill out your copyright notice in the Description page of Project Settings.
+

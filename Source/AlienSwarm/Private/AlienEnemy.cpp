@@ -13,6 +13,7 @@
 #include "Net/UnrealNetwork.h"
 #include <ExplosionEnemyBody.h>
 #include "Engine/World.h"
+#include "DoorActor.h"
 
 // Sets default values
 AAlienEnemy::AAlienEnemy()
@@ -42,7 +43,6 @@ void AAlienEnemy::BeginPlay()
 
 	AIEnemyController = Cast<AAlienAIController>(GetController());
 	enemyAnim = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
-
 
 	TargetCheck();
 
@@ -86,7 +86,7 @@ void AAlienEnemy::Tick(float DeltaTime)
 		}
 	}
 
-	if (!bAttackDoor)
+	if (!bIsTargetDoor)
 	{
 		// 일정시간마다 타겟 재탐색
 
@@ -107,6 +107,12 @@ void AAlienEnemy::Tick(float DeltaTime)
 	else
 	{
 		AttackDoor();
+	}
+
+	if (bisAttackPoint)
+	{
+		ServerRPC_DoDamageToTargetPlayer();
+		bisAttackPoint = false;
 	}
 
 	if (1)
@@ -132,7 +138,7 @@ void AAlienEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 void AAlienEnemy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
+
 	// 에너미 체력 동기화
 	DOREPLIFETIME(AAlienEnemy, currentHP);
 }
@@ -160,11 +166,6 @@ void AAlienEnemy::TargetDistCheck(AAlienSwarmCharacter* target)
 		// 타겟을 향해 이동
 		//AIEnemyController->MoveToActor(target);
 
-		if (bHitTheDoor)
-		{
-			AIEnemyController->DoorCheck();
-		}
-
 	}
 
 }
@@ -186,86 +187,74 @@ void AAlienEnemy::TargetCheck()
 		targetList.Add(*target);
 	}
 
-	FVector nearestDistance = targetList[0]->GetActorLocation() - GetActorLocation();
-	float nearestDistanceLength = nearestDistance.Size();
-
-	/*UE_LOG(LogTemp, Warning, TEXT("%f, %f, %f"), nearestDistance.X, nearestDistance.Y, nearestDistance.Z);
-	UE_LOG(LogTemp, Warning, TEXT("closestDistanceLength: %f"), nearestDistanceLength);*/
-
-
-	// 가장 가까이 있는 타겟 탐색
-	// for (AAlienSwarmCharacter* target : targetList)
-	// {
-	//		UE_LOG(LogTemp, Warning, TEXT("11111%s\n"), *target->GetName());
-	// }
-
-	int32 nearestTargetIndex = 0;
-
 	if (targetList.Num() > 0)
 	{
-		FVector targetDistance;
+		FVector nearestDistance = targetList[0]->GetActorLocation() - GetActorLocation();
+		float nearestDistanceLength = nearestDistance.Size();
 
-		for (int i = 1; i < targetList.Num(); i++)
+		/*UE_LOG(LogTemp, Warning, TEXT("%f, %f, %f"), nearestDistance.X, nearestDistance.Y, nearestDistance.Z);
+		UE_LOG(LogTemp, Warning, TEXT("closestDistanceLength: %f"), nearestDistanceLength);*/
+
+
+		// 가장 가까이 있는 타겟 탐색
+		// for (AAlienSwarmCharacter* target : targetList)
+		// {
+		//		UE_LOG(LogTemp, Warning, TEXT("11111%s\n"), *target->GetName());
+		// }
+
+		int32 nearestTargetIndex = 0;
+
+		if (targetList.Num() > 0)
 		{
-			targetDistance = targetList[i]->GetActorLocation() - GetActorLocation();
-			float targetDistanceLength = targetDistance.Size();
-			UE_LOG(LogTemp, Warning, TEXT("targetIndex: %d, targetDistanceLength: %f\n"), i, targetDistanceLength);
+			FVector targetDistance;
 
-			if (targetDistanceLength < nearestDistanceLength)
+			for (int i = 1; i < targetList.Num(); i++)
 			{
-				nearestDistanceLength = targetDistanceLength;
-				nearestTargetIndex = i;
+				targetDistance = targetList[i]->GetActorLocation() - GetActorLocation();
+				float targetDistanceLength = targetDistance.Size();
+				UE_LOG(LogTemp, Warning, TEXT("targetIndex: %d, targetDistanceLength: %f\n"), i, targetDistanceLength);
+
+				if (targetDistanceLength < nearestDistanceLength)
+				{
+					nearestDistanceLength = targetDistanceLength;
+					nearestTargetIndex = i;
+				}
 			}
+
+			UE_LOG(LogTemp, Warning, TEXT("Finally closestDistanceLength: %f"), nearestDistanceLength);
+			UE_LOG(LogTemp, Warning, TEXT("Finally closestTargetIndex: %d"), nearestTargetIndex);
 		}
+		// 가장 가까이에 있는 플레이어를 타겟으로 설정
+		myTarget = targetList[nearestTargetIndex];
+		if (AIEnemyController)
+			AIEnemyController->MoveToActor(myTarget, 70.0f);
+		TargetDistCheck(myTarget);
 
-		UE_LOG(LogTemp, Warning, TEXT("Finally closestDistanceLength: %f"), nearestDistanceLength);
-		UE_LOG(LogTemp, Warning, TEXT("Finally closestTargetIndex: %d"), nearestTargetIndex);
+		UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Index : %d, Target : %s"), nearestTargetIndex, *myTarget->GetActorNameOrLabel()));
+
+		// CurrentDistance = (myTarget->GetActorLocation() - GetActorLocation()).Size();
+
+
 	}
-	// 가장 가까이에 있는 플레이어를 타겟으로 설정
-	myTarget = targetList[nearestTargetIndex];
-	if (AIEnemyController)
-		AIEnemyController->MoveToActor(myTarget, 70.0f);
-	TargetDistCheck(myTarget);
-
-	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Index : %d, Target : %s"), nearestTargetIndex, *myTarget->GetActorNameOrLabel()));
-
-	// CurrentDistance = (myTarget->GetActorLocation() - GetActorLocation()).Size();
-
 
 }
 
 void AAlienEnemy::DoorStateCheck()
 {
-	bool bDoorOpen = false;
-
-	// 문이 닫혀 있다면
-	if (!bDoorOpen)
-	{
-		// 문을 공격해서 열어라
-		AttackDoor();
-	}
-	else
-	{
-
-	}
 }
 
 void AAlienEnemy::AttackDoor()
 {
-	// 문의 체력이 0이 될 때 까지 공격
+	AIEnemyController->StopMovement();
+	bMoveAnim = false;
+	bAttackAnim = true;
 
-	// 문의 체력이 0이 된 경우 원래 타겟이었던 플레이어를 쫒음
-	// if (doorActor->doorHP <= 0)
+	// 뒤에서 피격을 당했다면
+	if (bAttackedBack)
 	{
-	}
-	// else
-	{
-		// 뒤에서 피격을 당했다면
-		// if (TakeHit) 이 코드 err
-		{
-			enemyAnim->bAttackedBack = true;
-
-		}
+		// enemyAnim->bAttackedBack = true;
+		// myTarget = 뒤에서 나를 공격한 플레이어
+		TargetDistCheck(myTarget);
 	}
 }
 
@@ -273,20 +262,25 @@ void AAlienEnemy::TakeHit(int32 damage)
 {
 	UE_LOG(LogTemp, Warning, TEXT("takeHitFunc"));
 	UE_LOG(LogTemp, Error, TEXT("enemyHP: %d"), currentHP);
-	ServerRPC_TakeDamage(damage);
+
+
+	currentHP -= damage;
+	SetOwner(GetWorld()->GetFirstPlayerController());
+	ServerRPC_TakeDamage(currentHP);
+
 }
 
 void AAlienEnemy::MultiRPC_SetHP_Implementation(int32 hp)
-{	
+{
 	UE_LOG(LogTemp, Warning, TEXT("MultiSerHPFunc"));
 	currentHP = hp;
 }
 
-void AAlienEnemy::ServerRPC_TakeDamage_Implementation(int32 damage)
+void AAlienEnemy::ServerRPC_TakeDamage_Implementation(int32 hp)
 {
 	UE_LOG(LogTemp, Warning, TEXT("ServerTakeDamageFunc"));
 
-	currentHP -= damage;
+	currentHP = hp;
 	UE_LOG(LogTemp, Warning, TEXT("enemyHP: %d"), currentHP);
 
 	MultiRPC_SetHP(currentHP);
@@ -303,7 +297,7 @@ void AAlienEnemy::ServerRPC_TakeDamage_Implementation(int32 damage)
 
 void AAlienEnemy::ServerRPC_DoDamageToTargetPlayer_Implementation()
 {
-	if (myTarget)
+	if (!bIsTargetDoor && myTarget)
 	{
 		FVector playerLoc = myTarget->GetActorLocation();
 		if ((playerLoc - GetActorLocation()).Size() < attakDistance)
@@ -313,12 +307,48 @@ void AAlienEnemy::ServerRPC_DoDamageToTargetPlayer_Implementation()
 			IHitInterface* targetPlayer = Cast<IHitInterface>(myTarget);
 			if (targetPlayer)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("targetPlayer HP -300"));
+				UE_LOG(LogTemp, Warning, TEXT("targetPlayer HP -100"));
 
 				targetPlayer->TakeHit(enemyCP);
 			}
 		}
 
+	}
+	else if (bIsTargetDoor && myDoorTarget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("distover"));
+
+
+		//FVector playerLoc = myDoorTarget->GetActorLocation();
+		//if ((playerLoc - GetActorLocation()).Size() < attakDistance)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("aaattttttaaaccckkkk"));
+
+			IHitInterface* targetPlayer = Cast<IHitInterface>(myDoorTarget);
+			if (targetPlayer)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("targetPlayer HP -100"));
+
+				targetPlayer->TakeHit(enemyCP);
+			}
+		}
+	}
+	else
+	{
+		if (bIsTargetDoor) {
+			UE_LOG(LogTemp, Warning, TEXT("bistargetdoor"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("NOTbistargetdoor"));
+		}
+		if (myDoorTarget) {
+			UE_LOG(LogTemp, Warning, TEXT("mydoortarget"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("NOTbistargetdoor"));
+		}
 	}
 	//이동 스테이트로 바꾸기DoDamageToTargetPlayer
 	//if(bAttackAnim = false && bMoveAnim = true){

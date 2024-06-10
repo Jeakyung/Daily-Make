@@ -185,7 +185,7 @@ public:
 	class UMainWidget* mainWidget;
 
 	UPROPERTY(EditDefaultsOnly)
-	int32 MaxHP = 10;
+	int32 MaxHP = 1000;
 
 	UPROPERTY(Replicated)
 	int32 HP = MaxHP;
