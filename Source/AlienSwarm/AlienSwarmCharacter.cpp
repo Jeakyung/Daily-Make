@@ -232,31 +232,6 @@ void AAlienSwarmCharacter::OnIAReload(const FInputActionValue& Value)
 	
 }
 
-// 1번 무기로 변경하는 기능
-void AAlienSwarmCharacter::OnIAFirstWeapon(const FInputActionValue& Value)
-{
-	SelectedWeapon = 1;
-	ServerRPC_FirstWeapon();
-
-	UE_LOG(LogTemp, Warning, TEXT("FirstWeapon"));
-}
-
-// 2번 무기로 변경하는 기능
-void AAlienSwarmCharacter::OnIASecondWeapon(const FInputActionValue& Value)
-{
-	SelectedWeapon = 2;
-	ServerRPC_SecondWeapon();
-	UE_LOG(LogTemp, Warning, TEXT("SecoandWeapon"));
-}
-
-// 보조 무기로 변경하는 기능
-void AAlienSwarmCharacter::OnIASubWeapon(const FInputActionValue& Value)
-{
-	SelectedWeapon = 3;
-	ServerRPC_SubWeapon();
-	
-	UE_LOG(LogTemp, Warning, TEXT("SubWeapon"));
-}
 
 void AAlienSwarmCharacter::OnIAOpenGO(const FInputActionValue& Value)
 {
@@ -389,34 +364,6 @@ void AAlienSwarmCharacter::OnMyReloadFinished()
 	UE_LOG(LogTemp, Warning, TEXT("Reload"));
 }
 
-// 무기 장착 시키기 (무기 교체 시 사용됨)
-void AAlienSwarmCharacter::ChangeWeapon(AWeaponBase* ChangeWeapons)
-{
-	
-		// 만약 생성이 유효하다면
-	if (nullptr != ChangeWeapons)
-	{
-			// 총을 플레이어의 손에 부착
-		ChangeWeapons->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHandSocket"));
-		ChangeWeapons->SetActorRelativeLocation(FVector(4.7f, -11, 1.8f));
-		ChangeWeapons->SetActorRelativeRotation(FRotator(-11, 81, -81));
-		ChangeWeapons->SetActorRelativeScale3D(FVector(1.25f));
-		ChangeWeapons->Equip(this);
-		ChangeWeapons->aimmingLaser->Activate(true);
-		UE_LOG(LogTemp, Warning, TEXT("spawnWeapon1"));
-		ChangeWeapons->SetActorHiddenInGame(false);
-	}
-	
-}
-
-// 무기 장착 해제시키기
-void AAlienSwarmCharacter::DetachWeapon(AWeaponBase* Weapons)
-{
-	if (Weapons)
-	{
-		Weapons->SetActorHiddenInGame(true);
-	}
-}
 
 // 무기 스폰하기
 void AAlienSwarmCharacter::SpawnWeapon()
@@ -498,21 +445,62 @@ void AAlienSwarmCharacter::MultiRPC_TakeDamage_Implementation(float value)
 
 
 
-// 2번 무기 교체 시 다른 클라우드에도 변경 값 적용
-void AAlienSwarmCharacter::ServerRPC_SecondWeapon_Implementation()
+// 1번 무기로 변경하는 기능
+void AAlienSwarmCharacter::OnIAFirstWeapon(const FInputActionValue& Value)
 {
-	MultiRPC_SecondWeapon();
+	SelectedWeapon = 1;
+	ServerRPC_FirstWeapon();
+
+	UE_LOG(LogTemp, Warning, TEXT("FirstWeapon"));
+}
+
+// 2번 무기로 변경하는 기능
+void AAlienSwarmCharacter::OnIASecondWeapon(const FInputActionValue& Value)
+{
+	SelectedWeapon = 2;
+	ServerRPC_SecondWeapon();
+	UE_LOG(LogTemp, Warning, TEXT("SecoandWeapon"));
+}
+
+// 보조 무기로 변경하는 기능
+void AAlienSwarmCharacter::OnIASubWeapon(const FInputActionValue& Value)
+{
+	SelectedWeapon = 3;
+	ServerRPC_SubWeapon();
+
+	UE_LOG(LogTemp, Warning, TEXT("SubWeapon"));
+}
+
+
+
+// 무기 장착 시키기 (무기 교체 시 사용됨)
+void AAlienSwarmCharacter::ChangeWeapon(AWeaponBase* ChangeWeapons)
+{
+
+	// 만약 생성이 유효하다면
+	if (nullptr != ChangeWeapons)
+	{
+		// 총을 플레이어의 손에 부착
+		ChangeWeapons->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHandSocket"));
+		ChangeWeapons->SetActorRelativeLocation(FVector(4.7f, -11, 1.8f));
+		ChangeWeapons->SetActorRelativeRotation(FRotator(-11, 81, -81));
+		ChangeWeapons->SetActorRelativeScale3D(FVector(1.25f));
+		ChangeWeapons->Equip(this);
+		ChangeWeapons->aimmingLaser->Activate(true);
+		UE_LOG(LogTemp, Warning, TEXT("spawnWeapon1"));
+		ChangeWeapons->SetActorHiddenInGame(false);
+	}
 
 }
-void AAlienSwarmCharacter::MultiRPC_SecondWeapon_Implementation()
+
+// 무기 장착 해제시키기
+void AAlienSwarmCharacter::DetachWeapon(AWeaponBase* Weapons)
 {
-	DetachWeapon(SubWeapon);
-	DetachWeapon(Weapon);
-
-
-	ChangeWeapon(Weapon2);
+	if (Weapons)
+	{
+		Weapons->SetActorHiddenInGame(true);
+	}
 }
-//============================================
 
 
 // 1번 무기 교체 시 다른 클라우드에도 변경 값 적용
@@ -530,6 +518,23 @@ void AAlienSwarmCharacter::MultiRPC_FirstWeapon_Implementation()
 	ChangeWeapon(Weapon);
 }
 //============================================
+
+// 2번 무기 교체 시 다른 클라우드에도 변경 값 적용
+void AAlienSwarmCharacter::ServerRPC_SecondWeapon_Implementation()
+{
+	MultiRPC_SecondWeapon();
+
+}
+void AAlienSwarmCharacter::MultiRPC_SecondWeapon_Implementation()
+{
+	DetachWeapon(SubWeapon);
+	DetachWeapon(Weapon);
+
+
+	ChangeWeapon(Weapon2);
+}
+//============================================
+
 
 
 // 보조 무기 교체 시 다른 클라우드에도 변경 값 적용

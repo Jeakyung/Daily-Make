@@ -29,11 +29,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UTextBlock* GameOver;
 
-
-	// 대기방에 머물기 버튼 연결
-	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
-	class UButton* Button_Stay;
-
 	// 게임 나가기 버튼 연결
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UButton* Button_Quit;
@@ -45,11 +40,6 @@ public:
 
 	class ATestPlayerController* PlayerController;
 
-
-
-
-	UFUNCTION()
-	void OnClickStay();
 
 	UFUNCTION()
 	void OnClickQuit();
