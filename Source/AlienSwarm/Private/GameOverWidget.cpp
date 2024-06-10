@@ -26,7 +26,8 @@ void UGameOverWidget::OnClickStay()
 
 void UGameOverWidget::OnClickQuit()
 {
-	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
+	auto* pc = GetWorld()->GetFirstPlayerController();
+	pc->ClientTravel("/Game/Levels/TitleLevel", ETravelType::TRAVEL_Absolute);
 }
 
 void UGameOverWidget::OnClickShowOP()
