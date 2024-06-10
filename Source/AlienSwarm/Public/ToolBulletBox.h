@@ -40,12 +40,6 @@ public:
 
 	virtual bool OnFire(FVector mousePos) override;
 
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_SetBox(FVector mousePos);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_SetBox(FVector mousePos);
-
 	UFUNCTION()
 	void ChargeMeg(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 

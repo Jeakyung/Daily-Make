@@ -22,6 +22,9 @@
 #include "GameOverWidget.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
 #include "GameOverWidget.h"
+#include "DoorActor.h"
+#include "ToolBulletBox.h"
+#include "ToolHealPack.h"
 
 
 
@@ -268,13 +271,19 @@ void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 					}
 					break;
 				case EWeaponType::ENGTOOL:
-					
+					if (SubWeapon->OnFire(mousePos)) {
+						ServerRPC_ToolEng(GetActorLocation());
+					}
 					break;
 				case EWeaponType::BULLETBOX:
-					
+					if (SubWeapon->OnFire(mousePos)) {
+						ServerRPC_ToolBullet(Cast<AToolBulletBox>(SubWeapon)->bulletBox_BP, GetActorLocation());
+					}
 					break;
 				case EWeaponType::HEALPACK:
-					
+					if (SubWeapon->OnFire(mousePos)) {
+						ServerRPC_ToolHeal(Cast<AToolHealPack>(SubWeapon)->healPack_BP, GetActorLocation());
+					}
 					break;
 				default:
 					break;
@@ -808,7 +817,76 @@ void AAlienSwarmCharacter::MultiRPC_FireGranade_Implementation(FVector _mousePos
 	DrawDebugSphere(GetWorld(), _mousePos, 250.0f, 32, FColor::Red, false, 3.0f, 0, 2.0f);
 }
 
+void AAlienSwarmCharacter::ServerRPC_ToolEng_Implementation(FVector _actorLoc)
+{
+	TArray<FOverlapResult> hitsInfos;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+	bool bResult = GetWorld()->OverlapMultiByChannel(hitsInfos, _actorLoc, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(150.0f), params);
 
+	if (bResult) {
+		for (FOverlapResult& hit : hitsInfos) {
+			ADoorActor* target = Cast<ADoorActor>(hit.GetActor());
+			if (target) {
+				UE_LOG(LogTemp, Warning, TEXT("EngTool : Find Door"));
+				if (!target->bIsLocked) {
+					target->DoorLock();
+					if (target->bIsOpened) {
+						target->ServerRPC_DoorClose();
+					}
+				}
+				else {
+					target->DoorUnLock();
+					if (!target->bIsOpened) {
+						target->ServerRPC_DoorOpen();
+					}
+				}
+				break;
+			}
+		}
+	}
+}
+
+void AAlienSwarmCharacter::MultiRPC_ToolEng_Implementation(FVector _actorLoc)
+{
+	DrawDebugSphere(GetWorld(), _actorLoc, 150.0f, 32, FColor::Blue, false, 3.0f, 0, 2.0f);
+}
+
+void AAlienSwarmCharacter::ServerRPC_ToolBullet_Implementation(TSubclassOf<AToolBulletBox> _BP_Bullet, FVector _setLoc)
+{
+	/*FActorSpawnParameters params;
+	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AToolBulletBox* setBox = GetWorld()->SpawnActor<AToolBulletBox>(_BP_Bullet, _setLoc, FRotator::ZeroRotator, params);
+	setBox->bSet = true;*/
+
+	MultiRPC_ToolBullet(_BP_Bullet, _setLoc);
+}
+
+void AAlienSwarmCharacter::MultiRPC_ToolBullet_Implementation(TSubclassOf<AToolBulletBox> _BP_Bullet, FVector _setLoc)
+{
+	FActorSpawnParameters params;
+	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AToolBulletBox* setBox = GetWorld()->SpawnActor<AToolBulletBox>(_BP_Bullet, _setLoc, FRotator::ZeroRotator, params);
+	setBox->bSet = true;
+}
+
+void AAlienSwarmCharacter::ServerRPC_ToolHeal_Implementation(TSubclassOf<AToolHealPack> _BP_Heal, FVector _setLoc)
+{
+	/*FActorSpawnParameters params;
+	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AToolHealPack* setBox = GetWorld()->SpawnActor<AToolHealPack>(_BP_Heal, _setLoc, FRotator::ZeroRotator, params);
+	setBox->bSet = true;*/
+
+	MultiRPC_ToolHeal(_BP_Heal, _setLoc);
+}
+
+void AAlienSwarmCharacter::MultiRPC_ToolHeal_Implementation(TSubclassOf<AToolHealPack> _BP_Heal, FVector _setLoc)
+{
+	FActorSpawnParameters params;
+	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AToolHealPack* setBox = GetWorld()->SpawnActor<AToolHealPack>(_BP_Heal, _setLoc, FRotator::ZeroRotator, params);
+	setBox->bSet = true;
+}
 
 void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

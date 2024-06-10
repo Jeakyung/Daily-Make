@@ -19,7 +19,7 @@ bool AToolEngineering::OnFire(FVector mousePos)
 		SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
 		bCanFire = false;
 
-		TArray<FOverlapResult> hitsInfos;
+		/*TArray<FOverlapResult> hitsInfos;
 		FCollisionQueryParams params;
 		params.AddIgnoredActor(this);
 		bool bResult = GetWorld()->OverlapMultiByChannel(hitsInfos, GetActorLocation(), FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(150.0f), params);
@@ -45,7 +45,7 @@ bool AToolEngineering::OnFire(FVector mousePos)
 					break;
 				}
 			}
-		}
+		}*/
 
 		FTimerHandle reUseTime;
 		GetWorld()->GetTimerManager().SetTimer(reUseTime, FTimerDelegate::CreateLambda([&]() {

@@ -62,41 +62,22 @@ void AToolBulletBox::Tick(float DeltaTime)
 bool AToolBulletBox::OnFire(FVector mousePos)
 {
 	if (bCanFire) {
-		ServerRPC_SetBox(mousePos);
+		SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
+		bCanFire = false;
+
+		/*FActorSpawnParameters params;
+		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		AToolBulletBox* setBox = GetWorld()->SpawnActor<AToolBulletBox>(bulletBox_BP, GetActorLocation() + FVector(0.0f, 0.0f, -125.0f), FRotator::ZeroRotator, params);
+		setBox->bSet = true;*/
+
+		FTimerHandle reUseTime;
+		GetWorld()->GetTimerManager().SetTimer(reUseTime, FTimerDelegate::CreateLambda([&]() {
+			bCanFire = true;
+			}), coolDown, false);
 		return true;
 	}
 
 	return false;
-}
-
-void AToolBulletBox::ServerRPC_SetBox_Implementation(FVector mousePos)
-{
-	/*bCanFire = false;
-	FActorSpawnParameters params;
-	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	AToolBulletBox* setBox = GetWorld()->SpawnActor<AToolBulletBox>(bulletBox_BP, GetActorLocation() + FVector(0.0f, 0.0f, -125.0f), FRotator::ZeroRotator, params);
-	setBox->bSet = true;
-
-	FTimerHandle reUseTime;
-	GetWorld()->GetTimerManager().SetTimer(reUseTime, FTimerDelegate::CreateLambda([&]() {
-		bCanFire = true;
-		}), coolDown, false);*/
-
-	MultiRPC_SetBox(mousePos);
-}
-
-void AToolBulletBox::MultiRPC_SetBox_Implementation(FVector mousePos)
-{
-	bCanFire = false;
-	FActorSpawnParameters params;
-	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	AToolBulletBox* setBox = GetWorld()->SpawnActor<AToolBulletBox>(bulletBox_BP, GetActorLocation() + FVector(0.0f, 0.0f, -125.0f), FRotator::ZeroRotator, params);
-	setBox->bSet = true;
-
-	FTimerHandle reUseTime;
-	GetWorld()->GetTimerManager().SetTimer(reUseTime, FTimerDelegate::CreateLambda([&]() {
-		bCanFire = true;
-		}), coolDown, false);
 }
 
 void AToolBulletBox::ChargeMeg(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

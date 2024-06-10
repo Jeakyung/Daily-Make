@@ -324,5 +324,23 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_FireGranade(FVector _mousePos);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_ToolEng(FVector _actorLoc);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_ToolEng(FVector _actorLoc);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_ToolBullet(TSubclassOf<class AToolBulletBox> _BP_Bullet, FVector _setLoc);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_ToolBullet(TSubclassOf<class AToolBulletBox> _BP_Bullet, FVector _setLoc);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_ToolHeal(TSubclassOf<class AToolHealPack> _BP_Heal, FVector _setLoc);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_ToolHeal(TSubclassOf<class AToolHealPack> _BP_Heal, FVector _setLoc);
 };
 

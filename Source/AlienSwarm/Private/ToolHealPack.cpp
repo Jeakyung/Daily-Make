@@ -29,11 +29,13 @@ void AToolHealPack::Tick(float DeltaTime)
 bool AToolHealPack::OnFire(FVector mousePos)
 {
 	if (bCanFire) {
+		SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
 		bCanFire = false;
-		FActorSpawnParameters params;
+
+		/*FActorSpawnParameters params;
 		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		AToolHealPack* setBox = GetWorld()->SpawnActor<AToolHealPack>(healPack_BP, GetActorLocation() + FVector(0.0f, 0.0f, -125.0f), FRotator::ZeroRotator, params);
-		setBox->bSet = true;
+		setBox->bSet = true;*/
 
 		FTimerHandle reUseTime;
 		GetWorld()->GetTimerManager().SetTimer(reUseTime, FTimerDelegate::CreateLambda([&]() {
