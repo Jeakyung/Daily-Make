@@ -169,9 +169,9 @@ void ADoorActor::ServerRPC_DoorOpen_Implementation()
 void ADoorActor::DoorClose(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(OtherActor);
-	AAlienEnemy* enemy = Cast<AAlienEnemy>(OtherActor);
+	//AAlienEnemy* enemy = Cast<AAlienEnemy>(OtherActor);
 
-	if (playerREF || enemy) {
+	if (playerREF) {
 		SetOwner(GetWorld()->GetFirstPlayerController()->GetPawn());
 	}
 
