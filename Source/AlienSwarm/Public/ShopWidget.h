@@ -22,4 +22,11 @@ public:
 
 	UFUNCTION()
 	void StartGame();
+
+	// 무기를 스폰한다.
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_Test();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_Test();
 };

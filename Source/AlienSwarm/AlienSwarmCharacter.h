@@ -119,25 +119,25 @@ public:
 	// 카메라 최초위치
 	FVector cameraLoc;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	class AWeaponBase* Weapon;
 
 	// AWeaponBase 타입을 저장 / 1번 무기
- 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
+ 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
  	TSubclassOf<AWeaponBase> WeaponClass;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	class AWeaponBase* Weapon2;
 
 	// AWeaponBase 타입을 저장 / 2번 무기
- 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
+ 	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
  	TSubclassOf<AWeaponBase> WeaponClass2;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	class AWeaponBase* SubWeapon;
 
 	// AWeaponBase3타입을 저장 / 보조무기
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
+	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
  	TSubclassOf<AWeaponBase> SubWeaponClass;
 
 	// 총 발사 시 실행되는 애니메이션 몽타주
@@ -170,7 +170,11 @@ public:
 	void DetachWeapon(AWeaponBase* Weapons);
 
 	// 무기를 스폰한다.
-	void SpawnWeapon();
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnWeapon();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_SpawnWeapon();
 
 	// 몇번 무기인지 판별시키기 위해 만들어진 변수
 	int32 SelectedWeapon = 1;
@@ -200,10 +204,10 @@ public:
 	
 	// 1번 무기 교체 시 다른 클라우드에도 변경 값 적용
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_FirstWeapon();
+	void ServerRPC_FirstWeapon(int _SelectedWeapon);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_FirstWeapon();
+	void MultiRPC_FirstWeapon(int _SelectedWeapon);
 	//============================================
 
 

@@ -366,25 +366,53 @@ void AAlienSwarmCharacter::OnMyReloadFinished()
 
 
 // 무기 스폰하기
-void AAlienSwarmCharacter::SpawnWeapon()
+void AAlienSwarmCharacter::ServerRPC_SpawnWeapon_Implementation()
 {
 	if (WeaponClass) {
 		// 1번 무기 생성
 		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
 		Weapon->SetActorLocation(FVector(0, 0, -30000));
+		//Weapon->SetOwner(this);
 	}
 
 	if (WeaponClass2) {
 		// 2번 무기 생성
 		Weapon2 = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass2);
 		Weapon2->SetActorLocation(FVector(0, 0, -30000));
+		//Weapon2->SetOwner(this);
 	}
 
 	if (SubWeaponClass) {
 		// 보조 무기 생성
 		SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
 		SubWeapon->SetActorLocation(FVector(0, 0, -30000));
+		//SubWeapon->SetOwner(this);
 	}
+	MultiRPC_SpawnWeapon();
+}
+
+void AAlienSwarmCharacter::MultiRPC_SpawnWeapon_Implementation()
+{
+	/*if (WeaponClass) {
+		// 1번 무기 생성
+		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
+		Weapon->SetActorLocation(FVector(0, 0, -30000));
+		Weapon->SetOwner(this);
+	}
+
+	if (WeaponClass2) {
+		// 2번 무기 생성
+		Weapon2 = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass2);
+		Weapon2->SetActorLocation(FVector(0, 0, -30000));
+		Weapon2->SetOwner(this);
+	}
+
+	if (SubWeaponClass) {
+		// 보조 무기 생성
+		SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
+		SubWeapon->SetActorLocation(FVector(0, 0, -30000));
+		SubWeapon->SetOwner(this);
+	}*/
 }
 
 // 데미지를 받았을 때 실행되는 기능
@@ -449,7 +477,7 @@ void AAlienSwarmCharacter::MultiRPC_TakeDamage_Implementation(float value)
 void AAlienSwarmCharacter::OnIAFirstWeapon(const FInputActionValue& Value)
 {
 	SelectedWeapon = 1;
-	ServerRPC_FirstWeapon();
+	ServerRPC_FirstWeapon(SelectedWeapon);
 
 	UE_LOG(LogTemp, Warning, TEXT("FirstWeapon"));
 }
@@ -487,7 +515,7 @@ void AAlienSwarmCharacter::ChangeWeapon(AWeaponBase* ChangeWeapons)
 		ChangeWeapons->SetActorRelativeScale3D(FVector(1.25f));
 		ChangeWeapons->Equip(this);
 		ChangeWeapons->aimmingLaser->Activate(true);
-		UE_LOG(LogTemp, Warning, TEXT("spawnWeapon1"));
+		UE_LOG(LogTemp, Warning, TEXT("ChangeWeapon"));
 		ChangeWeapons->SetActorHiddenInGame(false);
 	}
 
@@ -502,15 +530,16 @@ void AAlienSwarmCharacter::DetachWeapon(AWeaponBase* Weapons)
 	}
 }
 
-
 // 1번 무기 교체 시 다른 클라우드에도 변경 값 적용
-void AAlienSwarmCharacter::ServerRPC_FirstWeapon_Implementation()
+void AAlienSwarmCharacter::ServerRPC_FirstWeapon_Implementation(int _SelectedWeapon)
 {
-	MultiRPC_FirstWeapon();
+	SelectedWeapon = _SelectedWeapon;
+	MultiRPC_FirstWeapon(_SelectedWeapon);
 
 }
-void AAlienSwarmCharacter::MultiRPC_FirstWeapon_Implementation()
+void AAlienSwarmCharacter::MultiRPC_FirstWeapon_Implementation(int _SelectedWeapon)
 {
+	SelectedWeapon = _SelectedWeapon;
 	DetachWeapon(SubWeapon);
 	DetachWeapon(Weapon2);
 
@@ -626,5 +655,12 @@ void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME(AAlienSwarmCharacter, bDie);
 	// HP 동기화
 	DOREPLIFETIME(AAlienSwarmCharacter, HP);
+
+	DOREPLIFETIME(AAlienSwarmCharacter, Weapon);
+	DOREPLIFETIME(AAlienSwarmCharacter, Weapon2);
+	DOREPLIFETIME(AAlienSwarmCharacter, SubWeapon);
+// 	DOREPLIFETIME(AAlienSwarmCharacter, WeaponClass);
+// 	DOREPLIFETIME(AAlienSwarmCharacter, WeaponClass2);
+// 	DOREPLIFETIME(AAlienSwarmCharacter, SubWeaponClass);
 }
 

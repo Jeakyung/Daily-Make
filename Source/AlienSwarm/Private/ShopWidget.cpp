@@ -16,15 +16,27 @@ void UShopWidget::NativeConstruct()
 
 void UShopWidget::StartGame()
 {
+	
+	ServerRPC_Test();
+	
+
+
+	ConditionalBeginDestroy();
+}
+
+void UShopWidget::ServerRPC_Test_Implementation()
+{
+	MultiRPC_Test();
+}
+
+void UShopWidget::MultiRPC_Test_Implementation()
+{
 	ATestPlayerController* pc = Cast<ATestPlayerController>(GetOwningPlayer());
 
 	pc->MakeMainWidget();
 	pc->MoveToStartPos();
 
 	AAlienSwarmCharacter* playerREF = Cast<AAlienSwarmCharacter>(pc->GetPawn());
-	playerREF->SpawnWeapon();
+	playerREF->ServerRPC_SpawnWeapon();
 	playerREF->ChangeWeapon(playerREF->Weapon);
-
-
-	ConditionalBeginDestroy();
 }
