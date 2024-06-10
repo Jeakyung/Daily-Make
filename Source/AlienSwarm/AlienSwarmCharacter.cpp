@@ -368,7 +368,7 @@ void AAlienSwarmCharacter::OnMyReloadFinished()
 // 무기 스폰하기
 void AAlienSwarmCharacter::ServerRPC_SpawnWeapon_Implementation()
 {
-	if (WeaponClass) {
+	/*if (WeaponClass) {
 		// 1번 무기 생성
 		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
 		Weapon->SetActorLocation(FVector(0, 0, -30000));
@@ -387,13 +387,13 @@ void AAlienSwarmCharacter::ServerRPC_SpawnWeapon_Implementation()
 		SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
 		SubWeapon->SetActorLocation(FVector(0, 0, -30000));
 		//SubWeapon->SetOwner(this);
-	}
+	}*/
 	MultiRPC_SpawnWeapon();
 }
 
 void AAlienSwarmCharacter::MultiRPC_SpawnWeapon_Implementation()
 {
-	/*if (WeaponClass) {
+	if (WeaponClass) {
 		// 1번 무기 생성
 		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
 		Weapon->SetActorLocation(FVector(0, 0, -30000));
@@ -412,7 +412,7 @@ void AAlienSwarmCharacter::MultiRPC_SpawnWeapon_Implementation()
 		SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
 		SubWeapon->SetActorLocation(FVector(0, 0, -30000));
 		SubWeapon->SetOwner(this);
-	}*/
+	}
 }
 
 // 데미지를 받았을 때 실행되는 기능
