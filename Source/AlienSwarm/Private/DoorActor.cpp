@@ -91,9 +91,14 @@ void ADoorActor::Tick(float DeltaTime)
 		bIsDestroyed = true;
 		bIsOpened = true;
 
+		// UE_LOG(LogTemp, Warning, TEXT("enemyListNum: %d"), enemyList.Num());
 
  		// enemy->bIsTargetDoor = false;
 
+		for (int i = 0; i < enemyList.Num(); i++)
+		{
+			enemyList[i]->bIsTargetDoor = false;
+		}
 		
 	}
 	
@@ -116,6 +121,8 @@ void ADoorActor::DoorOpen(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 	
 	else if(enemy) 
 	{
+		enemyList.Add(enemy);
+
 		if (bIsLocked && !enemy->bAttackedBack)
 		{
 			if (doorHP > 0)
