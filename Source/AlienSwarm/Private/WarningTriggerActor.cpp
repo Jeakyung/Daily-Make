@@ -89,6 +89,7 @@ void AWarningTriggerActor::MultiRPC_ActiveWarning_Implementation()
 
 	for (int32 i = 0; i < doors.Num(); i++) {
 		doors[i]->bIsLocked = true;
+		doors[i]->DoorLock();
 	}
 
 	for (int32 i = 0; i < spawners.Num(); i++) {

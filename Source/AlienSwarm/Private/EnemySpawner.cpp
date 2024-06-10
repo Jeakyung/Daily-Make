@@ -69,25 +69,6 @@ void AEnemySpawner::Tick(float DeltaTime)
 
 }
 
-void AEnemySpawner::SpawnEnemy()
-{
-	// 서버에서만 에너미 스폰
-	if (HasAuthority())
-	{
-		// 처음에만 위치값 저장하고 다음부터는 가져다 씀
-		FVector loc = GetActorLocation();
-		FRotator rot = GetActorRotation();
-
-		FActorSpawnParameters params;
-		// 자신을 생성되는 에너미의 오너로 설정
-		params.Owner = this;
-		params.Instigator = GetInstigator();
-		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		GetWorld()->SpawnActor<AAlienEnemy>(enemy, loc, rot, params);
-	}
-}
-
 void AEnemySpawner::ServerRPC_SpawnEnemy_Implementation()
 {
 	// 서버에서만 에너미 스폰

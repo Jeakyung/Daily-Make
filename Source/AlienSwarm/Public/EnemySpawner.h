@@ -29,9 +29,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION()
-	void SpawnEnemy();
-
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_SpawnEnemy();
 
