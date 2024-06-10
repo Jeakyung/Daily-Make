@@ -29,11 +29,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	TArray<ARedLightActor*> redLights;
+	TArray<class ARedLightActor*> redLights;
 	
-	TArray<ADoorActor*> doors;
+	TArray<class ADoorActor*> doors;
 	
-	TArray<AEnemySpawner*> spawners;
+	TArray<class AEnemySpawner*> spawners;
 
 	UPROPERTY(EditAnywhere)
 	AActor* dirLight;

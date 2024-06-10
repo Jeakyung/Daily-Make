@@ -84,6 +84,15 @@ public:
 	bool TakeMagazine();
 
 	UFUNCTION()
+	FORCEINLINE int32 GetDamage() { return damage; }
+
+	UFUNCTION()
+	FORCEINLINE float GetShootingRange() { return shootingRange; }
+
+	UFUNCTION()
+	FORCEINLINE float GetAttackArea() { return attackArea; }
+
+	UFUNCTION()
 	FORCEINLINE int32 GetCurrentAmmo() {return currentAmmo;}
 
 	UFUNCTION()

@@ -13,7 +13,7 @@ bool AWeaponRifle::OnFire(FVector mousePos)
 
 	if (currentAmmo > 0) {
 		bIsFire = true;
-		FVector start = firePoint->GetComponentLocation();
+		/*FVector start = firePoint->GetComponentLocation();
 		FCollisionQueryParams params;
 		params.AddIgnoredActor(this);
 		params.AddIgnoredActor(GetOwner());
@@ -27,7 +27,7 @@ bool AWeaponRifle::OnFire(FVector mousePos)
 			if (target) {
 				target->TakeHit(damage);
 			}
-		}
+		}*/
 		currentAmmo--;
 		pc->SetAmmo(currentAmmo);
 		return true;

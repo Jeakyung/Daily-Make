@@ -202,21 +202,83 @@ void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 		case 1:
 			if (nullptr != Weapon) 
 			{
-				Weapon->OnFire(mousePos);
+				FVector start = Weapon->firePoint->GetComponentLocation();
+				FVector end = start + Weapon->firePoint->GetForwardVector() * weaponInfo1.shootingRange;
+				switch (weaponInfo1.weaponType)
+				{
+				case EWeaponType::RIFLE :
+					if (Weapon->OnFire(mousePos)) {
+						ServerRPC_FireRifle(start, end, weaponInfo1.damage);
+					}
+					break;
+				case EWeaponType::SHOTGUN :
+					end.Z = start.Z - 150.0f;
+					if (Weapon->OnFire(mousePos)) {
+						ServerRPC_FireShot(start, end, weaponInfo1.damage, weaponInfo1.attackArea);
+					}
+					break;
+				case EWeaponType::HEALGUN :
+					if (Weapon->OnFire(mousePos)) {
+						ServerRPC_FireHeal(start, end, weaponInfo1.damage);
+					}
+					break;
+				default:
+					break;
+				}
 				PlayFireMontage();
 			}
 			break;
 		case 2:
 			if (nullptr != Weapon2)
 			{
-				Weapon2->OnFire(mousePos);
+				FVector start = Weapon2->firePoint->GetComponentLocation();
+				FVector end = start + Weapon2->firePoint->GetForwardVector() * weaponInfo2.shootingRange;
+				switch (weaponInfo2.weaponType)
+				{
+				case EWeaponType::RIFLE:
+					if (Weapon->OnFire(mousePos)) {
+						ServerRPC_FireRifle(start, end, weaponInfo2.damage);
+					}
+					break;
+				case EWeaponType::SHOTGUN:
+					end.Z = start.Z - 150.0f;
+					if (Weapon->OnFire(mousePos)) {
+						ServerRPC_FireShot(start, end, weaponInfo2.damage, weaponInfo2.attackArea);
+					}
+					break;
+				case EWeaponType::HEALGUN:
+					if (Weapon->OnFire(mousePos)) {
+						ServerRPC_FireHeal(start, end, weaponInfo2.damage);
+					}
+					break;
+				default:
+					break;
+				}
 				PlayFireMontage();
 			}
 			break;
 		case 3:
 			if (nullptr != SubWeapon)
 			{
-				SubWeapon->OnFire(mousePos);
+				switch (subWeaponInfo.weaponType)
+				{
+				case EWeaponType::GRANADE:
+					if (SubWeapon->OnFire(mousePos)) {
+						ServerRPC_FireGranade(mousePos);
+					}
+					break;
+				case EWeaponType::ENGTOOL:
+					
+					break;
+				case EWeaponType::BULLETBOX:
+					
+					break;
+				case EWeaponType::HEALPACK:
+					
+					break;
+				default:
+					break;
+				}
 				PlayFireMontage();
 			}
 			break;
@@ -368,26 +430,6 @@ void AAlienSwarmCharacter::OnMyReloadFinished()
 // 무기 스폰하기
 void AAlienSwarmCharacter::ServerRPC_SpawnWeapon_Implementation()
 {
-	/*if (WeaponClass) {
-		// 1번 무기 생성
-		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
-		Weapon->SetActorLocation(FVector(0, 0, -30000));
-		//Weapon->SetOwner(this);
-	}
-
-	if (WeaponClass2) {
-		// 2번 무기 생성
-		Weapon2 = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass2);
-		Weapon2->SetActorLocation(FVector(0, 0, -30000));
-		//Weapon2->SetOwner(this);
-	}
-
-	if (SubWeaponClass) {
-		// 보조 무기 생성
-		SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
-		SubWeapon->SetActorLocation(FVector(0, 0, -30000));
-		//SubWeapon->SetOwner(this);
-	}*/
 	MultiRPC_SpawnWeapon();
 }
 
@@ -398,6 +440,19 @@ void AAlienSwarmCharacter::MultiRPC_SpawnWeapon_Implementation()
 		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
 		Weapon->SetActorLocation(FVector(0, 0, -30000));
 		Weapon->SetOwner(this);
+		if (Weapon->ActorHasTag(TEXT("Rifle"))) {
+			weaponInfo1.weaponType = EWeaponType::RIFLE;
+		}
+		else if (Weapon->ActorHasTag(TEXT("Shotgun"))) {
+			weaponInfo1.weaponType = EWeaponType::SHOTGUN;
+		}
+		else if (Weapon->ActorHasTag(TEXT("HealGun"))) {
+			weaponInfo1.weaponType = EWeaponType::HEALGUN;
+		}
+
+		weaponInfo1.damage = Weapon->GetDamage();
+		weaponInfo1.shootingRange = Weapon->GetShootingRange();
+		weaponInfo1.attackArea = Weapon->GetAttackArea();
 	}
 
 	if (WeaponClass2) {
@@ -405,6 +460,19 @@ void AAlienSwarmCharacter::MultiRPC_SpawnWeapon_Implementation()
 		Weapon2 = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass2);
 		Weapon2->SetActorLocation(FVector(0, 0, -30000));
 		Weapon2->SetOwner(this);
+		if (Weapon2->ActorHasTag(TEXT("Rifle"))) {
+			weaponInfo2.weaponType = EWeaponType::RIFLE;
+		}
+		else if (Weapon2->ActorHasTag(TEXT("Shotgun"))) {
+			weaponInfo2.weaponType = EWeaponType::SHOTGUN;
+		}
+		else if (Weapon2->ActorHasTag(TEXT("HealGun"))) {
+			weaponInfo2.weaponType = EWeaponType::HEALGUN;
+		}
+
+		weaponInfo2.damage = Weapon2->GetDamage();
+		weaponInfo2.shootingRange = Weapon2->GetShootingRange();
+		weaponInfo2.attackArea = Weapon2->GetAttackArea();
 	}
 
 	if (SubWeaponClass) {
@@ -412,6 +480,18 @@ void AAlienSwarmCharacter::MultiRPC_SpawnWeapon_Implementation()
 		SubWeapon = GetWorld()->SpawnActor<AWeaponBase>(SubWeaponClass);
 		SubWeapon->SetActorLocation(FVector(0, 0, -30000));
 		SubWeapon->SetOwner(this);
+		if (SubWeapon->ActorHasTag(TEXT("Granade"))) {
+			subWeaponInfo.weaponType = EWeaponType::GRANADE;
+		}
+		else if (SubWeapon->ActorHasTag(TEXT("ENGTool"))) {
+			subWeaponInfo.weaponType = EWeaponType::ENGTOOL;
+		}
+		else if (SubWeapon->ActorHasTag(TEXT("BulletBox"))) {
+			subWeaponInfo.weaponType = EWeaponType::BULLETBOX;
+		}
+		else if (SubWeapon->ActorHasTag(TEXT("HealPack"))) {
+			subWeaponInfo.weaponType = EWeaponType::HEALPACK;
+		}
 	}
 }
 
@@ -638,9 +718,95 @@ void AAlienSwarmCharacter::DiePlayer()
 	}
 }
 
+void AAlienSwarmCharacter::ServerRPC_FireRifle_Implementation(FVector _start, FVector _end, int32 _damage)
+{
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+	params.AddIgnoredActor(GetOwner());
+	FHitResult hitInfo;
+	//Block되는 채널을 찾음
+	bool bResult = GetWorld()->LineTraceSingleByChannel(hitInfo, _start, _end, ECC_GameTraceChannel1, params);
+	if (bResult) {
+		IHitInterface* target = Cast<IHitInterface>(hitInfo.GetActor());
+		if (target) {
+			target->TakeHit(_damage);
+		}
+	}
+	MultiRPC_FireRifle(_start, _end);
+}
 
+void AAlienSwarmCharacter::MultiRPC_FireRifle_Implementation(FVector _start, FVector _end)
+{
+	DrawDebugLine(GetWorld(), _start, _end, FColor::Red, false, 5.0f);
+}
 
+void AAlienSwarmCharacter::ServerRPC_FireShot_Implementation(FVector _start, FVector _end, int32 _damage, float _attackArea)
+{
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+	params.AddIgnoredActor(GetOwner());
+	TArray<FHitResult> hitInfos;
+	//Ignore되는 채널을 찾음
+	bool bResult = GetWorld()->SweepMultiByChannel(hitInfos, _start, _end, FQuat::Identity, ECC_GameTraceChannel2, FCollisionShape::MakeSphere(_attackArea), params);
+	if (bResult) {
+		for (FHitResult& hit : hitInfos) {
+			IHitInterface* target = Cast<IHitInterface>(hit.GetActor());
+			if (target) {
+				target->TakeHit(_damage);
+			}
+		}
+	}
+	MultiRPC_FireShot(_start, _end, _attackArea);
+}
 
+void AAlienSwarmCharacter::MultiRPC_FireShot_Implementation(FVector _start, FVector _end, float _attackArea)
+{
+	DrawDebugCylinder(GetWorld(), _start, _end, _attackArea, 32, FColor::Red, false, 5.0f);
+}
+
+void AAlienSwarmCharacter::ServerRPC_FireHeal_Implementation(FVector _start, FVector _end, int32 _damage)
+{
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+	params.AddIgnoredActor(GetOwner());
+	FHitResult hitInfo;
+	//Block되는 채널을 찾음
+	bool bResult = GetWorld()->LineTraceSingleByChannel(hitInfo, _start, _end, ECC_GameTraceChannel1, params);
+	if (bResult) {
+		IHitInterface* target = Cast<IHitInterface>(hitInfo.GetActor());
+		if (target) {
+			target->TakeHit(-_damage);
+		}
+	}
+	MultiRPC_FireRifle(_start, _end);
+}
+
+void AAlienSwarmCharacter::MultiRPC_FireHeal_Implementation(FVector _start, FVector _end)
+{
+	DrawDebugLine(GetWorld(), _start, _end, FColor::Green, false, 5.0f);
+}
+
+void AAlienSwarmCharacter::ServerRPC_FireGranade_Implementation(FVector _mousePos)
+{
+	TArray<FOverlapResult> hitsInfos;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+	bool bResult = GetWorld()->OverlapMultiByChannel(hitsInfos, _mousePos, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(250.0f), params);
+	if (bResult) {
+		for (FOverlapResult& hit : hitsInfos) {
+			IHitInterface* target = Cast<IHitInterface>(hit.GetActor());
+			if (target) {
+				target->TakeHit(50);
+			}
+		}
+	}
+	MultiRPC_FireGranade(_mousePos);
+}
+
+void AAlienSwarmCharacter::MultiRPC_FireGranade_Implementation(FVector _mousePos)
+{
+	DrawDebugSphere(GetWorld(), _mousePos, 250.0f, 32, FColor::Red, false, 3.0f, 0, 2.0f);
+}
 
 
 
@@ -663,4 +829,3 @@ void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 // 	DOREPLIFETIME(AAlienSwarmCharacter, WeaponClass2);
 // 	DOREPLIFETIME(AAlienSwarmCharacter, SubWeaponClass);
 }
-

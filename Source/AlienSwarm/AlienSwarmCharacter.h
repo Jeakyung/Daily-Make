@@ -14,6 +14,27 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 
+UENUM(BlueprintType)
+enum class EWeaponType : uint8 {
+	RIFLE,
+	SHOTGUN,
+	HEALGUN,
+	GRANADE,
+	ENGTOOL,
+	BULLETBOX,
+	HEALPACK,
+};
+
+USTRUCT(BlueprintType)
+struct FWeaponInfo {
+	GENERATED_BODY()
+
+	EWeaponType weaponType;
+	int32 damage;
+	float shootingRange;
+	float attackArea;
+};
+
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
@@ -139,6 +160,10 @@ public:
 	// AWeaponBase3타입을 저장 / 보조무기
 	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadWrite, Category = TPS)
  	TSubclassOf<AWeaponBase> SubWeaponClass;
+
+	struct FWeaponInfo weaponInfo1;
+	struct FWeaponInfo weaponInfo2;
+	struct FWeaponInfo subWeaponInfo;
 
 	// 총 발사 시 실행되는 애니메이션 몽타주
 	UPROPERTY(EditAnywhere, Category = TPS)
@@ -276,6 +301,28 @@ public:
 
 	class UGameOverWidget* GameOverWidget;
 
-	
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_FireRifle(FVector _start, FVector _end, int32 _damage);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_FireRifle(FVector _start, FVector _end);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_FireShot(FVector _start, FVector _end, int32 _damage, float _attackArea);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_FireShot(FVector _start, FVector _end, float _attackArea);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_FireHeal(FVector _start, FVector _end, int32 _damage);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_FireHeal(FVector _start, FVector _end);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_FireGranade(FVector _mousePos);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_FireGranade(FVector _mousePos);
 };
 

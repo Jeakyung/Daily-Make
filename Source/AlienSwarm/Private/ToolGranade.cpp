@@ -9,7 +9,7 @@ bool AToolGranade::OnFire(FVector mousePos)
 	if (bCanFire) {
 		bCanFire = false;
 
-		TArray<FOverlapResult> hitsInfos;
+		/*TArray<FOverlapResult> hitsInfos;
 		FCollisionQueryParams params;
 		params.AddIgnoredActor(this);
 		bool bResult = GetWorld()->OverlapMultiByChannel(hitsInfos, mousePos, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(250.0f), params);
@@ -22,7 +22,7 @@ bool AToolGranade::OnFire(FVector mousePos)
 					target->TakeHit(50);
 				}
 			}
-		}
+		}*/
 
 		FTimerHandle reUseTime;
 		GetWorld()->GetTimerManager().SetTimer(reUseTime, FTimerDelegate::CreateLambda([&]() {
