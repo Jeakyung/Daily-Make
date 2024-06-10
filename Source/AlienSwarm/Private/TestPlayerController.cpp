@@ -119,21 +119,23 @@ void ATestPlayerController::SetMeg(int32 value)
 void ATestPlayerController::ServerRPC_ChangeSpectator_Implementation()
 {
 	auto* currentPlayer = GetPawn();
-	
+
 	if (currentPlayer)
 	{
-		
-			FTransform playerTF = currentPlayer->GetActorTransform();
-			FActorSpawnParameters params;
-			params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
+		FTransform playerTF = currentPlayer->GetActorTransform();
+		FActorSpawnParameters params;
+		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		if (gameMode)
+		{
 			auto* newPawn = GetWorld()->SpawnActor<ASpectatorPawn>(gameMode->SpectatorClass, playerTF, params);
-
-
-
+			
 			Possess(newPawn);
 
-			currentPlayer->Destroy();
-		
+		}
+
+		currentPlayer->Destroy();
+
 	}
 }
