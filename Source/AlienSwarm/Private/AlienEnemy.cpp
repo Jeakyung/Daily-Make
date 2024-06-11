@@ -374,6 +374,7 @@ void AAlienEnemy::MultiRPC_EnemyDie_Implementation()
 	// 터지는 메시 스폰
 	// GetWorld()->SpawnActor<AExplosionEnemyBody>(explosionEnemy, GetActorLocation, GetActorRotation, params);
 	auto* spawnedActor = GetWorld()->SpawnActor<AExplosionEnemyBody>(explosionEnemy, loc, rot, params);
+
 	if (spawnedActor != nullptr)
 	{
 		FVector spawnedActorLoc = spawnedActor->GetActorLocation();
