@@ -145,8 +145,10 @@ void AAlienEnemy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 
 void AAlienEnemy::TargetDistCheck(AAlienSwarmCharacter* target)
 {
-	CurrentDistance = (target->GetActorLocation() - GetActorLocation()).Size();
-
+	if (target != nullptr)
+	{
+		CurrentDistance = (target->GetActorLocation() - GetActorLocation()).Size();
+	}
 	//AIEnemyController->MoveToActor(target);
 	// 거리가 공격 가능 범위보다 작다면 공격한다
 	if (CurrentDistance < attakDistance)
@@ -245,7 +247,11 @@ void AAlienEnemy::DoorStateCheck()
 
 void AAlienEnemy::AttackDoor()
 {
-	AIEnemyController->StopMovement();
+	if (AIEnemyController)
+	{
+		AIEnemyController->StopMovement();
+	}
+	
 	bMoveAnim = false;
 	bAttackAnim = true;
 

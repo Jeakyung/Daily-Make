@@ -58,4 +58,9 @@ public:
 	bool bSpawnInfinity = false;
 
 
+	TArray<class AAlienSwarmCharacter*> playerList;
+
+	float CalPlayetDist();
+
+	float spawnDist = 3000.0f;
 };

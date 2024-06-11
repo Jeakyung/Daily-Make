@@ -25,6 +25,7 @@
 #include "DoorActor.h"
 #include "ToolBulletBox.h"
 #include "ToolHealPack.h"
+#include "Kismet/GamePlayStatics.h"
 
 
 
@@ -747,6 +748,7 @@ void AAlienSwarmCharacter::ServerRPC_FireRifle_Implementation(FVector _start, FV
 void AAlienSwarmCharacter::MultiRPC_FireRifle_Implementation(FVector _start, FVector _end)
 {
 	DrawDebugLine(GetWorld(), _start, _end, FColor::Red, false, 5.0f);
+	UGameplayStatics::PlaySound2D(GetWorld(), rifleSound);
 }
 
 void AAlienSwarmCharacter::ServerRPC_FireShot_Implementation(FVector _start, FVector _end, int32 _damage, float _attackArea)
@@ -771,6 +773,7 @@ void AAlienSwarmCharacter::ServerRPC_FireShot_Implementation(FVector _start, FVe
 void AAlienSwarmCharacter::MultiRPC_FireShot_Implementation(FVector _start, FVector _end, float _attackArea)
 {
 	DrawDebugCylinder(GetWorld(), _start, _end, _attackArea, 32, FColor::Red, false, 5.0f);
+	UGameplayStatics::PlaySound2D(GetWorld(), shotSound);
 }
 
 void AAlienSwarmCharacter::ServerRPC_FireHeal_Implementation(FVector _start, FVector _end, int32 _damage)
@@ -793,6 +796,7 @@ void AAlienSwarmCharacter::ServerRPC_FireHeal_Implementation(FVector _start, FVe
 void AAlienSwarmCharacter::MultiRPC_FireHeal_Implementation(FVector _start, FVector _end)
 {
 	DrawDebugLine(GetWorld(), _start, _end, FColor::Green, false, 5.0f);
+	UGameplayStatics::PlaySound2D(GetWorld(), healSound);
 }
 
 void AAlienSwarmCharacter::ServerRPC_FireGranade_Implementation(FVector _mousePos)
@@ -854,38 +858,38 @@ void AAlienSwarmCharacter::MultiRPC_ToolEng_Implementation(FVector _actorLoc)
 
 void AAlienSwarmCharacter::ServerRPC_ToolBullet_Implementation(TSubclassOf<AToolBulletBox> _BP_Bullet, FVector _setLoc)
 {
-	/*FActorSpawnParameters params;
+	FActorSpawnParameters params;
 	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	AToolBulletBox* setBox = GetWorld()->SpawnActor<AToolBulletBox>(_BP_Bullet, _setLoc, FRotator::ZeroRotator, params);
-	setBox->bSet = true;*/
+	setBox->bSet = true;
 
-	MultiRPC_ToolBullet(_BP_Bullet, _setLoc);
+	//MultiRPC_ToolBullet(_BP_Bullet, _setLoc);
 }
 
 void AAlienSwarmCharacter::MultiRPC_ToolBullet_Implementation(TSubclassOf<AToolBulletBox> _BP_Bullet, FVector _setLoc)
 {
-	FActorSpawnParameters params;
+	/*FActorSpawnParameters params;
 	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	AToolBulletBox* setBox = GetWorld()->SpawnActor<AToolBulletBox>(_BP_Bullet, _setLoc, FRotator::ZeroRotator, params);
-	setBox->bSet = true;
+	setBox->bSet = true;*/
 }
 
 void AAlienSwarmCharacter::ServerRPC_ToolHeal_Implementation(TSubclassOf<AToolHealPack> _BP_Heal, FVector _setLoc)
+{
+	FActorSpawnParameters params;
+	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AToolHealPack* setBox = GetWorld()->SpawnActor<AToolHealPack>(_BP_Heal, _setLoc, FRotator::ZeroRotator, params);
+	setBox->bSet = true;
+
+	//MultiRPC_ToolHeal(_BP_Heal, _setLoc);
+}
+
+void AAlienSwarmCharacter::MultiRPC_ToolHeal_Implementation(TSubclassOf<AToolHealPack> _BP_Heal, FVector _setLoc)
 {
 	/*FActorSpawnParameters params;
 	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	AToolHealPack* setBox = GetWorld()->SpawnActor<AToolHealPack>(_BP_Heal, _setLoc, FRotator::ZeroRotator, params);
 	setBox->bSet = true;*/
-
-	MultiRPC_ToolHeal(_BP_Heal, _setLoc);
-}
-
-void AAlienSwarmCharacter::MultiRPC_ToolHeal_Implementation(TSubclassOf<AToolHealPack> _BP_Heal, FVector _setLoc)
-{
-	FActorSpawnParameters params;
-	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	AToolHealPack* setBox = GetWorld()->SpawnActor<AToolHealPack>(_BP_Heal, _setLoc, FRotator::ZeroRotator, params);
-	setBox->bSet = true;
 }
 
 void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

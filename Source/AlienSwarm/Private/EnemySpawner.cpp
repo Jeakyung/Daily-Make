@@ -9,6 +9,7 @@
 #include <../../../../../../../Source/Runtime/Core/Public/Delegates/Delegate.h>
 #include <../AlienSwarmCharacter.h>
 #include "Net/UnrealNetwork.h"
+#include "EngineUtils.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -39,6 +40,12 @@ void AEnemySpawner::BeginPlay()
 	if (HasAuthority()) {
 		SetOwner(GetWorld()->GetFirstPlayerController());
 	}
+	
+	playerList.Empty();
+	for (TActorIterator<AAlienSwarmCharacter> target(GetWorld()); target; ++target)
+	{
+		playerList.Add(*target);
+	}
 }
 
 // Called every frame
@@ -46,7 +53,7 @@ void AEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bOverlapToComp || bSpawnInfinity)
+	if (bOverlapToComp || (bSpawnInfinity && spawnDist > CalPlayetDist()))
 	{
 		if (currentTime < SpawnTime || bSpawnInfinity)
 		{
@@ -102,6 +109,22 @@ void AEnemySpawner::PlayerOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 		// SpawnEnemy();
 	}
 
+}
+
+float AEnemySpawner::CalPlayetDist()
+{
+	float minDist = 100000000.0f;
+	for( int32 i = 0; i < playerList.Num(); i++){
+		if (playerList[i] != nullptr)
+		{
+			float tempDist = FVector::Dist(GetActorLocation(), playerList[i]->GetActorLocation());
+			if (minDist > tempDist)
+			{
+				minDist = tempDist;
+			}
+		}
+	}
+	return minDist;
 }
 
 

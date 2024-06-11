@@ -95,7 +95,7 @@ void ADoorActor::Tick(float DeltaTime)
 
  		// enemy->bIsTargetDoor = false;
 
-		for (int i = 0; i < enemyList.Num(); i++)
+		for (int32 i = 0; i < enemyList.Num(); i++)
 		{
 			enemyList[i]->bIsTargetDoor = false;
 		}

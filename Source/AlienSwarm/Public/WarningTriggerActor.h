@@ -41,6 +41,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	class AClearCheakActor* clearCheak;
 
+	UPROPERTY(EditAnywhere)
+	class ABGMActor* bgmActor;	
+
 	UFUNCTION()
 	void ActiveWarning(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 

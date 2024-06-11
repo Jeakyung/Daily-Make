@@ -9,6 +9,7 @@
 #include "DoorActor.h"
 #include "EnemySpawner.h"
 #include "ClearCheakActor.h"
+#include "BGMActor.h"
 #include "../AlienSwarmCharacter.h"
 
 // Sets default values
@@ -75,12 +76,16 @@ void AWarningTriggerActor::MultiRPC_ActiveWarning_Implementation()
 	if(dirLight) {
 		ADirectionalLight* dLight = Cast<ADirectionalLight>(dirLight);
 		if(dLight) {
-			dLight->SetLightColor(FColor(150,150,150));
+			dLight->SetLightColor(FColor(100,100,100));
 		}
 	}
 
 	if (clearCheak) {
 		clearCheak->bIsClearReady = true;
+	}
+
+	if(bgmActor) {
+		bgmActor->ServerRPC_PlayAfter();
 	}
 
 	for(int32 i = 0; i < redLights.Num(); i++) {

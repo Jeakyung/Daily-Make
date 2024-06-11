@@ -83,7 +83,7 @@ bool AToolBulletBox::OnFire(FVector mousePos)
 void AToolBulletBox::ChargeMeg(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AAlienSwarmCharacter* touchedPlayer = Cast<AAlienSwarmCharacter>(OtherActor);
-	if (touchedPlayer && HasAuthority()) {
+	if (bSet && touchedPlayer && HasAuthority()) {
 		SetOwner(touchedPlayer->GetController());
 		ServerRPC_ReduceMeg(touchedPlayer);
 	}
@@ -91,43 +91,48 @@ void AToolBulletBox::ChargeMeg(UPrimitiveComponent* OverlappedComponent, AActor*
 
 void AToolBulletBox::ServerRPC_ReduceMeg_Implementation(AAlienSwarmCharacter* touchedPlayer)
 {
-	if (bSet) {		
-		bool bIsTake;
-		switch (touchedPlayer->SelectedWeapon)
-		{
-		case 1:
-			if (touchedPlayer->Weapon != nullptr) {
-				bIsTake = touchedPlayer->Weapon->TakeMagazine();
-			}
-			else {
-				bIsTake = false;
-			}
-			break;
-		case 2:
-			if (touchedPlayer->Weapon2 != nullptr) {
-				bIsTake = touchedPlayer->Weapon2->TakeMagazine();
-			}
-			else {
-				bIsTake = false;
-			}
-			break;
-		default:
-			bIsTake = false;
-			break;
-		}
-
-		if (bIsTake) {
-			megCount--;
-			MultiRPC_ReduceMeg(megCount);
-		}
-	}
+	MultiRPC_ReduceMeg(touchedPlayer, megCount);
 	//SetOwner(nullptr);
 }
 
-void AToolBulletBox::MultiRPC_ReduceMeg_Implementation(int32 _meg)
+void AToolBulletBox::MultiRPC_ReduceMeg_Implementation(AAlienSwarmCharacter* touchedPlayer, int32 _meg)
 {
-	megCount = _meg;
-	if (megCount == 0) {
-		Destroy();
+	bool bIsTake;
+	switch (touchedPlayer->SelectedWeapon)
+	{
+	case 1:
+		if (touchedPlayer->Weapon != nullptr) {
+			bIsTake = touchedPlayer->Weapon->TakeMagazine();
+		}
+		else {
+			bIsTake = false;
+		}
+		break;
+	case 2:
+		if (touchedPlayer->Weapon2 != nullptr) {
+			bIsTake = touchedPlayer->Weapon2->TakeMagazine();
+		}
+		else {
+			bIsTake = false;
+		}
+		break;
+	default:
+		bIsTake = false;
+		break;
 	}
+
+	if (bIsTake) {
+		megCount--;
+	}
+	if (megCount == 0) {
+		//if (HasAuthority())
+		{
+			ServerRPC_Destroy();
+		}
+	}
+}
+
+void AToolBulletBox::ServerRPC_Destroy_Implementation()
+{
+	Destroy();
 }

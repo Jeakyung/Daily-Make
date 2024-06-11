@@ -342,5 +342,14 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_ToolHeal(TSubclassOf<class AToolHealPack> _BP_Heal, FVector _setLoc);
+
+	UPROPERTY(EditDefaultsOnly)
+	class USoundBase* rifleSound;
+
+	UPROPERTY(EditDefaultsOnly)
+	class USoundBase* shotSound;
+
+	UPROPERTY(EditDefaultsOnly)
+	class USoundBase* healSound;
 };
 

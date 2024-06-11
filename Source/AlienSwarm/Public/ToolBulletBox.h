@@ -34,7 +34,7 @@ public:
 	bool bSet = false;
 
 	//UPROPERTY(Replicated)
-	int32 megCount = 1;
+	int32 megCount = 4;
 
 	//void CheckOwner();
 
@@ -47,5 +47,8 @@ public:
 	void ServerRPC_ReduceMeg(AAlienSwarmCharacter* touchedPlayer);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_ReduceMeg(int32 _meg);
+	void MultiRPC_ReduceMeg(AAlienSwarmCharacter* touchedPlayer, int32 _meg);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_Destroy();
 };
