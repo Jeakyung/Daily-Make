@@ -124,7 +124,7 @@ void AAlienEnemy::Tick(float DeltaTime)
 		FString str = FString::Printf(TEXT("enemyAnim->bEnemyDisableMovement : %s"), enemyAnim->bEnemyDisableMovement ? L"TRUE" : L"FALSE");
 
 		FVector loc = GetActorLocation() + FVector(0, 0, 50);
-		DrawDebugString(GetWorld(), loc, str, nullptr, FColor::White, 0, true);
+		//DrawDebugString(GetWorld(), loc, str, nullptr, FColor::White, 0, true);
 	}
 }
 
@@ -232,7 +232,7 @@ void AAlienEnemy::TargetCheck()
 			AIEnemyController->MoveToActor(myTarget, 70.0f);
 		TargetDistCheck(myTarget);
 
-		UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Index : %d, Target : %s"), nearestTargetIndex, *myTarget->GetActorNameOrLabel()));
+		//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Index : %d, Target : %s"), nearestTargetIndex, *myTarget->GetActorNameOrLabel()));
 
 		// CurrentDistance = (myTarget->GetActorLocation() - GetActorLocation()).Size();
 
