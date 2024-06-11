@@ -223,8 +223,8 @@ void AAlienEnemy::TargetCheck()
 				}
 			}
 
-			UE_LOG(LogTemp, Warning, TEXT("Finally closestDistanceLength: %f"), nearestDistanceLength);
-			UE_LOG(LogTemp, Warning, TEXT("Finally closestTargetIndex: %d"), nearestTargetIndex);
+			/*UE_LOG(LogTemp, Warning, TEXT("Finally closestDistanceLength: %f"), nearestDistanceLength);
+			UE_LOG(LogTemp, Warning, TEXT("Finally closestTargetIndex: %d"), nearestTargetIndex);*/
 		}
 		// 가장 가까이에 있는 플레이어를 타겟으로 설정
 		myTarget = targetList[nearestTargetIndex];
@@ -232,7 +232,7 @@ void AAlienEnemy::TargetCheck()
 			AIEnemyController->MoveToActor(myTarget, 70.0f);
 		TargetDistCheck(myTarget);
 
-		//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Index : %d, Target : %s"), nearestTargetIndex, *myTarget->GetActorNameOrLabel()));
+		// UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Index : %d, Target : %s"), nearestTargetIndex, *myTarget->GetActorNameOrLabel()));
 
 		// CurrentDistance = (myTarget->GetActorLocation() - GetActorLocation()).Size();
 
