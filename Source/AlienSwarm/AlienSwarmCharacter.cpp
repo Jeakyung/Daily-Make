@@ -576,7 +576,7 @@ void AAlienSwarmCharacter::OnIAFirstWeapon(const FInputActionValue& Value)
 void AAlienSwarmCharacter::OnIASecondWeapon(const FInputActionValue& Value)
 {
 	SelectedWeapon = 2;
-	ServerRPC_SecondWeapon();
+	ServerRPC_SecondWeapon(SelectedWeapon);
 	UE_LOG(LogTemp, Warning, TEXT("SecoandWeapon"));
 }
 
@@ -584,7 +584,7 @@ void AAlienSwarmCharacter::OnIASecondWeapon(const FInputActionValue& Value)
 void AAlienSwarmCharacter::OnIASubWeapon(const FInputActionValue& Value)
 {
 	SelectedWeapon = 3;
-	ServerRPC_SubWeapon();
+	ServerRPC_SubWeapon(SelectedWeapon);
 
 	UE_LOG(LogTemp, Warning, TEXT("SubWeapon"));
 }
@@ -639,13 +639,15 @@ void AAlienSwarmCharacter::MultiRPC_FirstWeapon_Implementation(int _SelectedWeap
 //============================================
 
 // 2번 무기 교체 시 다른 클라우드에도 변경 값 적용
-void AAlienSwarmCharacter::ServerRPC_SecondWeapon_Implementation()
+void AAlienSwarmCharacter::ServerRPC_SecondWeapon_Implementation(int _SelectedWeapon)
 {
-	MultiRPC_SecondWeapon();
+	SelectedWeapon = _SelectedWeapon;
+	MultiRPC_SecondWeapon(_SelectedWeapon);
 
 }
-void AAlienSwarmCharacter::MultiRPC_SecondWeapon_Implementation()
+void AAlienSwarmCharacter::MultiRPC_SecondWeapon_Implementation(int _SelectedWeapon)
 {
+	SelectedWeapon = _SelectedWeapon;
 	DetachWeapon(SubWeapon);
 	DetachWeapon(Weapon);
 
@@ -657,13 +659,15 @@ void AAlienSwarmCharacter::MultiRPC_SecondWeapon_Implementation()
 
 
 // 보조 무기 교체 시 다른 클라우드에도 변경 값 적용
-void AAlienSwarmCharacter::ServerRPC_SubWeapon_Implementation()
+void AAlienSwarmCharacter::ServerRPC_SubWeapon_Implementation(int _SelectedWeapon)
 {
-	MultiRPC_SubWeapon();
+	SelectedWeapon = _SelectedWeapon;
+	MultiRPC_SubWeapon(_SelectedWeapon);
 }
 
-void AAlienSwarmCharacter::MultiRPC_SubWeapon_Implementation()
+void AAlienSwarmCharacter::MultiRPC_SubWeapon_Implementation(int _SelectedWeapon)
 {
+	SelectedWeapon = _SelectedWeapon;
 	DetachWeapon(Weapon2);
 	DetachWeapon(Weapon);
 
@@ -904,10 +908,9 @@ void AAlienSwarmCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	// HP 동기화
 	DOREPLIFETIME(AAlienSwarmCharacter, HP);
 
-	DOREPLIFETIME(AAlienSwarmCharacter, Weapon);
-	DOREPLIFETIME(AAlienSwarmCharacter, Weapon2);
-	DOREPLIFETIME(AAlienSwarmCharacter, SubWeapon);
-// 	DOREPLIFETIME(AAlienSwarmCharacter, WeaponClass);
-// 	DOREPLIFETIME(AAlienSwarmCharacter, WeaponClass2);
-// 	DOREPLIFETIME(AAlienSwarmCharacter, SubWeaponClass);
+// 	DOREPLIFETIME(AAlienSwarmCharacter, Weapon);
+// 	DOREPLIFETIME(AAlienSwarmCharacter, Weapon2);
+// 	DOREPLIFETIME(AAlienSwarmCharacter, SubWeapon);
+	DOREPLIFETIME(AAlienSwarmCharacter, SelectedWeapon);
+
 }

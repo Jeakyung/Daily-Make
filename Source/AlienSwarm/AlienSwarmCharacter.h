@@ -202,6 +202,7 @@ public:
 	void MultiRPC_SpawnWeapon();
 
 	// 몇번 무기인지 판별시키기 위해 만들어진 변수
+	UPROPERTY(Replicated)
 	int32 SelectedWeapon = 1;
 
 	// 데미지를 받았을 때 실행되는 기능
@@ -239,10 +240,10 @@ public:
 
 	// 2번 무기 교체 시 다른 클라우드에도 변경 값 적용
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_SecondWeapon();
+	void ServerRPC_SecondWeapon(int _SelectedWeapon);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_SecondWeapon();
+	void MultiRPC_SecondWeapon(int _SelectedWeapon);
 	//============================================
 
 
@@ -250,10 +251,10 @@ public:
 
 	// 보조 무기 교체 시 다른 클라우드에도 변경 값 적용
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_SubWeapon();
+	void ServerRPC_SubWeapon(int _SelectedWeapon);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_SubWeapon();
+	void MultiRPC_SubWeapon(int _SelectedWeapon);
 	//============================================
 
 
