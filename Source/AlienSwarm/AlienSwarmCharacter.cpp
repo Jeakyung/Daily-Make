@@ -421,14 +421,22 @@ void AAlienSwarmCharacter::OnMyReloadFinished()
 	switch (SelectedWeapon)
 	{
 	case 1:
-		Weapon->OnReload();
+		if (Weapon)
+		{
+			Weapon->OnReload();
+		}
 		break;
 	case 2:
-		Weapon2->OnReload();
+		if (Weapon2)
+		{
+			Weapon2->OnReload();
+		}
 		break;
 	case 3:
-		SubWeapon->OnReload();
-
+		if (SubWeapon)
+		{
+			SubWeapon->OnReload();
+		}
 		break;
 
 	}

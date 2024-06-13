@@ -67,8 +67,10 @@ bool AWeaponBase::OnReload()
 	if (currentMagazine > 0) {
 		currentAmmo = ammo;
 		currentMagazine--;
-		pc->SetAmmo(currentAmmo);
-		pc->SetMeg(currentMagazine);
+		if (pc) {
+			pc->SetAmmo(currentAmmo);
+			pc->SetMeg(currentMagazine);
+		}
 		return true;
 	}
 	else {
