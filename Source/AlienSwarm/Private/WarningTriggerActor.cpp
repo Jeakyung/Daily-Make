@@ -76,7 +76,7 @@ void AWarningTriggerActor::MultiRPC_ActiveWarning_Implementation()
 	if(dirLight) {
 		ADirectionalLight* dLight = Cast<ADirectionalLight>(dirLight);
 		if(dLight) {
-			dLight->SetLightColor(FColor(100,100,100));
+			dLight->SetLightColor(FColor(125,125,125));
 		}
 	}
 
@@ -99,6 +99,7 @@ void AWarningTriggerActor::MultiRPC_ActiveWarning_Implementation()
 
 	for (int32 i = 0; i < spawners.Num(); i++) {
 		spawners[i]->bSpawnInfinity = true;
+		spawners[i]->SpawnTime = 4.0f;
 	}
 }
 

@@ -208,6 +208,7 @@ void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 			{
 				FVector start = Weapon->firePoint->GetComponentLocation();
 				FVector end = start + Weapon->firePoint->GetForwardVector() * weaponInfo1.shootingRange;
+				end.Z = start.Z - 150.0f;
 				switch (weaponInfo1.weaponType)
 				{
 				case EWeaponType::RIFLE :
@@ -216,7 +217,6 @@ void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 					}
 					break;
 				case EWeaponType::SHOTGUN :
-					end.Z = start.Z - 150.0f;
 					if (Weapon->OnFire(mousePos)) {
 						ServerRPC_FireShot(start, end, weaponInfo1.damage, weaponInfo1.attackArea);
 					}
@@ -237,6 +237,7 @@ void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 			{
 				FVector start = Weapon2->firePoint->GetComponentLocation();
 				FVector end = start + Weapon2->firePoint->GetForwardVector() * weaponInfo2.shootingRange;
+				end.Z = start.Z - 150.0f;
 				switch (weaponInfo2.weaponType)
 				{
 				case EWeaponType::RIFLE:
@@ -245,7 +246,6 @@ void AAlienSwarmCharacter::OnIAFire(const FInputActionValue& Value)
 					}
 					break;
 				case EWeaponType::SHOTGUN:
-					end.Z = start.Z - 150.0f;
 					if (Weapon->OnFire(mousePos)) {
 						ServerRPC_FireShot(start, end, weaponInfo2.damage, weaponInfo2.attackArea);
 					}
