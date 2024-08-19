@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+// 무기, 장비류 인스턴스들의 기본이 되는 클래스.
+// 탄환 발사, 재장전, 탄창 획득, 장비의 4가지 기능을 사용하게 한다.
 
 #include "WeaponBase.h"
 #include "Components/SceneComponent.h"

@@ -1,5 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+// 비상 상태 느낌을 내기위해 붉은색 스포트라이트를 2개 회전시켜서 경광등 느낌을 표현한 액터
 
 #include "RedLightActor.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Components/SpotLightComponent.h>

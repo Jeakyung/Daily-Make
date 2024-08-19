@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+// 레벨디자인 상 반환점 부분에 위치한 액터
+// 이 액터에 닿으면 비상사태 느낌으로 레벨이 변화하면서 에너미가 끊임없이 생성되게 된다.
 
 #include "WarningTriggerActor.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Components/BoxComponent.h>

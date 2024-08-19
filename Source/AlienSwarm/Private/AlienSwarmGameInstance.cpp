@@ -1,5 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+// 리슨서버를 이용해서 네트워크 연결하기 위한 함수를 인스턴스에 작성하여 사용.
 
 #include "AlienSwarmGameInstance.h"
 #include "OnlineSessionSettings.h"

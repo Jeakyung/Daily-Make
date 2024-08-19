@@ -1,5 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+// 대기방에서 나갈때 사용하는 액터
 
 #include "EXITActor.h"
 #include "Components/BoxComponent.h"

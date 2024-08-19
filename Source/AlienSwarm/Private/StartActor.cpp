@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+// 대기실에서 게임을 시작할때 쓰는 액터
+// 현재 플레이어의 수와 스타트 지점에 올라온 캐릭터 수를 비교해서 일치하면 시작한다.
 
 #include "StartActor.h"
 #include "Components/BoxComponent.h"

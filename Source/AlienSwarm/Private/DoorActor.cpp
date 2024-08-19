@@ -1,5 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+// 열림, 잠금, 파괴 기능이 있는 문 액터
 
 #include "DoorActor.h"
 #include "Components/BoxComponent.h"
